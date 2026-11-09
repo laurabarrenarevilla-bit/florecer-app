@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet" />
+  <style>
+    body{margin:0;background:#FAF8F3;-webkit-font-smoothing:antialiased;}
+    *{box-sizing:border-box;}
+    textarea,input{font-family:'DM Sans',sans-serif;}
+    ::selection{background:#8BAA91;color:#fff;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes popIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+    @keyframes sheetUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    @media (prefers-reduced-motion: reduce){*{animation-duration:0.01ms !important;}}
+    button:focus-visible{outline:2px solid #354E41;outline-offset:2px;}
+    input:focus-visible,textarea:focus-visible{outline:none;}
+    ::-webkit-scrollbar{width:8px;height:8px;}
+    ::-webkit-scrollbar-thumb{background:#DCD6C6;border-radius:8px;}
+  </style>
+</helmet>
+<div style="position:relative;min-height:100vh;width:100%;background:#FAF8F3;font-family:'DM Sans',sans-serif;color:#2E2B26;overflow-x:hidden;">
+
+  <sc-if value="{{ isOnboarding }}" hint-placeholder-val="{{ true }}">
+  <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;max-width:440px;margin:0 auto;text-align:center;gap:30px;animation:fadeUp .5s ease;">
+    <svg width="40" height="40" viewBox="0 0 32 32" fill="none">
+      <path d="M16 29 C16 20 16 14 16 9" stroke="#354E41" stroke-width="2" stroke-linecap="round" />
+      <path d="M16 15 C12 13 9 14 8 18 C12 19 15 17 16 15Z" fill="#8BAA91" />
+      <path d="M16 11 C20 9 23 10 24 14 C20 15 17 13 16 11Z" fill="#8BAA91" />
+      <circle cx="16" cy="8" r="4" fill="#F5D36A" />
+    </svg>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <h1 style="font-family:'Fraunces',serif;font-weight:500;font-size:32px;line-height:1.15;color:#354E41;margin:0;">Florecer</h1>
+      <p style="font-size:16px;color:#777A73;margin:0;line-height:1.5;">Tu espacio para crecer, a tu ritmo.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;width:100%;text-align:left;">
+      <div style="display:flex;gap:14px;align-items:flex-start;background:#FFFFFF;border:1px solid #ECE7DA;border-radius:16px;padding:16px 18px;">
+        <div style="width:26px;height:26px;border-radius:50%;background:#F5D36A;flex-shrink:0;margin-top:2px;"></div>
+        <div><p style="margin:0;font-weight:600;font-size:14.5px;color:#354E41;">Registra cómo te sientes</p><p style="margin:4px 0 0;font-size:13.5px;color:#777A73;line-height:1.4;">Un gesto breve, cada día.</p></div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;background:#FFFFFF;border:1px solid #ECE7DA;border-radius:16px;padding:16px 18px;">
+        <div style="width:26px;height:26px;border-radius:50%;background:#8BAA91;flex-shrink:0;margin-top:2px;"></div>
+        <div><p style="margin:0;font-weight:600;font-size:14.5px;color:#354E41;">Guarda reflexiones y pequeños logros</p><p style="margin:4px 0 0;font-size:13.5px;color:#777A73;line-height:1.4;">Sin obligación, a tu manera.</p></div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;background:#FFFFFF;border:1px solid #ECE7DA;border-radius:16px;padding:16px 18px;">
+        <div style="width:26px;height:26px;border-radius:50%;background:#91BCE0;flex-shrink:0;margin-top:2px;"></div>
+        <div><p style="margin:0;font-weight:600;font-size:14.5px;color:#354E41;">Descubre tu evolución con el tiempo</p><p style="margin:4px 0 0;font-size:13.5px;color:#777A73;line-height:1.4;">Sin competir, sin perseguir la perfección.</p></div>
+      </div>
+    </div>
+    <button onClick="{{ finishOnboarding }}" style="width:100%;padding:16px;border-radius:14px;border:none;background:#354E41;color:#FAF8F3;font-size:15px;font-weight:600;cursor:pointer;">Empezar</button>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+  <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;max-width:400px;margin:0 auto;gap:26px;animation:fadeUp .4s ease;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;">
+      <svg width="34" height="34" viewBox="0 0 32 32" fill="none">
+        <path d="M16 29 C16 20 16 14 16 9" stroke="#354E41" stroke-width="2" stroke-linecap="round" />
+        <path d="M16 15 C12 13 9 14 8 18 C12 19 15 17 16 15Z" fill="#8BAA91" />
+        <path d="M16 11 C20 9 23 10 24 14 C20 15 17 13 16 11Z" fill="#8BAA91" />
+        <circle cx="16" cy="8" r="4" fill="#F5D36A" />
+      </svg>
+      <h1 style="font-family:'Fraunces',serif;font-weight:500;font-size:24px;color:#354E41;margin:0;">Florecer</h1>
+      <p style="font-size:14.5px;color:#777A73;margin:0;">Un espacio privado para ti.</p>
+    </div>
+    <div style="display:flex;background:#F1EEE5;border-radius:12px;padding:4px;width:100%;">
+      <button onClick="{{ switchToLogin }}" style="{{ loginTabStyle }}">Acceder</button>
+      <button onClick="{{ switchToSignup }}" style="{{ signupTabStyle }}">Crear cuenta</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;width:100%;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:13px;font-weight:600;color:#354E41;">Correo electrónico</label>
+        <input type="email" value="{{ authEmail }}" onChange="{{ setAuthEmail }}" placeholder="tucorreo@ejemplo.com" style="padding:13px 14px;border-radius:12px;border:1px solid #DCD6C6;font-size:15px;background:#FFFFFF;outline:none;" />
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label style="font-size:13px;font-weight:600;color:#354E41;">Contraseña</label>
+        <input type="password" value="{{ authPassword }}" onChange="{{ setAuthPassword }}" placeholder="••••••••" style="padding:13px 14px;border-radius:12px;border:1px solid #DCD6C6;font-size:15px;background:#FFFFFF;outline:none;" />
+      </div>
+      <sc-if value="{{ isAuthLogin }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ forgotPassword }}" style="align-self:flex-end;background:none;border:none;color:#8BAA91;font-size:13px;font-weight:600;cursor:pointer;padding:0;">¿Olvidaste tu contraseña?</button>
+      </sc-if>
+      <sc-if value="{{ authHasError }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:0;font-size:13.5px;color:#B5513D;background:#F7E9E4;padding:10px 12px;border-radius:10px;">{{ authError }}</p>
+      </sc-if>
+      <button onClick="{{ submitAuth }}" style="width:100%;padding:15px;border-radius:14px;border:none;background:#354E41;color:#FAF8F3;font-size:15px;font-weight:600;cursor:pointer;opacity:{{ authBtnOpacity }};">{{ authBtnLabel }}</button>
+    </div>
+    <p style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:#777A73;margin:0;text-align:center;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="#777A73" stroke-width="1.6" /><path d="M8 11V8a4 4 0 0 1 8 0v3" stroke="#777A73" stroke-width="1.6" /></svg>
+      Tus datos se guardan en la nube, asociados a tu cuenta, y solo tú puedes acceder a ellos.
+    </p>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;min-height:100vh;">
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+    <div style="width:232px;flex-shrink:0;border-right:1px solid #ECE7DA;padding:28px 18px;display:flex;flex-direction:column;gap:30px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:0 8px;">
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
+          <path d="M16 29 C16 20 16 14 16 9" stroke="#354E41" stroke-width="2" stroke-linecap="round" />
+          <path d="M16 15 C12 13 9 14 8 18 C12 19 15 17 16 15Z" fill="#8BAA91" />
+          <path d="M16 11 C20 9 23 10 24 14 C20 15 17 13 16 11Z" fill="#8BAA91" />
+          <circle cx="16" cy="8" r="4" fill="#F5D36A" />
+        </svg>
+        <span style="font-family:'Fraunces',serif;font-weight:500;font-size:19px;color:#354E41;">Florecer</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <button onClick="{{ setTabHoy }}" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;border:none;cursor:pointer;background:{{ hoyBg }};text-align:left;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="{{ hoyColor }}" /></svg>
+          <span style="font-size:14.5px;font-weight:600;color:{{ hoyColor }};">Hoy</span>
+        </button>
+        <button onClick="{{ setTabCalendario }}" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;border:none;cursor:pointer;background:{{ calBg }};text-align:left;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="3" stroke="{{ calColor }}" stroke-width="1.7" /><line x1="4" y1="10" x2="20" y2="10" stroke="{{ calColor }}" stroke-width="1.7" /><line x1="8" y1="3" x2="8" y2="7" stroke="{{ calColor }}" stroke-width="1.7" stroke-linecap="round" /><line x1="16" y1="3" x2="16" y2="7" stroke="{{ calColor }}" stroke-width="1.7" stroke-linecap="round" /></svg>
+          <span style="font-size:14.5px;font-weight:600;color:{{ calColor }};">Calendario</span>
+        </button>
+        <button onClick="{{ setTabEvolucion }}" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;border:none;cursor:pointer;background:{{ evoBg }};text-align:left;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><polyline points="4,16 10,10 14,13 20,5" stroke="{{ evoColor }}" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <span style="font-size:14.5px;font-weight:600;color:{{ evoColor }};">Evolución</span>
+        </button>
+        <button onClick="{{ setTabAjustes }}" style="display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;border:none;cursor:pointer;background:{{ ajBg }};text-align:left;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><line x1="4" y1="7" x2="20" y2="7" stroke="{{ ajColor }}" stroke-width="1.7" stroke-linecap="round" /><circle cx="14" cy="7" r="2" fill="{{ ajColor }}" /><line x1="4" y1="13" x2="20" y2="13" stroke="{{ ajColor }}" stroke-width="1.7" stroke-linecap="round" /><circle cx="9" cy="13" r="2" fill="{{ ajColor }}" /><line x1="4" y1="19" x2="20" y2="19" stroke="{{ ajColor }}" stroke-width="1.7" stroke-linecap="round" /><circle cx="16" cy="19" r="2" fill="{{ ajColor }}" /></svg>
+          <span style="font-size:14.5px;font-weight:600;color:{{ ajColor }};">Ajustes</span>
+        </button>
+      </div>
+    </div>
+    </sc-if>
+
+    <div style="flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0;">
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid #ECE7DA;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="none">
+            <path d="M16 29 C16 20 16 14 16 9" stroke="#354E41" stroke-width="2" stroke-linecap="round" />
+            <path d="M16 15 C12 13 9 14 8 18 C12 19 15 17 16 15Z" fill="#8BAA91" />
+            <path d="M16 11 C20 9 23 10 24 14 C20 15 17 13 16 11Z" fill="#8BAA91" />
+            <circle cx="16" cy="8" r="4" fill="#F5D36A" />
+          </svg>
+          <span style="font-family:'Fraunces',serif;font-weight:500;font-size:17px;color:#354E41;">Florecer</span>
+        </div>
+      </div>
+      </sc-if>
+
+      <div style="flex:1;padding:{{ contentPadding }};max-width:{{ contentMaxWidth }};width:100%;margin:0 auto;">
+
+        <sc-if value="{{ tabIsHoy }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:26px;animation:fadeUp .35s ease;">
+          <div>
+            <p style="margin:0 0 4px;font-size:13.5px;color:#777A73;font-weight:600;">{{ todayDateLabel }}</p>
+            <h1 style="margin:0 0 8px;font-family:'Fraunces',serif;font-weight:500;font-size:28px;color:#354E41;">{{ greeting }}</h1>
+            <sc-if value="{{ isFirstEver }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0;font-size:15px;color:#777A73;line-height:1.5;max-width:460px;">Este es tu primer registro. No hace falta que sea perfecto: basta con un gesto honesto sobre cómo estás.</p>
+            </sc-if>
+            <sc-if value="{{ !isFirstEver }}" hint-placeholder-val="{{ true }}">
+              <p style="margin:0;font-size:15px;color:#777A73;line-height:1.5;max-width:460px;">Cada día es una oportunidad para conocerte un poco mejor.</p>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ showTodayForm }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:22px;">
+            <div style="display:flex;flex-direction:column;gap:14px;background:#FFFFFF;border:1px solid #ECE7DA;border-radius:22px;padding:22px 20px;">
+              <h2 style="margin:0;font-size:18px;font-weight:600;color:#354E41;">¿Cómo te has sentido hoy?</h2>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                <button onClick="{{ selectFeliz }}" aria-pressed="{{ isFeliz }}" style="{{ emFelizStyle }}">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="{{ emFelizIcon }}" stroke-width="1.6" /><circle cx="8.5" cy="10" r="1" fill="{{ emFelizIcon }}" /><circle cx="15.5" cy="10" r="1" fill="{{ emFelizIcon }}" /><path d="M8 14.5 Q12 18 16 14.5" stroke="{{ emFelizIcon }}" stroke-width="1.6" fill="none" stroke-linecap="round" /></svg>
+                  <span style="font-size:14.5px;font-weight:700;color:{{ emFelizIcon }};">Feliz</span>
+                </button>
+                <button onClick="{{ selectNormal }}" aria-pressed="{{ isNormal }}" style="{{ emNormalStyle }}">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="{{ emNormalIcon }}" stroke-width="1.6" /><circle cx="8.5" cy="10" r="1" fill="{{ emNormalIcon }}" /><circle cx="15.5" cy="10" r="1" fill="{{ emNormalIcon }}" /><path d="M8 15 L16 15" stroke="{{ emNormalIcon }}" stroke-width="1.6" fill="none" stroke-linecap="round" /></svg>
+                  <span style="font-size:14.5px;font-weight:700;color:{{ emNormalIcon }};">Normal</span>
+                </button>
+                <button onClick="{{ selectTriste }}" aria-pressed="{{ isTriste }}" style="{{ emTristeStyle }}">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="{{ emTristeIcon }}" stroke-width="1.6" /><circle cx="8.5" cy="10" r="1" fill="{{ emTristeIcon }}" /><circle cx="15.5" cy="10" r="1" fill="{{ emTristeIcon }}" /><path d="M8 16 Q12 12.5 16 16" stroke="{{ emTristeIcon }}" stroke-width="1.6" fill="none" stroke-linecap="round" /></svg>
+                  <span style="font-size:14.5px;font-weight:700;color:{{ emTristeIcon }};">Triste</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label for="reflectionField" style="margin:0;font-size:14.5px;font-weight:600;color:#354E41;display:flex;align-items:center;gap:8px;">¿Qué te gustaría recordar de hoy?<span style="font-size:11px;font-weight:600;color:#A79F8B;text-transform:uppercase;letter-spacing:.04em;">Opcional</span></label>
+              <textarea id="reflectionField" value="{{ draftReflection }}" onChange="{{ setDraftReflection }}" placeholder="Hoy ha pasado algo que me ha hecho pensar..." rows="4" style="padding:15px 16px;border-radius:16px;border:1px solid #ECE7DA;background:#FFFDF8;font-size:15px;line-height:1.65;color:#2E2B26;resize:vertical;outline:none;transition:border-color .15s ease;" style-focus="border-color:#8BAA91;box-shadow:0 0 0 3px rgba(139,170,145,0.2);"></textarea>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label for="achievementField" style="margin:0;font-size:14.5px;font-weight:600;color:#354E41;display:flex;align-items:center;gap:8px;">¿De qué te sientes orgullosa hoy?<span style="font-size:11px;font-weight:600;color:#A79F8B;text-transform:uppercase;letter-spacing:.04em;">Opcional</span></label>
+              <p style="margin:0;font-size:13px;color:#777A73;">Puede ser algo pequeño.</p>
+              <input id="achievementField" value="{{ draftAchievement }}" onChange="{{ setDraftAchievement }}" placeholder="Hoy me he atrevido a..." style="padding:14px 16px;border-radius:14px;border:1px solid #ECE7DA;background:#FFFDF8;font-size:15px;outline:none;transition:border-color .15s ease;" style-focus="border-color:#8BAA91;box-shadow:0 0 0 3px rgba(139,170,145,0.2);" />
+            </div>
+
+            <div style="display:flex;gap:10px;">
+              <sc-if value="{{ editingToday }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ cancelEditToday }}" style="padding:15px 20px;border-radius:14px;border:1px solid #DCD6C6;background:#FFFFFF;color:#777A73;font-size:14.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+              </sc-if>
+              <button onClick="{{ saveToday }}" disabled="{{ saveDisabled }}" style="{{ saveBtnStyle }}">{{ saveBtnLabel }}</button>
+            </div>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ showTodaySummary }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:16px;animation:fadeUp .35s ease;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:20px;background:{{ todayEntryBg }};color:{{ todayEntryInk }};font-size:13.5px;font-weight:700;">{{ todayEntryLabel }}</span>
+              <button onClick="{{ editToday }}" style="background:none;border:none;color:#8BAA91;font-size:13.5px;font-weight:600;cursor:pointer;">Editar</button>
+            </div>
+            <sc-if value="{{ todayEntryHasReflection }}" hint-placeholder-val="{{ false }}">
+              <p style="margin:0;font-size:15.5px;line-height:1.65;color:#2E2B26;">{{ todayEntryReflection }}</p>
+            </sc-if>
+            <sc-if value="{{ todayEntryHasAchievement }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;gap:10px;align-items:flex-start;padding-top:12px;border-top:1px solid #F1EEE5;">
+                <div style="width:22px;height:22px;border-radius:50%;background:#EEF2EC;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#8BAA91" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <p style="margin:0;font-size:14px;color:#354E41;line-height:1.5;">{{ todayEntryAchievement }}</p>
+              </div>
+            </sc-if>
+          </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ tabIsCalendario }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:22px;animation:fadeUp .35s ease;">
+          <h1 style="margin:0;font-family:'Fraunces',serif;font-weight:500;font-size:26px;color:#354E41;">Calendario emocional</h1>
+
+          <div style="display:flex;background:#F1EEE5;border-radius:12px;padding:4px;width:fit-content;">
+            <button onClick="{{ setCalViewGrid }}" aria-pressed="{{ calViewIsGrid }}" style="{{ calViewGridStyle }}">Mes</button>
+            <button onClick="{{ setCalViewList }}" aria-pressed="{{ calViewIsList }}" style="{{ calViewListStyle }}">Lista</button>
+          </div>
+
+          <sc-if value="{{ calViewIsGrid }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <button onClick="{{ prevMonth }}" aria-label="Mes anterior" style="width:34px;height:34px;border-radius:50%;border:1px solid #ECE7DA;background:#FFFFFF;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#354E41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+              <h2 style="margin:0;font-size:16.5px;font-weight:600;color:#354E41;text-transform:capitalize;">{{ calMonthLabel }}</h2>
+              <button onClick="{{ nextMonth }}" aria-label="Mes siguiente" style="width:34px;height:34px;border-radius:50%;border:1px solid #ECE7DA;background:#FFFFFF;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#354E41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+            </div>
+
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;">
+              <span style="font-size:11.5px;color:#777A73;font-weight:600;padding:4px 0;">L</span>
+              <span style="font-size:11.5px;color:#777A73;font-weight:600;padding:4px 0;">M</span>
+              <span style="font-size:11.5px;color:#777A73;font-weight:600;padding:4px 0;">X</span>
+              <span style="font-size:11.5px;color:#777A73;font-weight:600;padding:4px 0;">J</span>
+              <span style="font-size:11.5px;color:#777A73;font-weight:600;padding:4px 0;">V</span>
+              <span style="font-size:11.5px;color:#777A73;font-weight:600;padding:4px 0;">S</span>
+              <span style="font-size:11.5px;color:#777A73;font-weight:600;padding:4px 0;">D</span>
+            </div>
+            <sc-for list="{{ calWeeks }}" as="week" hint-placeholder-count="5">
+              <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">
+                <sc-for list="{{ week.days }}" as="day" hint-placeholder-count="7">
+                  <button onClick="{{ day.select }}" aria-label="{{ day.ariaLabel }}" aria-current="{{ day.ariaCurrent }}" style="{{ day.cellStyle }}">{{ day.num }}</button>
+                </sc-for>
+              </div>
+            </sc-for>
+
+            <div style="display:flex;flex-wrap:wrap;gap:14px;padding:2px 2px 0;">
+              <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#777A73;"><span style="width:12px;height:12px;border-radius:4px;background:#F5D36A;display:inline-block;"></span>Feliz</span>
+              <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#777A73;"><span style="width:12px;height:12px;border-radius:4px;background:#F2A66E;display:inline-block;"></span>Normal</span>
+              <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#777A73;"><span style="width:12px;height:12px;border-radius:4px;background:#91BCE0;display:inline-block;"></span>Triste</span>
+              <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#777A73;"><span style="width:12px;height:12px;border-radius:4px;background:transparent;border:1.5px solid #DCD6C6;display:inline-block;"></span>Sin registro</span>
+            </div>
+
+            <sc-if value="{{ calendarEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="background:#FFFFFF;border:1px dashed #DCD6C6;border-radius:16px;padding:22px;text-align:center;display:flex;flex-direction:column;gap:8px;">
+                <p style="margin:0;font-size:14.5px;color:#354E41;font-weight:600;">Aún no hay registros este mes.</p>
+                <p style="margin:0;font-size:13.5px;color:#777A73;line-height:1.5;">Pulsa cualquier día pasado para añadir cómo te sentiste.</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ !calendarEmpty }}" hint-placeholder-val="{{ true }}">
+            <div style="display:grid;grid-template-columns:repeat({{ calStatCols }},1fr);gap:8px;margin-top:6px;">
+              <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:14px;padding:12px 8px;text-align:center;">
+                <p style="margin:0;font-size:19px;font-weight:700;color:#354E41;">{{ monthCount }}</p>
+                <p style="margin:2px 0 0;font-size:11px;color:#777A73;">Registrados</p>
+              </div>
+              <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:14px;padding:12px 8px;text-align:center;">
+                <p style="margin:0;font-size:19px;font-weight:700;color:#4A3A0E;">{{ monthFeliz }}</p>
+                <p style="margin:2px 0 0;font-size:11px;color:#777A73;">Felices</p>
+              </div>
+              <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:14px;padding:12px 8px;text-align:center;">
+                <p style="margin:0;font-size:19px;font-weight:700;color:#5A3414;">{{ monthNormal }}</p>
+                <p style="margin:2px 0 0;font-size:11px;color:#777A73;">Normal</p>
+              </div>
+              <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:14px;padding:12px 8px;text-align:center;">
+                <p style="margin:0;font-size:19px;font-weight:700;color:#1F3A52;">{{ monthTriste }}</p>
+                <p style="margin:2px 0 0;font-size:11px;color:#777A73;">Triste</p>
+              </div>
+            </div>
+            </sc-if>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ calViewIsList }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <input value="{{ historySearch }}" onChange="{{ setHistorySearch }}" placeholder="Buscar en tus reflexiones..." style="padding:13px 15px;border-radius:14px;border:1px solid #ECE7DA;background:#FFFFFF;font-size:14.5px;outline:none;" />
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button onClick="{{ setHistoryFilterTodas }}" aria-pressed="{{ histFilterTodasPressed }}" style="{{ histFilterTodasStyle }}">Todas</button>
+              <button onClick="{{ setHistoryFilterFeliz }}" aria-pressed="{{ histFilterFelizPressed }}" style="{{ histFilterFelizStyle }}">Feliz</button>
+              <button onClick="{{ setHistoryFilterNormal }}" aria-pressed="{{ histFilterNormalPressed }}" style="{{ histFilterNormalStyle }}">Normal</button>
+              <button onClick="{{ setHistoryFilterTriste }}" aria-pressed="{{ histFilterTristePressed }}" style="{{ histFilterTristeStyle }}">Triste</button>
+            </div>
+            <sc-for list="{{ historyList }}" as="item" hint-placeholder-count="4">
+              <button onClick="{{ item.select }}" style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:#FFFFFF;border:1px solid #ECE7DA;text-align:left;cursor:pointer;width:100%;">
+                <div style="width:10px;height:10px;border-radius:50%;background:{{ item.dotBg }};margin-top:5px;flex-shrink:0;"></div>
+                <div style="min-width:0;flex:1;">
+                  <p style="margin:0 0 2px;font-size:12.5px;color:#777A73;font-weight:600;">{{ item.dateLabel }}</p>
+                  <p style="margin:0;font-size:14.5px;color:#2E2B26;line-height:1.45;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ item.preview }}</p>
+                </div>
+              </button>
+            </sc-for>
+            <sc-if value="{{ historyEmpty }}" hint-placeholder-val="{{ false }}">
+              <p style="text-align:center;color:#777A73;font-size:14px;padding:30px 0;">No hemos encontrado reflexiones con esa búsqueda.</p>
+            </sc-if>
+          </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ tabIsEvolucion }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:26px;animation:fadeUp .35s ease;">
+          <div>
+            <h1 style="margin:0 0 6px;font-family:'Fraunces',serif;font-weight:500;font-size:26px;color:#354E41;">Tu camino hasta ahora</h1>
+            <p style="margin:0;font-size:14.5px;color:#777A73;">Una mirada a cómo te has sentido y a todo lo que has vivido.</p>
+          </div>
+
+          <div style="display:flex;background:#F1EEE5;border-radius:12px;padding:4px;width:fit-content;">
+            <button onClick="{{ setEvo7 }}" aria-pressed="{{ evo7Pressed }}" style="{{ evo7Style }}">7 días</button>
+            <button onClick="{{ setEvo30 }}" aria-pressed="{{ evo30Pressed }}" style="{{ evo30Style }}">30 días</button>
+            <button onClick="{{ setEvoMes }}" aria-pressed="{{ evoMesPressed }}" style="{{ evoMesStyle }}">Este mes</button>
+          </div>
+
+          <sc-if value="{{ evoEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#FFFFFF;border:1px dashed #DCD6C6;border-radius:18px;padding:28px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;">
+            <p style="margin:0;font-size:15px;color:#354E41;font-weight:600;">Todavía no hay suficientes registros en este período.</p>
+            <p style="margin:0;font-size:13.5px;color:#777A73;line-height:1.5;max-width:340px;">A medida que vayas registrando tus días, aquí aparecerán tus tendencias, tus palabras frecuentes y tus pequeños logros.</p>
+            <button onClick="{{ setTabHoy }}" style="margin-top:4px;padding:11px 20px;border-radius:12px;border:none;background:#354E41;color:#FAF8F3;font-size:13.5px;font-weight:700;cursor:pointer;">Ir a Hoy</button>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ !evoEmpty }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:26px;">
+
+          <div style="display:grid;grid-template-columns:repeat({{ statCols }},minmax(0,1fr));gap:10px;">
+            <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:16px;padding:16px;">
+              <p style="margin:0;font-size:24px;font-weight:700;color:#354E41;">{{ evoDays }}</p>
+              <p style="margin:4px 0 0;font-size:12.5px;color:#777A73;">Días registrados</p>
+            </div>
+            <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:16px;padding:16px;">
+              <p style="margin:0;font-size:24px;font-weight:700;color:#354E41;">{{ currentStreak }}</p>
+              <p style="margin:4px 0 0;font-size:12.5px;color:#777A73;">Racha actual</p>
+            </div>
+            <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:16px;padding:16px;">
+              <p style="margin:0;font-size:24px;font-weight:700;color:#354E41;">{{ longestStreak }}</p>
+              <p style="margin:4px 0 0;font-size:12.5px;color:#777A73;">Racha más larga</p>
+            </div>
+          </div>
+
+          <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px;">
+            <h2 style="margin:0;font-size:15.5px;font-weight:600;color:#354E41;">Tu línea de tiempo emocional</h2>
+            <p style="margin:0;font-size:13px;color:#777A73;line-height:1.4;">Cada cuadro es un día. El color muestra cómo te sentiste; el hueco gris, que ese día no quedó registrado.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:3px;">
+              <sc-for list="{{ moodStrip }}" as="d" hint-placeholder-count="30">
+                <div title="{{ d.title }}" style="width:16px;height:16px;border-radius:4px;{{ d.cellStyle }}"></div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:14px;">
+            <h2 style="margin:0;font-size:15.5px;font-weight:600;color:#354E41;">Cómo te has sentido</h2>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span style="width:58px;font-size:13px;color:#4A3A0E;font-weight:600;flex-shrink:0;">Feliz</span>
+                <div style="flex:1;height:10px;border-radius:6px;background:#F1EEE5;overflow:hidden;"><div style="height:100%;border-radius:6px;background:#F5D36A;width:{{ felizPct }};"></div></div>
+                <span style="width:20px;text-align:right;font-size:13px;color:#777A73;flex-shrink:0;">{{ felizCount }}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span style="width:58px;font-size:13px;color:#5A3414;font-weight:600;flex-shrink:0;">Normal</span>
+                <div style="flex:1;height:10px;border-radius:6px;background:#F1EEE5;overflow:hidden;"><div style="height:100%;border-radius:6px;background:#F2A66E;width:{{ normalPct }};"></div></div>
+                <span style="width:20px;text-align:right;font-size:13px;color:#777A73;flex-shrink:0;">{{ normalCount }}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span style="width:58px;font-size:13px;color:#1F3A52;font-weight:600;flex-shrink:0;">Triste</span>
+                <div style="flex:1;height:10px;border-radius:6px;background:#F1EEE5;overflow:hidden;"><div style="height:100%;border-radius:6px;background:#91BCE0;width:{{ tristePct }};"></div></div>
+                <span style="width:20px;text-align:right;font-size:13px;color:#777A73;flex-shrink:0;">{{ tristeCount }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <h2 style="margin:0;font-size:15.5px;font-weight:600;color:#354E41;">Palabras que se repiten</h2>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              <sc-for list="{{ frequentWords }}" as="w" hint-placeholder-count="6">
+                <span style="display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:20px;background:#EEF2EC;color:#354E41;font-size:13.5px;font-weight:600;">{{ w.word }}<span style="color:#8BAA91;font-weight:700;">{{ w.count }}</span></span>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <h2 style="margin:0;font-size:15.5px;font-weight:600;color:#354E41;">Pequeños logros</h2>
+            <sc-for list="{{ achievementsList }}" as="a" hint-placeholder-count="3">
+              <div style="display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid #F1EEE5;">
+                <div style="width:20px;height:20px;border-radius:50%;background:#EEF2EC;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:2px;">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#8BAA91" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div><p style="margin:0 0 2px;font-size:12px;color:#777A73;font-weight:600;">{{ a.dateLabel }}</p><p style="margin:0;font-size:14.5px;color:#2E2B26;">{{ a.text }}</p></div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ achievementsEmpty }}" hint-placeholder-val="{{ false }}">
+              <p style="color:#777A73;font-size:14px;margin:0;padding:10px 0;">Aún no hay logros en este período. Pueden ser pequeños: todos cuentan.</p>
+            </sc-if>
+          </div>
+
+          <button onClick="{{ openAi }}" style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 22px;border-radius:18px;border:1px solid #DCE4DB;background:#EEF2EC;cursor:pointer;text-align:left;">
+            <div>
+              <p style="margin:0 0 4px;font-size:15.5px;font-weight:600;color:#354E41;">Descubre tus reflexiones</p>
+              <p style="margin:0;font-size:13px;color:#4F6356;line-height:1.4;">Un análisis cuidado de tus últimas entradas, con tu consentimiento en cada paso.</p>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M9 6l6 6-6 6" stroke="#354E41" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </button>
+
+          </div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <sc-if value="{{ tabIsAjustes }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:20px;animation:fadeUp .35s ease;max-width:560px;">
+          <h1 style="margin:0;font-family:'Fraunces',serif;font-weight:500;font-size:26px;color:#354E41;">Ajustes</h1>
+
+          <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;">
+            <h2 style="margin:0;font-size:14.5px;font-weight:700;color:#354E41;text-transform:uppercase;letter-spacing:.03em;">Cuenta</h2>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <p style="margin:0;font-size:15px;color:#2E2B26;">{{ userEmail }}</p>
+              <button onClick="{{ logout }}" style="background:none;border:none;color:#B5513D;font-size:13.5px;font-weight:600;cursor:pointer;">Cerrar sesión</button>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid #F1EEE5;">
+              <div><p style="margin:0;font-size:15px;color:#2E2B26;">Datos de demostración</p><p style="margin:3px 0 0;font-size:12.5px;color:#777A73;">Actívalos para ver ejemplos; desactívalos para probar la app como una cuenta nueva, sin registros.</p></div>
+              <button onClick="{{ toggleDemoMode }}" aria-pressed="{{ demoMode }}" aria-label="Alternar datos de demostración" style="{{ demoToggleStyle }}"><span style="{{ demoKnobStyle }}"></span></button>
+            </div>
+          </div>
+
+          <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;">
+            <h2 style="margin:0;font-size:14.5px;font-weight:700;color:#354E41;text-transform:uppercase;letter-spacing:.03em;">Preferencias</h2>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <div><p style="margin:0;font-size:15px;color:#2E2B26;">Reducir animaciones</p><p style="margin:3px 0 0;font-size:12.5px;color:#777A73;">Movimiento más sutil en toda la app.</p></div>
+              <button onClick="{{ toggleReduceMotion }}" style="{{ motionToggleStyle }}"><span style="{{ motionKnobStyle }}"></span></button>
+            </div>
+          </div>
+
+          <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:10px;">
+            <h2 style="margin:0;font-size:14.5px;font-weight:700;color:#354E41;text-transform:uppercase;letter-spacing:.03em;">Privacidad</h2>
+            <p style="margin:0;font-size:14px;color:#2E2B26;line-height:1.55;">Tus registros se guardan en una base de datos en la nube asociada a tu cuenta, protegida con tu correo y tu contraseña. Usamos medidas de seguridad estándar, aunque ningún sistema puede garantizar una protección absoluta.</p>
+            <p style="margin:0;font-size:14px;color:#2E2B26;line-height:1.55;">El análisis por inteligencia artificial es opcional. Tus reflexiones solo se envían a ese servicio cuando tú lo decides explícitamente, entrada por entrada, y siempre puedes revisar qué se compartiría antes de confirmarlo.</p>
+          </div>
+
+          <div style="background:#FFFFFF;border:1px solid #ECE7DA;border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:14px;">
+            <h2 style="margin:0;font-size:14.5px;font-weight:700;color:#354E41;text-transform:uppercase;letter-spacing:.03em;">Copias de seguridad</h2>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button onClick="{{ exportData }}" style="padding:12px 18px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#354E41;font-size:13.5px;font-weight:600;cursor:pointer;">Exportar datos</button>
+              <button onClick="{{ requestImport }}" style="padding:12px 18px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#354E41;font-size:13.5px;font-weight:600;cursor:pointer;">Importar copia</button>
+            </div>
+          </div>
+
+          <div style="background:#FBF1EE;border:1px solid #EFD7CE;border-radius:18px;padding:20px 22px;display:flex;flex-direction:column;gap:12px;">
+            <h2 style="margin:0;font-size:14.5px;font-weight:700;color:#B5513D;text-transform:uppercase;letter-spacing:.03em;">Zona de riesgo</h2>
+            <p style="margin:0;font-size:13.5px;color:#8A4332;line-height:1.5;">Esta acción eliminará todos tus registros de tu cuenta de forma permanente, también en la nube.</p>
+            <button onClick="{{ requestDeleteAll }}" style="align-self:flex-start;padding:12px 18px;border-radius:12px;border:1px solid #D98869;background:#FFFFFF;color:#B5513D;font-size:13.5px;font-weight:700;cursor:pointer;">Eliminar todos los datos</button>
+          </div>
+        </div>
+        </sc-if>
+
+      </div>
+
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ true }}">
+      <div style="position:sticky;bottom:0;display:flex;justify-content:space-around;align-items:center;background:#FFFFFF;border-top:1px solid #ECE7DA;padding:10px 6px calc(10px + env(safe-area-inset-bottom));">
+        <button onClick="{{ setTabHoy }}" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 10px;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="5" fill="{{ hoyColor }}" /></svg>
+          <span style="font-size:10.5px;font-weight:600;color:{{ hoyColor }};">Hoy</span>
+        </button>
+        <button onClick="{{ setTabCalendario }}" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 10px;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="15" rx="3" stroke="{{ calColor }}" stroke-width="1.7" /><line x1="4" y1="10" x2="20" y2="10" stroke="{{ calColor }}" stroke-width="1.7" /></svg>
+          <span style="font-size:10.5px;font-weight:600;color:{{ calColor }};">Calendario</span>
+        </button>
+        <button onClick="{{ setTabEvolucion }}" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 10px;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><polyline points="4,16 10,10 14,13 20,5" stroke="{{ evoColor }}" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          <span style="font-size:10.5px;font-weight:600;color:{{ evoColor }};">Evolución</span>
+        </button>
+        <button onClick="{{ setTabAjustes }}" style="display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 10px;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none"><line x1="4" y1="7" x2="20" y2="7" stroke="{{ ajColor }}" stroke-width="1.7" stroke-linecap="round" /><circle cx="14" cy="7" r="2" fill="{{ ajColor }}" /><line x1="4" y1="14" x2="20" y2="14" stroke="{{ ajColor }}" stroke-width="1.7" stroke-linecap="round" /><circle cx="9" cy="14" r="2" fill="{{ ajColor }}" /></svg>
+          <span style="font-size:10.5px;font-weight:600;color:{{ ajColor }};">Ajustes</span>
+        </button>
+      </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showDayDetail }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(53,78,65,0.35);display:flex;align-items:{{ overlayAlign }};justify-content:center;z-index:40;" onClick="{{ closeDayDetail }}">
+    <div onClick="{{ stopProp }}" style="{{ dayPanelStyle }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <h2 style="margin:0;font-family:'Fraunces',serif;font-weight:500;font-size:19px;color:#354E41;text-transform:capitalize;">{{ dayDetailLabel }}</h2>
+        <button onClick="{{ closeDayDetail }}" style="width:30px;height:30px;border-radius:50%;border:none;background:#F1EEE5;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#777A73" stroke-width="2" stroke-linecap="round" /></svg>
+        </button>
+      </div>
+
+      <sc-if value="{{ dayShowView }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:16px;">
+        <span style="display:inline-flex;align-self:flex-start;align-items:center;gap:8px;padding:7px 14px;border-radius:20px;background:{{ dayEntryBg }};color:{{ dayEntryInk }};font-size:13.5px;font-weight:700;">{{ dayEntryLabel }}</span>
+        <sc-if value="{{ dayEntryHasReflection }}" hint-placeholder-val="{{ false }}">
+          <p style="margin:0;font-size:15px;line-height:1.6;color:#2E2B26;">{{ dayEntryReflection }}</p>
+        </sc-if>
+        <sc-if value="{{ dayEntryHasAchievement }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:10px;align-items:flex-start;padding-top:12px;border-top:1px solid #F1EEE5;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-top:2px;flex-shrink:0;"><path d="M5 13l4 4L19 7" stroke="#8BAA91" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p style="margin:0;font-size:14px;color:#354E41;line-height:1.5;">{{ dayEntryAchievement }}</p>
+          </div>
+        </sc-if>
+        <div style="display:flex;gap:10px;margin-top:6px;">
+          <button onClick="{{ startEditDay }}" style="flex:1;padding:12px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#354E41;font-size:13.5px;font-weight:600;cursor:pointer;">Editar</button>
+          <button onClick="{{ requestDeleteDay }}" style="flex:1;padding:12px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#B5513D;font-size:13.5px;font-weight:600;cursor:pointer;">Eliminar</button>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ dayShowEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px;">
+        <p style="margin:0;color:#777A73;font-size:14.5px;line-height:1.5;">No hay ningún registro este día. No pasa nada: no todos los días necesitan quedar escritos.</p>
+        <sc-if value="{{ !dayIsFuture }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ startCreateDay }}" style="padding:13px;border-radius:12px;border:none;background:#354E41;color:#FAF8F3;font-size:13.5px;font-weight:700;cursor:pointer;">Añadir registro de este día</button>
+        </sc-if>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ dayShowEdit }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:16px;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+          <button onClick="{{ dayDraftSelectFeliz }}" style="{{ dayEmFelizStyle }}">Feliz</button>
+          <button onClick="{{ dayDraftSelectNormal }}" style="{{ dayEmNormalStyle }}">Normal</button>
+          <button onClick="{{ dayDraftSelectTriste }}" style="{{ dayEmTristeStyle }}">Triste</button>
+        </div>
+        <textarea value="{{ dayDraftReflection }}" onChange="{{ setDayDraftReflection }}" rows="4" style="padding:14px;border-radius:14px;border:1px solid #ECE7DA;background:#FFFFFF;font-size:14.5px;line-height:1.55;outline:none;resize:vertical;"></textarea>
+        <input value="{{ dayDraftAchievement }}" onChange="{{ setDayDraftAchievement }}" placeholder="Un pequeño logro, si lo hubo" style="padding:13px 14px;border-radius:12px;border:1px solid #ECE7DA;background:#FFFFFF;font-size:14.5px;outline:none;" />
+        <div style="display:flex;gap:10px;">
+          <button onClick="{{ cancelEditDay }}" style="flex:1;padding:13px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#777A73;font-size:13.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+          <button onClick="{{ saveDayDetail }}" disabled="{{ dayDraftSaveDisabled }}" style="flex:1;padding:13px;border-radius:12px;border:none;background:#354E41;color:#FAF8F3;font-size:13.5px;font-weight:700;cursor:pointer;opacity:{{ dayDraftSaveOpacity }};">Guardar</button>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ dayShowDeleteConfirm }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:14px;margin-top:16px;padding:16px;border-radius:14px;background:#FBF1EE;">
+        <p style="margin:0;font-size:14px;color:#8A4332;line-height:1.5;">¿Eliminar este registro? Esta acción no se puede deshacer.</p>
+        <div style="display:flex;gap:10px;">
+          <button onClick="{{ cancelDeleteDay }}" style="flex:1;padding:12px;border-radius:10px;border:1px solid #DCD6C6;background:#FFFFFF;color:#354E41;font-size:13.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+          <button onClick="{{ confirmDeleteDay }}" style="flex:1;padding:12px;border-radius:10px;border:none;background:#B5513D;color:#FFFFFF;font-size:13.5px;font-weight:700;cursor:pointer;">Eliminar</button>
+        </div>
+      </div>
+      </sc-if>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ aiOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(53,78,65,0.4);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;" onClick="{{ closeAi }}">
+    <div onClick="{{ stopProp }}" style="background:#FFFFFF;border-radius:22px;max-width:480px;width:100%;max-height:86vh;overflow-y:auto;padding:26px;animation:fadeUp .3s ease;">
+
+      <sc-if value="{{ aiIsSelect }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;gap:18px;">
+        <h2 style="margin:0;font-family:'Fraunces',serif;font-weight:500;font-size:20px;color:#354E41;">Descubre tus reflexiones</h2>
+        <p style="margin:0;font-size:14px;color:#777A73;line-height:1.5;">Elige qué período quieres analizar. Antes de enviar nada, verás exactamente qué se compartiría.</p>
+        <div style="display:flex;gap:10px;">
+          <button onClick="{{ setAi7 }}" aria-pressed="{{ ai7Pressed }}" style="{{ ai7Style }}">Últimos 7 días</button>
+          <button onClick="{{ setAi30 }}" aria-pressed="{{ ai30Pressed }}" style="{{ ai30Style }}">Últimos 30 días</button>
+        </div>
+        <p style="margin:0;font-size:13.5px;color:#354E41;background:#F7F5EE;padding:12px 14px;border-radius:12px;">Tienes {{ aiCount }} reflexiones en este período.</p>
+        <div style="display:flex;gap:10px;">
+          <button onClick="{{ closeAi }}" style="flex:1;padding:13px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#777A73;font-size:13.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+          <button onClick="{{ goAiReview }}" disabled="{{ aiNoneAvailable }}" style="{{ aiContinueStyle }}">Continuar</button>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ aiIsReview }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <h2 style="margin:0;font-family:'Fraunces',serif;font-weight:500;font-size:20px;color:#354E41;">Revisa antes de enviar</h2>
+        <p style="margin:0;font-size:13.5px;color:#2E2B26;line-height:1.5;">Para generar este análisis, las reflexiones seleccionadas se compartirán con un servicio externo de inteligencia artificial. Puedes excluir cualquier entrada.</p>
+        <div style="display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;">
+          <sc-for list="{{ aiReviewList }}" as="e" hint-placeholder-count="4">
+            <div style="{{ e.rowStyle }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+                  <div style="width:8px;height:8px;border-radius:50%;background:{{ e.dotBg }};flex-shrink:0;"></div>
+                  <div style="min-width:0;">
+                    <p style="margin:0;font-size:12px;color:#777A73;font-weight:600;">{{ e.dateLabel }}</p>
+                    <p style="margin:0;font-size:13px;color:#2E2B26;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ e.preview }}</p>
+                  </div>
+                </div>
+                <button onClick="{{ e.toggle }}" aria-pressed="{{ e.included }}" style="background:none;border:none;cursor:pointer;padding:4px 0;font-size:12px;font-weight:700;color:{{ e.toggleColor }};flex-shrink:0;">{{ e.toggleLabel }}</button>
+              </div>
+              <sc-if value="{{ e.hasText }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ e.toggleExpand }}" style="background:none;border:none;cursor:pointer;padding:0;margin-top:6px;font-size:12px;font-weight:600;color:#8BAA91;">{{ e.expandLabel }}</button>
+                <sc-if value="{{ e.expanded }}" hint-placeholder-val="{{ false }}">
+                  <p style="margin:8px 0 0;font-size:13.5px;color:#2E2B26;line-height:1.55;">{{ e.fullText }}</p>
+                </sc-if>
+              </sc-if>
+              <sc-if value="{{ !e.hasText }}" hint-placeholder-val="{{ false }}">
+                <p style="margin:6px 0 0;font-size:11.5px;color:#A79F8B;font-style:italic;">Solo estado de ánimo, sin texto escrito.</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin:0;font-size:13px;color:#354E41;font-weight:600;">Se compartirán {{ aiIncludedCount }} de {{ aiCount }} reflexiones.</p>
+        <button onClick="{{ copyForChatGPT }}" style="padding:12px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#354E41;font-size:13.5px;font-weight:600;cursor:pointer;">Copiar para analizar en ChatGPT</button>
+        <div style="display:flex;gap:10px;">
+          <button onClick="{{ closeAi }}" style="flex:1;padding:13px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#777A73;font-size:13.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+          <button onClick="{{ confirmSendAi }}" disabled="{{ aiIncludedNone }}" style="{{ aiConfirmStyle }}">Confirmar y analizar</button>
+        </div>
+        <button onClick="{{ demoError }}" style="background:none;border:none;color:#B9B4A4;font-size:11.5px;cursor:pointer;text-decoration:underline;align-self:center;">ver estado de error (demo)</button>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ aiIsLoading }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:30px 0;">
+        <div style="width:40px;height:40px;border-radius:50%;border:3px solid #EEF2EC;border-top-color:#8BAA91;animation:spin 0.9s linear infinite;"></div>
+        <p style="margin:0;font-size:14.5px;color:#354E41;">Estamos preparando tu análisis...</p>
+      </div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+      </sc-if>
+
+      <sc-if value="{{ aiIsResult }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <h2 style="margin:0;font-family:'Fraunces',serif;font-weight:500;font-size:20px;color:#354E41;">Tu análisis</h2>
+        <div>
+          <p style="margin:0 0 6px;font-size:12.5px;font-weight:700;color:#8BAA91;text-transform:uppercase;letter-spacing:.04em;">Tu semana en palabras</p>
+          <p style="margin:0;font-size:14.5px;color:#2E2B26;line-height:1.6;">Esta semana se nota cansancio alrededor de los estudios, pero también momentos de calma deliberada: tiempo con tu familia, una clase de yoga nueva, decisiones de hablar en lugar de callar. Hay más equilibrio del que a veces sientes al escribir.</p>
+        </div>
+        <div>
+          <p style="margin:0 0 6px;font-size:12.5px;font-weight:700;color:#8BAA91;text-transform:uppercase;letter-spacing:.04em;">Temas que se repiten</p>
+          <p style="margin:0;font-size:14.5px;color:#2E2B26;line-height:1.6;">Aparece varias veces la relación con tu madre, siempre resuelta hablando. También la presión de los exámenes y, últimamente, la idea de buscar momentos solo para ti.</p>
+        </div>
+        <div>
+          <p style="margin:0 0 6px;font-size:12.5px;font-weight:700;color:#8BAA91;text-transform:uppercase;letter-spacing:.04em;">Pequeñas victorias</p>
+          <p style="margin:0;font-size:14.5px;color:#2E2B26;line-height:1.6;">Te atreviste a ir sola a una clase nueva, pediste ayuda en vez de quedarte callada, y elegiste hablar con tu madre en lugar de guardarte lo que sentías.</p>
+        </div>
+        <div>
+          <p style="margin:0 0 6px;font-size:12.5px;font-weight:700;color:#8BAA91;text-transform:uppercase;letter-spacing:.04em;">Preguntas para ti</p>
+          <p style="margin:0;font-size:14.5px;color:#2E2B26;line-height:1.6;">¿Qué pasaría si trataras el resultado de un examen como un dato y no como un juicio sobre ti? ¿Qué parte del yoga te hizo seguir sintiéndote bien después de la primera clase?</p>
+        </div>
+        <div>
+          <p style="margin:0 0 6px;font-size:12.5px;font-weight:700;color:#8BAA91;text-transform:uppercase;letter-spacing:.04em;">Un pequeño paso</p>
+          <p style="margin:0;font-size:14.5px;color:#2E2B26;line-height:1.6;">Esta semana, intenta repetir la clase de yoga sin esperar sentirte con ánimo primero. A veces el hábito sostiene al ánimo, no al revés.</p>
+        </div>
+        <p style="margin:0;font-size:12px;color:#B9B4A4;line-height:1.4;">Este análisis es una mirada orientativa generada a partir de tus propias palabras, no un diagnóstico ni una opinión profesional.</p>
+        <button onClick="{{ closeAi }}" style="padding:13px;border-radius:12px;border:none;background:#354E41;color:#FAF8F3;font-size:13.5px;font-weight:700;cursor:pointer;">Cerrar</button>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ aiIsError }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 0;text-align:center;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#FBF1EE;display:flex;align-items:center;justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 8v5M12 16.5v.01" stroke="#B5513D" stroke-width="2" stroke-linecap="round" /></svg>
+        </div>
+        <p style="margin:0;font-size:15px;font-weight:600;color:#354E41;">No hemos podido completar el análisis</p>
+        <p style="margin:0;font-size:13.5px;color:#777A73;">El servicio no ha respondido. Tus reflexiones no se han perdido.</p>
+        <div style="display:flex;gap:10px;width:100%;">
+          <button onClick="{{ closeAi }}" style="flex:1;padding:12px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#777A73;font-size:13.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+          <button onClick="{{ retryAi }}" style="flex:1;padding:12px;border-radius:12px;border:none;background:#354E41;color:#FAF8F3;font-size:13.5px;font-weight:700;cursor:pointer;">Reintentar</button>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ importOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(53,78,65,0.4);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;" onClick="{{ cancelImport }}">
+    <div onClick="{{ stopProp }}" style="background:#FFFFFF;border-radius:20px;max-width:380px;width:100%;padding:24px;display:flex;flex-direction:column;gap:14px;animation:fadeUp .25s ease;">
+      <h2 style="margin:0;font-family:'Fraunces',serif;font-weight:500;font-size:18px;color:#354E41;">Importar copia de seguridad</h2>
+      <p style="margin:0;font-size:14px;color:#2E2B26;line-height:1.5;">Simularemos la importación de un archivo con 3 registros nuevos. Los registros duplicados se omitirán automáticamente.</p>
+      <div style="display:flex;gap:10px;">
+        <button onClick="{{ cancelImport }}" style="flex:1;padding:12px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#777A73;font-size:13.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+        <button onClick="{{ confirmImport }}" style="flex:1;padding:12px;border-radius:12px;border:none;background:#354E41;color:#FAF8F3;font-size:13.5px;font-weight:700;cursor:pointer;">Importar</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ deleteAllOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(53,78,65,0.4);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;" onClick="{{ cancelDeleteAll }}">
+    <div onClick="{{ stopProp }}" style="background:#FFFFFF;border-radius:20px;max-width:380px;width:100%;padding:24px;display:flex;flex-direction:column;gap:14px;animation:fadeUp .25s ease;">
+      <h2 style="margin:0;font-family:'Fraunces',serif;font-weight:500;font-size:18px;color:#B5513D;">Eliminar todos los datos</h2>
+      <p style="margin:0;font-size:14px;color:#2E2B26;line-height:1.5;">Esto borrará permanentemente todos tus registros, reflexiones y logros de tu cuenta, incluida la copia guardada en la nube. No podrás deshacerlo.</p>
+      <div style="display:flex;gap:10px;">
+        <button onClick="{{ cancelDeleteAll }}" style="flex:1;padding:12px;border-radius:12px;border:1px solid #DCD6C6;background:#FFFFFF;color:#354E41;font-size:13.5px;font-weight:600;cursor:pointer;">Cancelar</button>
+        <button onClick="{{ confirmDeleteAll }}" style="flex:1;padding:12px;border-radius:12px;border:none;background:#B5513D;color:#FFFFFF;font-size:13.5px;font-weight:700;cursor:pointer;">Eliminar todo</button>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:{{ toastBottom }};left:50%;transform:translateX(-50%);background:#354E41;color:#FAF8F3;padding:13px 20px;border-radius:30px;font-size:13.5px;font-weight:600;box-shadow:0 6px 20px rgba(53,78,65,0.25);z-index:60;animation:popIn .25s ease;white-space:nowrap;">{{ toastMessage }}</div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    screen: 'onboarding',
+    authMode: 'login', authEmail: '', authPassword: '', authError: '', authLoading: false,
+    width: 1280,
+    tab: 'hoy',
+    entries: [],
+    editingToday: false, draftEmotion: null, draftReflection: '', draftAchievement: '', savingToday: false,
+    calendarYear: 2026, calendarMonthIdx: 10, calView: 'grid',
+    selectedDay: null, dayEditing: false, deleteConfirmOpen: false,
+    dayDraftEmotion: null, dayDraftReflection: '', dayDraftAchievement: '',
+    historySearch: '', historyFilter: 'todas',
+    evoPeriod: '30',
+    aiStep: 'closed', aiPeriod: '7', aiExcluded: [], aiExpanded: [],
+    reduceMotion: false,
+    demoMode: true,
+    importOpen: false, deleteAllOpen: false,
+    toast: null,
+  };
+
+  EMO = {
+    feliz: { label: 'Feliz', bg: '#F5D36A', ink: '#4A3A0E' },
+    normal: { label: 'Normal', bg: '#F2A66E', ink: '#5A3414' },
+    triste: { label: 'Triste', bg: '#91BCE0', ink: '#1F3A52' },
+  };
+  MONTHS = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  DAYS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+
+  constructor(props) {
+    super(props);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    this.todayDate = now;
+    this.todayKey = `${now.getFullYear()}-${this.pad2(now.getMonth() + 1)}-${this.pad2(now.getDate())}`;
+    this.state.calendarYear = now.getFullYear();
+    this.state.calendarMonthIdx = now.getMonth();
+    this.state.entries = this.state.demoMode ? this.seedEntries() : [];
+  }
+
+  dateKeyFromOffset(daysAgo) {
+    const dt = new Date(this.todayDate);
+    dt.setDate(dt.getDate() - daysAgo);
+    return `${dt.getFullYear()}-${this.pad2(dt.getMonth() + 1)}-${this.pad2(dt.getDate())}`;
+  }
+
+  componentDidMount() {
+    this._onResize = () => this.setState({ width: window.innerWidth });
+    window.addEventListener('resize', this._onResize);
+    this.setState({ width: window.innerWidth });
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onResize);
+    clearTimeout(this._toastTimer);
+  }
+
+  seedEntries() {
+    const d = (n) => this.dateKeyFromOffset(n);
+    return [
+      { date: d(27), emotion: 'triste', reflection: 'Hoy me ha costado concentrarme en clase, no dejaba de pensar en el examen de la semana que viene.', achievement: null },
+      { date: d(26), emotion: 'normal', reflection: 'Día tranquilo, de rutina. He estudiado un poco y he visto una serie con mis padres.', achievement: 'He terminado los apuntes de Historia.' },
+      { date: d(25), emotion: 'feliz', reflection: 'Quedé con Marta después de mucho tiempo sin vernos, nos reímos muchísimo recordando el instituto.', achievement: 'Me he atrevido a contarle algo que me preocupaba.' },
+      { date: d(22), emotion: 'normal', reflection: 'Fin de semana normal, un poco de estudio y un poco de descanso.', achievement: null },
+      { date: d(21), emotion: 'triste', reflection: 'Discutí con mi madre por una tontería y me quedé con mal cuerpo todo el día.', achievement: null },
+      { date: d(20), emotion: 'normal', reflection: 'Hablamos por la noche y lo arreglamos. Me alivia no dejarlo pasar.', achievement: 'Le he pedido perdón sin esperar a que lo hiciera ella primero.' },
+      { date: d(18), emotion: 'feliz', reflection: 'Saqué mejor nota de la que esperaba en el parcial de Estadística.', achievement: 'Estudié constante toda la semana en vez de dejarlo para el final.' },
+      { date: d(17), emotion: 'normal', reflection: 'Clase larga y aburrida, pero sin más.', achievement: null },
+      { date: d(16), emotion: 'triste', reflection: 'Me siento un poco sola últimamente, aunque esté rodeada de gente.', achievement: null },
+      { date: d(15), emotion: 'normal', reflection: 'Reflexioné sobre lo de ayer. Creo que necesito buscar más momentos para mí.', achievement: 'Me he apuntado a la clase de yoga del campus.' },
+      { date: d(12), emotion: 'feliz', reflection: 'Primera clase de yoga. Al principio me dio vergüenza, pero al final lo disfruté.', achievement: 'He ido sola sin conocer a nadie.' },
+      { date: d(11), emotion: 'normal', reflection: 'Día de entregas, bastante estudio y poco más.', achievement: null },
+      { date: d(10), emotion: 'triste', reflection: 'Llamé a mi abuela y la noté más cansada que de costumbre. Me preocupa.', achievement: null },
+      { date: d(9), emotion: 'normal', reflection: 'Intenté no darle demasiadas vueltas y centrarme en lo que puedo controlar.', achievement: 'He llamado a mi madre para contárselo en vez de guardármelo.' },
+      { date: d(8), emotion: 'feliz', reflection: 'Noche de Halloween con mis padres, improvisamos disfraces con lo que teníamos por casa.', achievement: null },
+      { date: d(6), emotion: 'normal', reflection: 'Vuelta a la rutina después del fin de semana.', achievement: 'He organizado la semana en la agenda.' },
+      { date: d(5), emotion: 'triste', reflection: 'Examen que no salió como esperaba. Me cuesta no castigarme por ello.', achievement: null },
+      { date: d(4), emotion: 'normal', reflection: 'Hablé con un profesor sobre el examen, al menos entiendo mejor en qué fallé.', achievement: 'He pedido ayuda en vez de quedarme callada.' },
+      { date: d(3), emotion: 'normal', reflection: 'Cociné con mi padre por la tarde, hacía tiempo que no pasábamos ese rato juntos.', achievement: null },
+      { date: d(2), emotion: 'normal', reflection: 'Día tranquilo, biblioteca por la mañana y series por la noche.', achievement: 'He avanzado el trabajo de Estadística antes de la fecha límite.' },
+      { date: d(1), emotion: 'feliz', reflection: 'Fin de semana suave, sin agobios ni planes. A veces lo mejor es no hacer nada.', achievement: null },
+    ];
+  }
+
+  pad2(n) { return n < 10 ? '0' + n : '' + n; }
+  dateLabelLong(key) {
+    const [y, m, d] = key.split('-').map(Number);
+    const dt = new Date(y, m - 1, d);
+    return `${this.DAYS[dt.getDay()]}, ${d} de ${this.MONTHS[m - 1]}`;
+  }
+  dateLabelShort(key) {
+    const [y, m, d] = key.split('-').map(Number);
+    return `${d} de ${this.MONTHS[m - 1]}`;
+  }
+  findEntry(key) { return this.state.entries.find(e => e.date === key); }
+  showToast(msg) {
+    clearTimeout(this._toastTimer);
+    this.setState({ toast: msg });
+    this._toastTimer = setTimeout(() => this.setState({ toast: null }), 2800);
+  }
+
+  // ----- calendar -----
+  buildCalendar() {
+    const { calendarYear: year, calendarMonthIdx: monthIdx } = this.state;
+    const first = new Date(year, monthIdx, 1);
+    const startOffset = (first.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+    const prevDays = new Date(year, monthIdx, 0).getDate();
+    const cells = [];
+    for (let i = startOffset - 1; i >= 0; i--) cells.push({ num: prevDays - i, inMonth: false, key: 'p' + i });
+    for (let d = 1; d <= daysInMonth; d++) {
+      const key = `${year}-${this.pad2(monthIdx + 1)}-${this.pad2(d)}`;
+      const entry = this.state.entries.find(e => e.date === key);
+      const isToday = key === this.todayKey;
+      const isSelected = key === this.state.selectedDay;
+      const emo = entry ? this.EMO[entry.emotion] : null;
+      const bg = emo ? emo.bg : 'transparent';
+      const ink = emo ? emo.ink : (isToday ? '#354E41' : '#2E2B26');
+      let ring = '1.5px solid transparent';
+      if (isSelected) ring = '2px solid #2E2B26';
+      else if (isToday) ring = '2px solid #354E41';
+      cells.push({
+        num: d, inMonth: true, key,
+        cellStyle: `position:relative;aspect-ratio:1;min-height:40px;display:flex;align-items:center;justify-content:center;border-radius:13px;cursor:pointer;font-size:14px;font-weight:${isToday || isSelected ? '700' : '500'};color:${ink};background:${bg};border:${ring};box-sizing:border-box;`,
+        ariaLabel: this.dateLabelLong(key) + (emo ? `, ${emo.label}` : ', sin registro'),
+        ariaCurrent: isToday ? 'date' : 'false',
+        select: () => this.setState({ selectedDay: key, dayEditing: false, deleteConfirmOpen: false }),
+      });
+    }
+    while (cells.length % 7 !== 0) cells.push({ num: cells.length, inMonth: false, key: 'n' + cells.length });
+    cells.forEach(c => {
+      if (!c.inMonth) {
+        c.cellStyle = 'position:relative;aspect-ratio:1;min-height:40px;display:flex;align-items:center;justify-content:center;border-radius:13px;font-size:14px;font-weight:400;color:#D8D3C6;border:none;background:none;cursor:default;box-sizing:border-box;';
+        c.ariaLabel = '';
+        c.ariaCurrent = 'false';
+        c.select = () => {};
+      }
+    });
+    const weeks = [];
+    for (let i = 0; i < cells.length; i += 7) weeks.push({ key: 'w' + i, days: cells.slice(i, i + 7) });
+    return weeks;
+  }
+
+  currentStreak() {
+    const keys = new Set(this.state.entries.map(e => e.date));
+    let cursor = new Date(this.todayDate);
+    if (!keys.has(this.todayKey)) cursor.setDate(cursor.getDate() - 1);
+    let count = 0;
+    while (true) {
+      const k = `${cursor.getFullYear()}-${this.pad2(cursor.getMonth() + 1)}-${this.pad2(cursor.getDate())}`;
+      if (keys.has(k)) { count++; cursor.setDate(cursor.getDate() - 1); } else break;
+    }
+    return count;
+  }
+  longestStreak() {
+    const keys = [...new Set(this.state.entries.map(e => e.date))].sort();
+    let best = 0, cur = 0, prev = null;
+    for (const k of keys) {
+      if (prev) {
+        const [py, pm, pd] = prev.split('-').map(Number);
+        const prevDate = new Date(py, pm - 1, pd);
+        prevDate.setDate(prevDate.getDate() + 1);
+        const expect = `${prevDate.getFullYear()}-${this.pad2(prevDate.getMonth() + 1)}-${this.pad2(prevDate.getDate())}`;
+        cur = (expect === k) ? cur + 1 : 1;
+      } else cur = 1;
+      best = Math.max(best, cur);
+      prev = k;
+    }
+    return best;
+  }
+  periodEntries(period) {
+    const all = this.state.entries;
+    if (period === 'mes') {
+      const y = this.todayDate.getFullYear(), m = this.todayDate.getMonth();
+      return all.filter(e => { const [ey, em] = e.date.split('-').map(Number); return ey === y && em - 1 === m; });
+    }
+    const days = period === '7' ? 7 : 30;
+    const cutoff = new Date(this.todayDate);
+    cutoff.setDate(cutoff.getDate() - (days - 1));
+    return all.filter(e => {
+      const [y, m, d] = e.date.split('-').map(Number);
+      const dt = new Date(y, m - 1, d);
+      return dt >= cutoff && dt <= this.todayDate;
+    });
+  }
+  periodDayRange(period) {
+    if (period === 'mes') {
+      const y = this.todayDate.getFullYear(), m = this.todayDate.getMonth();
+      const days = new Date(y, m + 1, 0).getDate();
+      const arr = [];
+      for (let d = 1; d <= days; d++) arr.push(`${y}-${this.pad2(m + 1)}-${this.pad2(d)}`);
+      return arr;
+    }
+    const n = period === '7' ? 7 : 30;
+    const arr = [];
+    const cursor = new Date(this.todayDate);
+    cursor.setDate(cursor.getDate() - (n - 1));
+    for (let i = 0; i < n; i++) {
+      arr.push(`${cursor.getFullYear()}-${this.pad2(cursor.getMonth() + 1)}-${this.pad2(cursor.getDate())}`);
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return arr;
+  }
+
+  emBtnStyle(selected, bg, ink) {
+    return `display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px 8px;border-radius:18px;cursor:pointer;border:1.5px solid ${selected ? bg : '#ECE7DA'};background:${selected ? bg : '#FFFFFF'};transition:all .15s ease;`;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const isDesktop = s.width >= 880;
+    const EMO = this.EMO;
+
+    // auth
+    const authHasError = !!s.authError;
+
+    // nav colors
+    const navColor = (active) => active ? '#354E41' : '#777A73';
+    const navBg = (active) => active ? '#EEF2EC' : 'transparent';
+
+    // today
+    const te = this.findEntry(this.todayKey);
+    const showTodayForm = !te || s.editingToday;
+    const showTodaySummary = !!te && !s.editingToday;
+    const hour = new Date().getHours();
+    const greeting = hour < 12 ? 'Buenos días, Laura' : hour < 20 ? 'Buenas tardes, Laura' : 'Buenas noches, Laura';
+
+    // calendar
+    const calWeeks = this.buildCalendar();
+    const monthEntries = this.state.entries.filter(e => {
+      const [y, m] = e.date.split('-').map(Number);
+      return y === s.calendarYear && m - 1 === s.calendarMonthIdx;
+    });
+
+    // history list
+    const q = s.historySearch.trim().toLowerCase();
+    let historyList = [...s.entries].sort((a, b) => b.date.localeCompare(a.date));
+    if (s.historyFilter !== 'todas') historyList = historyList.filter(e => e.emotion === s.historyFilter);
+    if (q) historyList = historyList.filter(e => (e.reflection || '').toLowerCase().includes(q) || (e.achievement || '').toLowerCase().includes(q));
+    historyList = historyList.map(e => ({
+      dateLabel: this.dateLabelLong(e.date),
+      preview: e.reflection || '(sin reflexión escrita)',
+      dotBg: EMO[e.emotion].bg,
+      select: () => this.setState({ selectedDay: e.date, dayEditing: false, deleteConfirmOpen: false }),
+    }));
+
+    // evolution
+    const periodEntries = this.periodEntries(s.evoPeriod);
+    const moodStrip = this.periodDayRange(s.evoPeriod).map(k => {
+      const e = this.findEntry(k);
+      const isFuture = k > this.todayKey;
+      return {
+        key: k,
+        title: this.dateLabelShort(k) + (e ? ': ' + EMO[e.emotion].label : (isFuture ? '' : ': sin registro')),
+        cellStyle: `background:${e ? EMO[e.emotion].bg : (isFuture ? 'transparent' : '#EDE9DD')};`,
+      };
+    });
+    const felizCount = periodEntries.filter(e => e.emotion === 'feliz').length;
+    const normalCount = periodEntries.filter(e => e.emotion === 'normal').length;
+    const tristeCount = periodEntries.filter(e => e.emotion === 'triste').length;
+    const evoTotal = Math.max(periodEntries.length, 1);
+    const achievementsList = periodEntries
+      .filter(e => e.achievement)
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .map(e => ({ dateLabel: this.dateLabelShort(e.date), text: e.achievement }));
+
+    // ai
+    const aiPeriodEntries = this.periodEntries(s.aiPeriod);
+    const aiReviewList = aiPeriodEntries.slice().sort((a, b) => b.date.localeCompare(a.date)).map(e => {
+      const excluded = s.aiExcluded.includes(e.date);
+      const hasText = !!(e.reflection && e.reflection.trim());
+      const expanded = s.aiExpanded.includes(e.date);
+      return {
+        dateLabel: this.dateLabelShort(e.date),
+        preview: hasText ? e.reflection : `(${EMO[e.emotion].label}, sin texto escrito)`,
+        fullText: e.reflection || '',
+        hasText, expanded,
+        expandLabel: expanded ? 'Ver menos' : 'Ver completa',
+        toggleExpand: () => {
+          const ex = s.aiExpanded.includes(e.date) ? s.aiExpanded.filter(dt => dt !== e.date) : [...s.aiExpanded, e.date];
+          this.setState({ aiExpanded: ex });
+        },
+        dotBg: EMO[e.emotion].bg,
+        included: !excluded,
+        rowStyle: `padding:10px 12px;border-radius:12px;background:${excluded ? '#F7F5EE' : '#FFFFFF'};border:1px solid #ECE7DA;opacity:${excluded ? 0.65 : 1};`,
+        toggleColor: excluded ? '#B5513D' : '#8BAA91',
+        toggleLabel: excluded ? 'Excluida' : 'Incluida',
+        toggle: () => {
+          const ex = s.aiExcluded.includes(e.date) ? s.aiExcluded.filter(dt => dt !== e.date) : [...s.aiExcluded, e.date];
+          this.setState({ aiExcluded: ex });
+        },
+      };
+    });
+    const aiIncludedCount = aiPeriodEntries.length - s.aiExcluded.filter(d => aiPeriodEntries.some(e => e.date === d)).length;
+
+    const periodButtonStyle = (active) => `flex:1;padding:11px 10px;border-radius:9px;border:none;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;text-align:center;background:${active ? '#FFFFFF' : 'transparent'};color:${active ? '#354E41' : '#777A73'};box-shadow:${active ? '0 1px 4px rgba(0,0,0,0.06)' : 'none'};`;
+    const segStyle = (active) => `flex:1;padding:10px 14px;border-radius:9px;border:none;cursor:pointer;font-size:13.5px;font-weight:600;background:${active ? '#FFFFFF' : 'transparent'};color:${active ? '#354E41' : '#777A73'};box-shadow:${active ? '0 1px 4px rgba(0,0,0,0.06)' : 'none'};`;
+    const chipStyle = (active, color, ink) => `padding:8px 14px;border-radius:20px;border:1px solid ${active ? color : '#ECE7DA'};background:${active ? color : '#FFFFFF'};color:${active ? (ink || '#FFFFFF') : '#2E2B26'};font-size:13px;font-weight:600;cursor:pointer;`;
+
+    return {
+      isOnboarding: s.screen === 'onboarding',
+      isLogin: s.screen === 'login',
+      isApp: s.screen === 'app',
+      finishOnboarding: () => this.setState({ screen: 'login' }),
+
+      isAuthLogin: s.authMode === 'login',
+      isAuthSignup: s.authMode === 'signup',
+      switchToLogin: () => this.setState({ authMode: 'login', authError: '' }),
+      switchToSignup: () => this.setState({ authMode: 'signup', authError: '' }),
+      loginTabStyle: segStyle(s.authMode === 'login'),
+      signupTabStyle: segStyle(s.authMode === 'signup'),
+      authEmail: s.authEmail,
+      setAuthEmail: (ev) => this.setState({ authEmail: ev.target.value }),
+      authPassword: s.authPassword,
+      setAuthPassword: (ev) => this.setState({ authPassword: ev.target.value }),
+      authHasError, authError: s.authError,
+      authBtnOpacity: s.authLoading ? 0.6 : 1,
+      authBtnLabel: s.authLoading ? 'Accediendo...' : (s.authMode === 'login' ? 'Entrar' : 'Crear cuenta'),
+      forgotPassword: () => this.showToast('Simulado: te enviaríamos un enlace a tu correo.'),
+      submitAuth: () => {
+        if (!s.authEmail || !s.authPassword) { this.setState({ authError: 'Introduce tu correo y tu contraseña.' }); return; }
+        this.setState({ authLoading: true, authError: '' });
+        setTimeout(() => this.setState({ authLoading: false, screen: 'app' }), 900);
+      },
+
+      isDesktop, isMobile: !isDesktop,
+      contentPadding: isDesktop ? '40px 48px' : '20px 16px 24px',
+      contentMaxWidth: isDesktop ? '720px' : 'none',
+
+      tab: s.tab, tabIsHoy: s.tab === 'hoy', tabIsCalendario: s.tab === 'calendario', tabIsEvolucion: s.tab === 'evolucion', tabIsAjustes: s.tab === 'ajustes',
+      setTabHoy: () => this.setState({ tab: 'hoy' }),
+      setTabCalendario: () => this.setState({ tab: 'calendario' }),
+      setTabEvolucion: () => this.setState({ tab: 'evolucion' }),
+      setTabAjustes: () => this.setState({ tab: 'ajustes' }),
+      hoyColor: navColor(s.tab === 'hoy'), hoyBg: navBg(s.tab === 'hoy'),
+      calColor: navColor(s.tab === 'calendario'), calBg: navBg(s.tab === 'calendario'),
+      evoColor: navColor(s.tab === 'evolucion'), evoBg: navBg(s.tab === 'evolucion'),
+      ajColor: navColor(s.tab === 'ajustes'), ajBg: navBg(s.tab === 'ajustes'),
+
+      todayDateLabel: this.dateLabelLong(this.todayKey).replace(/^./, c => c.toUpperCase()),
+      greeting,
+      showTodayForm, showTodaySummary,
+      isFirstEver: s.entries.length === 0,
+      editingToday: s.editingToday,
+      draftReflection: s.draftReflection,
+      setDraftReflection: (ev) => this.setState({ draftReflection: ev.target.value }),
+      draftAchievement: s.draftAchievement,
+      setDraftAchievement: (ev) => this.setState({ draftAchievement: ev.target.value }),
+      selectFeliz: () => this.setState({ draftEmotion: 'feliz' }),
+      selectNormal: () => this.setState({ draftEmotion: 'normal' }),
+      selectTriste: () => this.setState({ draftEmotion: 'triste' }),
+      emFelizStyle: this.emBtnStyle(s.draftEmotion === 'feliz', EMO.feliz.bg, EMO.feliz.ink),
+      emNormalStyle: this.emBtnStyle(s.draftEmotion === 'normal', EMO.normal.bg, EMO.normal.ink),
+      emTristeStyle: this.emBtnStyle(s.draftEmotion === 'triste', EMO.triste.bg, EMO.triste.ink),
+      isFeliz: s.draftEmotion === 'feliz',
+      isNormal: s.draftEmotion === 'normal',
+      isTriste: s.draftEmotion === 'triste',
+      emFelizIcon: s.draftEmotion === 'feliz' ? EMO.feliz.ink : '#777A73',
+      emNormalIcon: s.draftEmotion === 'normal' ? EMO.normal.ink : '#777A73',
+      emTristeIcon: s.draftEmotion === 'triste' ? EMO.triste.ink : '#777A73',
+      saveDisabled: !s.draftEmotion || s.savingToday,
+      saveBtnStyle: `flex:1;padding:15px;border-radius:14px;border:none;font-size:14.5px;font-weight:700;cursor:${(!s.draftEmotion || s.savingToday) ? 'not-allowed' : 'pointer'};background:#354E41;color:#FAF8F3;opacity:${(!s.draftEmotion || s.savingToday) ? 0.5 : 1};`,
+      saveBtnLabel: s.savingToday ? 'Guardando...' : 'Guardar mi día',
+      cancelEditToday: () => this.setState({ editingToday: false }),
+      editToday: () => { const e = this.findEntry(this.todayKey); this.setState({ editingToday: true, draftEmotion: e.emotion, draftReflection: e.reflection || '', draftAchievement: e.achievement || '' }); },
+      saveToday: () => {
+        if (!s.draftEmotion) return;
+        this.setState({ savingToday: true });
+        setTimeout(() => {
+          const entries = this.state.entries.filter(e => e.date !== this.todayKey);
+          entries.push({ date: this.todayKey, emotion: this.state.draftEmotion, reflection: this.state.draftReflection.trim(), achievement: this.state.draftAchievement.trim() || null });
+          this.setState({ entries, savingToday: false, editingToday: false });
+          this.showToast('Tu día ha quedado guardado.');
+        }, 650);
+      },
+      todayEntryBg: te ? EMO[te.emotion].bg : 'transparent',
+      todayEntryInk: te ? EMO[te.emotion].ink : '#000',
+      todayEntryLabel: te ? EMO[te.emotion].label : '',
+      todayEntryHasReflection: !!(te && te.reflection),
+      todayEntryReflection: te ? te.reflection : '',
+      todayEntryHasAchievement: !!(te && te.achievement),
+      todayEntryAchievement: te ? te.achievement : '',
+
+      calViewIsGrid: s.calView === 'grid', calViewIsList: s.calView === 'list',
+      setCalViewGrid: () => this.setState({ calView: 'grid' }),
+      setCalViewList: () => this.setState({ calView: 'list' }),
+      calViewGridStyle: periodButtonStyle(s.calView === 'grid'),
+      calViewListStyle: periodButtonStyle(s.calView === 'list'),
+      calMonthLabel: `${this.MONTHS[s.calendarMonthIdx]} ${s.calendarYear}`,
+      prevMonth: () => {
+        let { calendarYear: y, calendarMonthIdx: m } = this.state;
+        m--; if (m < 0) { m = 11; y--; }
+        this.setState({ calendarYear: y, calendarMonthIdx: m });
+      },
+      nextMonth: () => {
+        let { calendarYear: y, calendarMonthIdx: m } = this.state;
+        m++; if (m > 11) { m = 0; y++; }
+        this.setState({ calendarYear: y, calendarMonthIdx: m });
+      },
+      calWeeks,
+      monthCount: monthEntries.length,
+      monthFeliz: monthEntries.filter(e => e.emotion === 'feliz').length,
+      monthNormal: monthEntries.filter(e => e.emotion === 'normal').length,
+      monthTriste: monthEntries.filter(e => e.emotion === 'triste').length,
+      calendarEmpty: monthEntries.length === 0,
+      calStatCols: isDesktop ? 4 : 2,
+
+      historySearch: s.historySearch,
+      setHistorySearch: (ev) => this.setState({ historySearch: ev.target.value }),
+      historyList, historyEmpty: historyList.length === 0,
+      setHistoryFilterTodas: () => this.setState({ historyFilter: 'todas' }),
+      setHistoryFilterFeliz: () => this.setState({ historyFilter: 'feliz' }),
+      setHistoryFilterNormal: () => this.setState({ historyFilter: 'normal' }),
+      setHistoryFilterTriste: () => this.setState({ historyFilter: 'triste' }),
+      histFilterTodasStyle: chipStyle(s.historyFilter === 'todas', '#354E41'),
+      histFilterFelizStyle: chipStyle(s.historyFilter === 'feliz', EMO.feliz.bg, EMO.feliz.ink),
+      histFilterNormalStyle: chipStyle(s.historyFilter === 'normal', EMO.normal.bg, EMO.normal.ink),
+      histFilterTristeStyle: chipStyle(s.historyFilter === 'triste', EMO.triste.bg, EMO.triste.ink),
+      histFilterTodasPressed: s.historyFilter === 'todas',
+      histFilterFelizPressed: s.historyFilter === 'feliz',
+      histFilterNormalPressed: s.historyFilter === 'normal',
+      histFilterTristePressed: s.historyFilter === 'triste',
+
+      statCols: isDesktop ? 3 : 3,
+      setEvo7: () => this.setState({ evoPeriod: '7' }),
+      setEvo30: () => this.setState({ evoPeriod: '30' }),
+      setEvoMes: () => this.setState({ evoPeriod: 'mes' }),
+      evo7Style: periodButtonStyle(s.evoPeriod === '7'),
+      evo30Style: periodButtonStyle(s.evoPeriod === '30'),
+      evoMesStyle: periodButtonStyle(s.evoPeriod === 'mes'),
+      evo7Pressed: s.evoPeriod === '7', evo30Pressed: s.evoPeriod === '30', evoMesPressed: s.evoPeriod === 'mes',
+      evoDays: periodEntries.length,
+      currentStreak: this.currentStreak(),
+      longestStreak: this.longestStreak(),
+      evoEmpty: periodEntries.length === 0,
+      moodStrip,
+      felizCount, normalCount, tristeCount,
+      felizPct: Math.round((felizCount / evoTotal) * 100) + '%',
+      normalPct: Math.round((normalCount / evoTotal) * 100) + '%',
+      tristePct: Math.round((tristeCount / evoTotal) * 100) + '%',
+      frequentWords: [
+        { word: 'estudio', count: 5 },
+        { word: 'clase', count: 4 },
+        { word: 'madre', count: 3 },
+        { word: 'examen', count: 3 },
+        { word: 'tranquilo', count: 3 },
+        { word: 'yoga', count: 2 },
+      ],
+      achievementsList, achievementsEmpty: achievementsList.length === 0,
+      openAi: () => this.setState({ aiStep: 'select', aiPeriod: '7', aiExcluded: [], aiExpanded: [] }),
+
+      aiOpen: s.aiStep !== 'closed',
+      aiIsSelect: s.aiStep === 'select', aiIsReview: s.aiStep === 'review', aiIsLoading: s.aiStep === 'loading', aiIsResult: s.aiStep === 'result', aiIsError: s.aiStep === 'error',
+      closeAi: () => this.setState({ aiStep: 'closed' }),
+      stopProp: (ev) => ev.stopPropagation(),
+      setAi7: () => this.setState({ aiPeriod: '7' }),
+      setAi30: () => this.setState({ aiPeriod: '30' }),
+      ai7Style: periodButtonStyle(s.aiPeriod === '7') + 'border:1px solid #ECE7DA;',
+      ai30Style: periodButtonStyle(s.aiPeriod === '30') + 'border:1px solid #ECE7DA;',
+      ai7Pressed: s.aiPeriod === '7', ai30Pressed: s.aiPeriod === '30',
+      aiCount: aiPeriodEntries.length,
+      aiNoneAvailable: aiPeriodEntries.length === 0,
+      aiContinueStyle: `flex:1;padding:13px;border-radius:12px;border:none;font-size:13.5px;font-weight:700;cursor:${aiPeriodEntries.length === 0 ? 'not-allowed' : 'pointer'};background:#354E41;color:#FAF8F3;opacity:${aiPeriodEntries.length === 0 ? 0.5 : 1};`,
+      goAiReview: () => this.setState({ aiStep: 'review' }),
+      aiReviewList, aiIncludedCount,
+      aiIncludedNone: aiIncludedCount === 0,
+      aiConfirmStyle: `flex:1;padding:13px;border-radius:12px;border:none;font-size:13.5px;font-weight:700;cursor:${aiIncludedCount === 0 ? 'not-allowed' : 'pointer'};background:#354E41;color:#FAF8F3;opacity:${aiIncludedCount === 0 ? 0.5 : 1};`,
+      confirmSendAi: () => { this.setState({ aiStep: 'loading' }); setTimeout(() => this.setState({ aiStep: 'result' }), 1600); },
+      demoError: () => this.setState({ aiStep: 'error' }),
+      retryAi: () => this.setState({ aiStep: 'review' }),
+      copyForChatGPT: () => {
+        const list = aiPeriodEntries.filter(e => !s.aiExcluded.includes(e.date));
+        const text = 'Estas son mis reflexiones personales. Me gustaría que me ayudaras a reflexionar sobre ellas, sin hacer diagnósticos:\n\n' + list.map(e => `${this.dateLabelShort(e.date)} (${EMO[e.emotion].label}): ${e.reflection}`).join('\n');
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(() => {});
+        this.showToast('Texto copiado al portapapeles.');
+      },
+
+      userEmail: 'laura@correo.com',
+      logout: () => this.setState({ screen: 'login', tab: 'hoy' }),
+      demoMode: s.demoMode,
+      toggleDemoMode: () => {
+        const next = !s.demoMode;
+        this.setState({ demoMode: next, entries: next ? this.seedEntries() : [], selectedDay: null, editingToday: false, tab: 'hoy' });
+        this.showToast(next ? 'Mostrando datos de demostración.' : 'Cuenta vacía, como la vería alguien nuevo.');
+      },
+      demoToggleStyle: `width:42px;height:24px;border-radius:12px;border:none;cursor:pointer;background:${s.demoMode ? '#8BAA91' : '#DCD6C6'};position:relative;padding:0;`,
+      demoKnobStyle: `position:absolute;top:2px;left:${s.demoMode ? '20px' : '2px'};width:20px;height:20px;border-radius:50%;background:#FFFFFF;transition:left .15s ease;display:block;`,
+      toggleReduceMotion: () => this.setState({ reduceMotion: !s.reduceMotion }),
+      motionToggleStyle: `width:42px;height:24px;border-radius:12px;border:none;cursor:pointer;background:${s.reduceMotion ? '#8BAA91' : '#DCD6C6'};position:relative;padding:0;`,
+      motionKnobStyle: `position:absolute;top:2px;left:${s.reduceMotion ? '20px' : '2px'};width:20px;height:20px;border-radius:50%;background:#FFFFFF;transition:left .15s ease;display:block;`,
+      exportData: () => this.showToast('Hemos preparado tu copia de seguridad (simulado).'),
+      requestImport: () => this.setState({ importOpen: true }),
+      importOpen: s.importOpen,
+      cancelImport: () => this.setState({ importOpen: false }),
+      confirmImport: () => { this.setState({ importOpen: false }); this.showToast('Copia importada: 3 registros añadidos, 0 duplicados.'); },
+      requestDeleteAll: () => this.setState({ deleteAllOpen: true }),
+      deleteAllOpen: s.deleteAllOpen,
+      cancelDeleteAll: () => this.setState({ deleteAllOpen: false }),
+      confirmDeleteAll: () => { this.setState({ entries: [], deleteAllOpen: false, selectedDay: null }); this.showToast('Se han eliminado todos tus registros.'); },
+
+      showDayDetail: !!s.selectedDay,
+      overlayAlign: isDesktop ? 'center' : 'flex-end',
+      dayPanelStyle: isDesktop
+        ? 'background:#FFFFFF;border-radius:22px;max-width:440px;width:100%;padding:26px;animation:fadeUp .25s ease;max-height:80vh;overflow-y:auto;'
+        : 'background:#FFFFFF;border-radius:22px 22px 0 0;width:100%;padding:24px 20px calc(24px + env(safe-area-inset-bottom));animation:sheetUp .25s ease;max-height:85vh;overflow-y:auto;',
+      closeDayDetail: () => this.setState({ selectedDay: null, dayEditing: false, deleteConfirmOpen: false }),
+      dayDetailLabel: s.selectedDay ? this.dateLabelLong(s.selectedDay) : '',
+      dayShowView: !!s.selectedDay && !!this.findEntry(s.selectedDay) && !s.dayEditing && !s.deleteConfirmOpen,
+      dayShowEmpty: !!s.selectedDay && !this.findEntry(s.selectedDay) && !s.dayEditing,
+      dayShowEdit: !!s.selectedDay && s.dayEditing,
+      dayIsFuture: !!s.selectedDay && s.selectedDay > this.todayKey,
+      startCreateDay: () => this.setState({ dayEditing: true, dayDraftEmotion: null, dayDraftReflection: '', dayDraftAchievement: '' }),
+      dayDraftSaveDisabled: !s.dayDraftEmotion,
+      dayDraftSaveOpacity: s.dayDraftEmotion ? 1 : 0.5,
+      dayShowDeleteConfirm: !!s.selectedDay && s.deleteConfirmOpen,
+      dayEntryBg: s.selectedDay && this.findEntry(s.selectedDay) ? EMO[this.findEntry(s.selectedDay).emotion].bg : 'transparent',
+      dayEntryInk: s.selectedDay && this.findEntry(s.selectedDay) ? EMO[this.findEntry(s.selectedDay).emotion].ink : '#000',
+      dayEntryLabel: s.selectedDay && this.findEntry(s.selectedDay) ? EMO[this.findEntry(s.selectedDay).emotion].label : '',
+      dayEntryHasReflection: !!(s.selectedDay && this.findEntry(s.selectedDay) && this.findEntry(s.selectedDay).reflection),
+      dayEntryReflection: s.selectedDay && this.findEntry(s.selectedDay) ? this.findEntry(s.selectedDay).reflection : '',
+      dayEntryHasAchievement: !!(s.selectedDay && this.findEntry(s.selectedDay) && this.findEntry(s.selectedDay).achievement),
+      dayEntryAchievement: s.selectedDay && this.findEntry(s.selectedDay) ? this.findEntry(s.selectedDay).achievement : '',
+      startEditDay: () => {
+        const e = this.findEntry(s.selectedDay);
+        this.setState({ dayEditing: true, dayDraftEmotion: e ? e.emotion : null, dayDraftReflection: e ? e.reflection || '' : '', dayDraftAchievement: e ? e.achievement || '' : '' });
+      },
+      cancelEditDay: () => this.setState({ dayEditing: false }),
+      dayDraftReflection: s.dayDraftReflection,
+      setDayDraftReflection: (ev) => this.setState({ dayDraftReflection: ev.target.value }),
+      dayDraftAchievement: s.dayDraftAchievement,
+      setDayDraftAchievement: (ev) => this.setState({ dayDraftAchievement: ev.target.value }),
+      dayDraftSelectFeliz: () => this.setState({ dayDraftEmotion: 'feliz' }),
+      dayDraftSelectNormal: () => this.setState({ dayDraftEmotion: 'normal' }),
+      dayDraftSelectTriste: () => this.setState({ dayDraftEmotion: 'triste' }),
+      dayEmFelizStyle: `padding:12px 6px;border-radius:12px;border:1.5px solid ${s.dayDraftEmotion === 'feliz' ? EMO.feliz.bg : '#ECE7DA'};background:${s.dayDraftEmotion === 'feliz' ? EMO.feliz.bg : '#FFFFFF'};color:${s.dayDraftEmotion === 'feliz' ? EMO.feliz.ink : '#2E2B26'};font-size:13px;font-weight:600;cursor:pointer;`,
+      dayEmNormalStyle: `padding:12px 6px;border-radius:12px;border:1.5px solid ${s.dayDraftEmotion === 'normal' ? EMO.normal.bg : '#ECE7DA'};background:${s.dayDraftEmotion === 'normal' ? EMO.normal.bg : '#FFFFFF'};color:${s.dayDraftEmotion === 'normal' ? EMO.normal.ink : '#2E2B26'};font-size:13px;font-weight:600;cursor:pointer;`,
+      dayEmTristeStyle: `padding:12px 6px;border-radius:12px;border:1.5px solid ${s.dayDraftEmotion === 'triste' ? EMO.triste.bg : '#ECE7DA'};background:${s.dayDraftEmotion === 'triste' ? EMO.triste.bg : '#FFFFFF'};color:${s.dayDraftEmotion === 'triste' ? EMO.triste.ink : '#2E2B26'};font-size:13px;font-weight:600;cursor:pointer;`,
+      saveDayDetail: () => {
+        if (!this.state.dayDraftEmotion) return;
+        const entries = this.state.entries.filter(e => e.date !== s.selectedDay);
+        entries.push({ date: s.selectedDay, emotion: this.state.dayDraftEmotion, reflection: this.state.dayDraftReflection.trim(), achievement: this.state.dayDraftAchievement.trim() || null });
+        this.setState({ entries, dayEditing: false });
+        this.showToast('Registro actualizado.');
+      },
+      requestDeleteDay: () => this.setState({ deleteConfirmOpen: true }),
+      cancelDeleteDay: () => this.setState({ deleteConfirmOpen: false }),
+      confirmDeleteDay: () => {
+        const entries = this.state.entries.filter(e => e.date !== s.selectedDay);
+        this.setState({ entries, deleteConfirmOpen: false, selectedDay: null });
+        this.showToast('Registro eliminado.');
+      },
+
+      showToast: !!s.toast, toastMessage: s.toast || '',
+      toastBottom: isDesktop ? '28px' : (s.tab ? '96px' : '28px'),
+    };
+  }
+}
+</script>
+</body>
+</html>

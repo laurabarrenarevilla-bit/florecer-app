@@ -1,0 +1,10 @@
+@use '@abstracts/variables' as v;
+
+html {
+    font-family: v.$primary-font;
+}
+ 
+body {
+    overflow-x: hidden;
+    line-height: 1.6;
+}
