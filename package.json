@@ -10,7 +10,8 @@
     "lint": "oxlint",
     "test": "TZ=Europe/Madrid vitest run",
     "test:watch": "TZ=Europe/Madrid vitest",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:rls": "vitest run --config tests/rls/vitest.config.ts --mode test"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",

@@ -1,6 +1,6 @@
 import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from 'react'
 
-interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id'> {
+interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: ReactNode
   hint?: ReactNode
   error?: string | undefined
@@ -13,10 +13,11 @@ interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
-  { label, hint, error, optional, showCounter, adornment, controlWrapperClassName, maxLength, value, className, ...rest },
+  { id: providedId, label, hint, error, optional, showCounter, adornment, controlWrapperClassName, maxLength, value, className, ...rest },
   ref,
 ) {
-  const id = useId()
+  const generatedId = useId()
+  const id = providedId ?? generatedId
   const hintId = hint ? `${id}-hint` : undefined
   const errorId = error ? `${id}-error` : undefined
   const describedBy = [hintId, errorId].filter(Boolean).join(' ') || undefined

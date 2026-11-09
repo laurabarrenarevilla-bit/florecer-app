@@ -1,0 +1,37 @@
+@use '@abstracts/abstracts' as a;
+
+.settings {
+  max-width: 35rem;
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-3;
+
+    p {
+      font-size: 0.875rem;
+      line-height: 1.55;
+    }
+  }
+
+  &__heading {
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: a.$space-3;
+  }
+
+  &__email {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: a.$font-size-base;
+  }
+}
