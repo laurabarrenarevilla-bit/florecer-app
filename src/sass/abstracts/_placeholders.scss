@@ -1,0 +1,20 @@
+@use 'variables' as v;
+
+// Tarjeta base de Florecer.
+%card {
+  background: v.$color-surface;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-xl;
+}
+
+// Botón sin estilos de navegador.
+%reset-button {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}

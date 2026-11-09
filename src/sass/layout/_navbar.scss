@@ -1,0 +1,41 @@
+@use '@abstracts/abstracts' as a;
+
+// Navegación inferior (móvil y tablet vertical).
+.bottom-nav {
+  position: sticky;
+  bottom: 0;
+  z-index: a.$z-nav;
+  background: a.$color-surface;
+  border-top: 1px solid a.$color-border;
+  padding: a.$space-1 a.$space-2 calc(#{a.$space-1} + env(safe-area-inset-bottom));
+
+  @include a.breakpoint(tablethorizontal) {
+    display: none;
+  }
+
+  &__list {
+    display: flex;
+    justify-content: space-around;
+    list-style: none;
+  }
+
+  &__link {
+    @include a.tap-target;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-width: 4.5rem;
+    padding: a.$space-2;
+    border-radius: a.$radius-md;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: a.$color-text-secondary;
+    text-decoration: none;
+
+    &[aria-current='page'] {
+      color: a.$color-primary;
+    }
+  }
+}

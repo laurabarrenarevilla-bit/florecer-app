@@ -1,0 +1,64 @@
+@use '@abstracts/abstracts' as a;
+
+// Navegación lateral discreta (escritorio).
+.sidebar {
+  display: none;
+
+  @include a.breakpoint(tablethorizontal) {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-8;
+    flex-shrink: 0;
+    width: a.$sidebar-width;
+    padding: a.$space-8 a.$space-4;
+    border-right: 1px solid a.$color-border;
+  }
+
+  &__brand {
+    padding: 0 a.$space-2;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-1;
+    list-style: none;
+  }
+
+  &__link {
+    @include a.tap-target;
+    display: flex;
+    align-items: center;
+    gap: a.$space-3;
+    padding: a.$space-3;
+    border-radius: a.$radius-md;
+    font-size: 0.90625rem;
+    font-weight: 600;
+    color: a.$color-text-secondary;
+    text-decoration: none;
+
+    &:hover {
+      background: a.$color-muted-bg;
+    }
+
+    &[aria-current='page'] {
+      background: a.$color-sage-soft;
+      color: a.$color-primary;
+    }
+  }
+
+  &__footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-2;
+    padding: 0 a.$space-2;
+    font-size: a.$font-size-sm;
+    color: a.$color-text-secondary;
+    overflow-wrap: anywhere;
+  }
+}

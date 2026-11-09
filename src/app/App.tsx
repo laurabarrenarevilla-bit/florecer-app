@@ -1,7 +1,13 @@
+import { BrowserRouter } from 'react-router'
+import { ToastProvider } from '@/shared/ui/ToastProvider.tsx'
+import { AppRoutes } from './router.tsx'
+
 export function App() {
   return (
-    <main>
-      <h1>Florecer</h1>
-    </main>
+    <BrowserRouter>
+      <ToastProvider>
+        <AppRoutes />
+      </ToastProvider>
+    </BrowserRouter>
   )
 }

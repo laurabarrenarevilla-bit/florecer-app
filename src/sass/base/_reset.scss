@@ -3,3 +3,50 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+}
+
+dialog {
+  margin: auto;
+  border: none;
+  padding: 0;
+  max-width: none;
+  max-height: none;
+  background: transparent;
+  color: inherit;
+}

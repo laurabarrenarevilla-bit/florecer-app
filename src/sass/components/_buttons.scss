@@ -1,0 +1,96 @@
+@use '@abstracts/abstracts' as a;
+
+.btn {
+  @include a.tap-target;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: a.$space-2;
+  padding: a.$space-3 a.$space-5;
+  border-radius: a.$radius-lg;
+  border: 1px solid transparent;
+  font-size: a.$font-size-base;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color a.$duration-fast a.$easing, opacity a.$duration-fast a.$easing;
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.55;
+  }
+
+  &[aria-busy='true'] {
+    cursor: progress;
+  }
+
+  &--primary {
+    background: a.$color-primary;
+    color: a.$color-primary-ink;
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, a.$color-primary 88%, black);
+    }
+  }
+
+  &--secondary {
+    background: a.$color-surface;
+    border-color: a.$color-border-strong;
+    color: a.$color-primary;
+
+    &:hover:not(:disabled) {
+      background: a.$color-muted-bg;
+    }
+  }
+
+  &--danger {
+    background: a.$color-danger;
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: a.$color-danger-strong;
+    }
+  }
+
+  &--danger-outline {
+    background: a.$color-surface;
+    border-color: a.$color-border-strong;
+    color: a.$color-danger;
+  }
+
+  &--ghost {
+    background: transparent;
+    color: a.$color-primary;
+    padding-inline: a.$space-3;
+
+    &:hover:not(:disabled) {
+      background: a.$color-muted-bg;
+    }
+  }
+
+  &--block {
+    width: 100%;
+  }
+
+  &--lg {
+    padding-block: a.$space-4;
+  }
+
+  &--icon {
+    padding: 0;
+    border-radius: 50%;
+    background: a.$color-surface;
+    border-color: a.$color-border;
+    color: a.$color-primary;
+  }
+}
+
+.btn-row {
+  display: flex;
+  gap: a.$space-3;
+
+  > .btn {
+    flex: 1;
+  }
+}

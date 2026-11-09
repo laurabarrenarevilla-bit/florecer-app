@@ -1,0 +1,87 @@
+@use '@abstracts/abstracts' as a;
+
+// Estructura general de la aplicación autenticada.
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  &__column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__content {
+    flex: 1;
+    width: 100%;
+    max-width: a.$content-max-width;
+    margin: 0 auto;
+    padding: a.$space-5 a.$space-4 a.$space-8;
+
+    &:focus {
+      outline: none;
+    }
+
+    @include a.breakpoint(tablet) {
+      padding: a.$space-8 a.$space-8 a.$space-10;
+    }
+
+    @include a.breakpoint(tablethorizontal) {
+      padding: a.$space-10 a.$space-12;
+    }
+  }
+}
+
+// Columna de contenido para páginas públicas (acceso, 404).
+.centered-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: a.$space-6;
+  width: 100%;
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: a.$space-10 a.$space-5;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: a.$space-6;
+  animation: fade-up 0.35s a.$easing;
+}
+
+.page-heading {
+  display: flex;
+  flex-direction: column;
+  gap: a.$space-1;
+
+  &__eyebrow {
+    font-size: a.$font-size-sm;
+    font-weight: 600;
+    color: a.$color-text-secondary;
+  }
+
+  &__title {
+    font-size: a.$font-size-xl;
+
+    @include a.breakpoint(tablet) {
+      font-size: a.$font-size-2xl;
+    }
+  }
+
+  &__lead {
+    max-width: 30rem;
+    color: a.$color-text-secondary;
+  }
+}
+
+.card {
+  @extend %card;
+  padding: a.$space-5;
+}

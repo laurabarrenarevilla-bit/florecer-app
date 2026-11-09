@@ -1,0 +1,38 @@
+@use '@abstracts/abstracts' as a;
+
+.alert {
+  display: flex;
+  flex-direction: column;
+  gap: a.$space-3;
+  padding: a.$space-3 a.$space-4;
+  border-radius: a.$radius-md;
+  font-size: 0.875rem;
+  line-height: 1.5;
+
+  &:focus {
+    outline: none;
+  }
+
+  &--error {
+    background: a.$color-danger-bg;
+    border: 1px solid a.$color-danger-border;
+    color: a.$color-danger-strong;
+  }
+
+  &--success {
+    background: a.$color-success-bg;
+    border: 1px solid #dce4db;
+    color: a.$color-primary;
+  }
+
+  &--info {
+    background: a.$color-muted-bg;
+    color: a.$color-text;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: a.$space-2;
+  }
+}

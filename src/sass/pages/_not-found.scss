@@ -1,0 +1,13 @@
+@use '@abstracts/abstracts' as a;
+
+.not-found {
+  text-align: center;
+
+  &__title {
+    font-size: a.$font-size-xl;
+  }
+
+  &__text {
+    color: a.$color-text-secondary;
+  }
+}

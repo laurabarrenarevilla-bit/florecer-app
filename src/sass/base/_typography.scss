@@ -1,0 +1,40 @@
+@use '@abstracts/abstracts' as a;
+
+body {
+  font-size: a.$font-size-base;
+  color: a.$color-text;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  color: a.$color-primary;
+  line-height: 1.2;
+}
+
+h1 {
+  font-family: a.$secondary-font;
+  font-weight: 500;
+  font-size: a.$font-size-xl;
+}
+
+h2 {
+  font-size: a.$font-size-lg;
+  font-weight: 600;
+}
+
+p {
+  line-height: 1.55;
+}
+
+a {
+  color: a.$color-primary;
+  font-weight: 600;
+  text-underline-offset: 0.2em;
+}
+
+.text-secondary {
+  color: a.$color-text-secondary;
+}

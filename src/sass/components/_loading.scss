@@ -1,0 +1,25 @@
+@use '@abstracts/abstracts' as a;
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: a.$space-4;
+  padding: a.$space-8 0;
+  color: a.$color-text-secondary;
+
+  &--fullscreen {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  &__spinner {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 3px solid a.$color-sage-soft;
+    border-top-color: a.$color-primary;
+    animation: spin 0.9s linear infinite;
+  }
+}

@@ -1,0 +1,37 @@
+@use '@abstracts/abstracts' as a;
+
+// Control segmentado (pestañas de acceso, futuros filtros de período).
+.segmented {
+  display: flex;
+  width: 100%;
+  padding: a.$space-1;
+  border-radius: a.$radius-md;
+  background: a.$color-muted-bg;
+  list-style: none;
+
+  &__item {
+    flex: 1;
+    display: flex;
+  }
+
+  &__option {
+    @include a.tap-target;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: a.$space-2 a.$space-3;
+    border-radius: 0.5625rem;
+    font-size: 0.84375rem;
+    font-weight: 600;
+    color: a.$color-text-secondary;
+    text-decoration: none;
+
+    &[aria-current='page'],
+    &[aria-pressed='true'] {
+      background: a.$color-surface;
+      color: a.$color-primary;
+      box-shadow: a.$shadow-sm;
+    }
+  }
+}

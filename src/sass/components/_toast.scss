@@ -1,0 +1,29 @@
+@use '@abstracts/abstracts' as a;
+
+// Región de avisos breves; solo se usa tras confirmación real del backend.
+.toast-region {
+  position: fixed;
+  left: 50%;
+  bottom: calc(#{a.$bottom-nav-height} + #{a.$space-4} + env(safe-area-inset-bottom));
+  z-index: a.$z-toast;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100vw - #{a.$space-8});
+  pointer-events: none;
+
+  @include a.breakpoint(tablethorizontal) {
+    bottom: a.$space-8;
+  }
+}
+
+.toast {
+  padding: a.$space-3 a.$space-5;
+  border-radius: a.$radius-pill;
+  background: a.$color-primary;
+  color: a.$color-primary-ink;
+  font-size: 0.84375rem;
+  font-weight: 600;
+  box-shadow: a.$shadow-toast;
+  text-align: center;
+  animation: pop-in a.$duration-base a.$easing;
+}

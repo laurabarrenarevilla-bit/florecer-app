@@ -1,0 +1,86 @@
+@use '@abstracts/abstracts' as a;
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: a.$space-5;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: a.$space-2;
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: a.$space-2;
+    font-size: a.$font-size-sm;
+    font-weight: 600;
+    color: a.$color-primary;
+  }
+
+  &__optional {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: a.$color-text-subtle;
+  }
+
+  &__hint {
+    font-size: a.$font-size-sm;
+    color: a.$color-text-secondary;
+  }
+
+  &__error {
+    font-size: a.$font-size-sm;
+    font-weight: 500;
+    color: a.$color-danger;
+  }
+
+  &__counter {
+    align-self: flex-end;
+    font-size: a.$font-size-xs;
+    color: a.$color-text-secondary;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__control {
+    width: 100%;
+    min-height: a.$tap-target;
+    padding: a.$space-3 a.$space-4;
+    border-radius: a.$radius-lg;
+    border: 1px solid a.$color-border-input;
+    background: a.$color-surface-soft;
+    font-size: a.$font-size-md;
+    line-height: 1.5;
+    color: a.$color-text;
+    transition: border-color a.$duration-fast a.$easing, box-shadow a.$duration-fast a.$easing;
+
+    &::placeholder {
+      color: a.$color-text-secondary;
+      opacity: 0.85;
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: a.$color-primary;
+      box-shadow: 0 0 0 3px rgba(53, 78, 65, 0.22);
+    }
+
+    &[aria-invalid='true'] {
+      border-color: a.$color-danger;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+    }
+  }
+
+  textarea.field__control {
+    min-height: 7.5rem;
+    resize: vertical;
+    line-height: 1.65;
+  }
+}

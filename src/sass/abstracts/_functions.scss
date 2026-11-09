@@ -1,0 +1,13 @@
+@use 'sass:map';
+@use 'sass:math';
+@use 'variables' as v;
+
+// Convierte píxeles a rem (base 16px).
+@function rem($px) {
+  @return math.div($px, 16px) * 1rem;
+}
+
+// Devuelve una propiedad (bg | ink) de una emoción del mapa $moods.
+@function mood($name, $key: bg) {
+  @return map.get(map.get(v.$moods, $name), $key);
+}

@@ -5,5 +5,89 @@ $bp-desktop: 75rem; // 1200px ÷ 16 = 75rem
 $bp-desktop-xl: 90rem; // 1440px ÷ 16 = 90rem
 
 // Variables for fonts
-$primary-font: "", sans-serif;
-$secondary-font: "", sans-serif;
+$primary-font: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+$secondary-font: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+
+// ---------------------------------------------------------------------------
+// Colores de Florecer (docs/06). Los textos secundarios se oscurecen respecto
+// al prototipo (#777A73, #A79F8B) para alcanzar contraste AA sobre crema.
+// ---------------------------------------------------------------------------
+$color-bg: #FAF8F3; // crema
+$color-surface: #FFFFFF;
+$color-surface-soft: #FFFDF8; // fondo de campos de texto
+$color-muted-bg: #F1EEE5; // segmentados, fondos neutros
+$color-sage-soft: #EEF2EC;
+
+$color-primary: #354E41; // verde oscuro
+$color-primary-ink: #FAF8F3; // texto sobre primario
+$color-sage: #8BAA91; // verde salvia (decorativo, no para texto pequeño)
+
+$color-text: #2E2B26;
+$color-text-secondary: #62655E; // ≥ 5:1 sobre crema
+$color-text-subtle: #6F6858; // etiqueta "Opcional"
+$color-border: #ECE7DA;
+$color-border-strong: #DCD6C6;
+$color-border-input: #948D7C; // borde de inputs con ≥ 3:1 (WCAG 1.4.11)
+
+$color-danger: #B5513D;
+$color-danger-strong: #8A4332;
+$color-danger-bg: #FBF1EE;
+$color-danger-border: #EFD7CE;
+$color-success-bg: #EEF2EC;
+
+// Emociones: fondo + tinta legible encima.
+$moods: (
+  happy: (bg: #F5D36A, ink: #4A3A0E, label: 'Feliz'),
+  neutral: (bg: #F2A66E, ink: #5A3414, label: 'Normal'),
+  sad: (bg: #91BCE0, ink: #1F3A52, label: 'Triste'),
+);
+
+// Espaciado (múltiplos de 4px expresados en rem)
+$space-1: 0.25rem;
+$space-2: 0.5rem;
+$space-3: 0.75rem;
+$space-4: 1rem;
+$space-5: 1.25rem;
+$space-6: 1.5rem;
+$space-8: 2rem;
+$space-10: 2.5rem;
+$space-12: 3rem;
+
+// Radios
+$radius-sm: 0.625rem; // 10px
+$radius-md: 0.75rem; // 12px
+$radius-lg: 0.875rem; // 14px
+$radius-xl: 1.125rem; // 18px
+$radius-2xl: 1.375rem; // 22px
+$radius-pill: 999px;
+
+// Tipografía
+$font-size-xs: 0.75rem; // 12px
+$font-size-sm: 0.8125rem; // 13px
+$font-size-base: 0.9375rem; // 15px
+$font-size-md: 1rem; // 16px (inputs: evita zoom en iOS)
+$font-size-lg: 1.125rem; // 18px
+$font-size-xl: 1.625rem; // 26px
+$font-size-2xl: 1.75rem; // 28px
+$font-size-3xl: 2rem; // 32px
+
+// Sombras
+$shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
+$shadow-toast: 0 6px 20px rgba(53, 78, 65, 0.25);
+$overlay: rgba(53, 78, 65, 0.4);
+
+// Movimiento
+$duration-fast: 150ms;
+$duration-base: 250ms;
+$easing: ease;
+
+// Capas
+$z-nav: 20;
+$z-dialog: 40;
+$z-toast: 60;
+
+// Dimensiones de layout
+$tap-target: 2.75rem; // 44px
+$sidebar-width: 14.5rem; // 232px
+$content-max-width: 45rem; // 720px
+$bottom-nav-height: 4.25rem;

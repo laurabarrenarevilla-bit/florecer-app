@@ -1,0 +1,38 @@
+@use '@abstracts/abstracts' as a;
+
+// Cabecera móvil con la marca.
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: a.$space-4 a.$space-4;
+  border-bottom: 1px solid a.$color-border;
+
+  @include a.breakpoint(tablethorizontal) {
+    display: none;
+  }
+}
+
+// Logotipo (brote + nombre).
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: a.$space-2;
+  color: a.$color-primary;
+  text-decoration: none;
+
+  &__name {
+    font-family: a.$secondary-font;
+    font-weight: 500;
+    font-size: 1.0625rem;
+  }
+
+  &--lg {
+    flex-direction: column;
+    gap: a.$space-3;
+
+    .brand__name {
+      font-size: 1.5rem;
+    }
+  }
+}

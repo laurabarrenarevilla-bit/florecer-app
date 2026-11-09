@@ -2,9 +2,19 @@
 
 html {
     font-family: v.$primary-font;
+    background: v.$color-bg;
 }
- 
+
 body {
     overflow-x: hidden;
     line-height: 1.6;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: v.$color-bg;
+    color: v.$color-text;
+}
+
+::selection {
+    background: v.$color-primary;
+    color: v.$color-primary-ink;
 }

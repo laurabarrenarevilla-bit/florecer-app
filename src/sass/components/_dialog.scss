@@ -1,0 +1,89 @@
+@use '@abstracts/abstracts' as a;
+
+// <dialog> nativo abierto con showModal(): foco atrapado y Escape del navegador.
+// Móvil: hoja inferior. Tablet/escritorio: modal centrado.
+.dialog {
+  width: 100%;
+  max-width: 100%;
+  max-height: 88vh;
+  max-height: 88dvh;
+  margin: auto auto 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: a.$space-6 a.$space-5 calc(#{a.$space-6} + env(safe-area-inset-bottom));
+  border-radius: a.$radius-2xl a.$radius-2xl 0 0;
+  background: a.$color-surface;
+  color: a.$color-text;
+
+  &[open] {
+    animation: sheet-up a.$duration-base a.$easing;
+  }
+
+  &::backdrop {
+    background: a.$overlay;
+  }
+
+  @include a.breakpoint(tablet) {
+    max-width: 27.5rem;
+    max-height: 80vh;
+    margin: auto;
+    padding: a.$space-6 a.$space-6;
+    border-radius: a.$radius-2xl;
+
+    &[open] {
+      animation: fade-up a.$duration-base a.$easing;
+    }
+  }
+
+  &--narrow {
+    @include a.breakpoint(tablet) {
+      max-width: 23.75rem;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: a.$space-3;
+  }
+
+  &__title {
+    font-family: a.$secondary-font;
+    font-weight: 500;
+    font-size: 1.1875rem;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &__close {
+    @include a.tap-target;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: a.$color-muted-bg;
+    color: a.$color-text-secondary;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-4;
+    margin-top: a.$space-4;
+  }
+
+  &__text {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+}
+
+// Bloquea el scroll del documento mientras hay un diálogo modal abierto.
+html:has(dialog[open]) {
+  overflow: hidden;
+}
