@@ -37,6 +37,20 @@ export function testAccounts(): { a: TestAccount; b: TestAccount } {
   return { a, b }
 }
 
+/**
+ * Cuenta sintética C, solo para probar la eliminación de cuentas: se registra
+ * por la UI y se elimina en la misma ejecución, de modo que no se acumula.
+ */
+export function deletionTestAccount(): TestAccount & { label: 'A' | 'B' } {
+  const email = requireEnv('TEST_C_EMAIL')
+  if (!/test/i.test(email)) throw new Error('La cuenta C debe ser sintética (su correo debe contener "test").')
+  const { a, b } = testAccounts()
+  if ([a.email, b.email].map((e) => e.toLowerCase()).includes(email.toLowerCase())) {
+    throw new Error('La cuenta C no puede ser A ni B: se elimina durante la prueba.')
+  }
+  return { label: 'A', email, password: requireEnv('TEST_C_PASSWORD') }
+}
+
 export function supabasePublicConfig(): { url: string; key: string } {
   const url = requireEnv('VITE_SUPABASE_URL')
   const key = requireEnv('VITE_SUPABASE_PUBLISHABLE_KEY')

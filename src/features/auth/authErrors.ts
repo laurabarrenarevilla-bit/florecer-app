@@ -9,6 +9,7 @@ export type AuthErrorCode =
   | 'EMAIL_RATE_LIMITED'
   | 'SIGNUP_DISABLED'
   | 'EMAIL_NOT_CONFIRMED'
+  | 'ACCOUNT_DELETION_UNAVAILABLE'
   | 'NETWORK'
   | 'UNKNOWN'
 
@@ -28,6 +29,7 @@ export const AUTH_ERROR_MESSAGES: Record<AuthErrorCode, string> = {
     'Ahora mismo no podemos enviar el correo de confirmación porque se ha alcanzado el límite de envíos. Inténtalo más tarde.',
   EMAIL_NOT_CONFIRMED:
     'Aún no has confirmado tu cuenta. Abre el enlace del correo de confirmación que te enviamos y vuelve a intentarlo.',
+  ACCOUNT_DELETION_UNAVAILABLE: 'La eliminación de cuentas no está disponible todavía. No se ha borrado nada.',
   NETWORK: 'No hay conexión. Comprueba tu red e inténtalo de nuevo.',
   UNKNOWN: 'No hemos podido completar la acción. Inténtalo de nuevo.',
 }
@@ -44,6 +46,8 @@ const CODE_MAP: Record<string, AuthErrorCode> = {
   signup_disabled: 'SIGNUP_DISABLED',
   email_provider_disabled: 'SIGNUP_DISABLED',
   email_not_confirmed: 'EMAIL_NOT_CONFIRMED',
+  // PostgREST: la función delete_my_account no existe (migración sin aplicar).
+  PGRST202: 'ACCOUNT_DELETION_UNAVAILABLE',
 }
 
 function readString(value: unknown, key: string): string | undefined {

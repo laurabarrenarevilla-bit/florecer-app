@@ -42,6 +42,10 @@ export function createFakeAuthRepository() {
       await new Promise((resolve) => setTimeout(resolve, 0))
       return { error: null }
     }),
+    deleteAccount: vi.fn<AuthRepository['deleteAccount']>(async () => {
+      listener('SIGNED_OUT', null)
+      return { error: null }
+    }),
     expireSession: vi.fn<AuthRepository['expireSession']>(async () => {
       listener('SIGNED_OUT', null)
     }),

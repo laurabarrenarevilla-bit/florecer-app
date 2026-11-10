@@ -28,6 +28,7 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
   const [user, setUser] = useState<AuthUser | null>(null)
   const [sessionExpired, setSessionExpired] = useState(false)
   const [signedOutManually, setSignedOutManually] = useState(false)
+  const [accountDeleted, setAccountDeleted] = useState(false)
   const [justSignedUp, setJustSignedUp] = useState(false)
   const manualSignOutRef = useRef(false)
   const currentUserIdRef = useRef<string | null>(null)
@@ -56,6 +57,7 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
       } else if (nextUser) {
         setSessionExpired(false)
         setSignedOutManually(false)
+        setAccountDeleted(false)
       }
     })
     return unsubscribe
@@ -103,11 +105,45 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
     return { ok: true }
   }, [repository, queryClient])
 
+  const deleteAccount = useCallback<AuthContextValue['deleteAccount']>(
+    async (password) => {
+      const email = user?.email
+      if (!email) return { ok: false, error: mapAuthError(null) }
+      // Se vuelve a pedir la contraseña: un dispositivo desbloqueado no basta.
+      const reauth = await repository.signIn(email, password)
+      if (reauth.error) return { ok: false, error: mapAuthError(reauth.error) }
+
+      manualSignOutRef.current = true
+      const { error } = await repository.deleteAccount()
+      if (error) {
+        manualSignOutRef.current = false
+        return { ok: false, error: mapAuthError(error) }
+      }
+      setAccountDeleted(true)
+      queryClient.clear()
+      clearAllDrafts()
+      return { ok: true }
+    },
+    [repository, queryClient, user],
+  )
+
   const dismissWelcome = useCallback(() => setJustSignedUp(false), [])
 
   const value = useMemo<AuthContextValue>(
-    () => ({ status, user, sessionExpired, signedOutManually, justSignedUp, dismissWelcome, signIn, signUp, signOut }),
-    [status, user, sessionExpired, signedOutManually, justSignedUp, dismissWelcome, signIn, signUp, signOut],
+    () => ({
+      status,
+      user,
+      sessionExpired,
+      signedOutManually,
+      accountDeleted,
+      justSignedUp,
+      dismissWelcome,
+      signIn,
+      signUp,
+      signOut,
+      deleteAccount,
+    }),
+    [status, user, sessionExpired, signedOutManually, accountDeleted, justSignedUp, dismissWelcome, signIn, signUp, signOut, deleteAccount],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

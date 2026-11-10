@@ -9,6 +9,11 @@ export interface AuthRepository {
   signOut(): Promise<{ error: unknown }>
   /** Descarta la sesión solo en este navegador (el servidor ya la rechazó). */
   expireSession(): Promise<void>
+  /**
+   * Elimina la cuenta con sesión y todos sus datos (función SQL
+   * delete_my_account, limitada a auth.uid()) y cierra la sesión local.
+   */
+  deleteAccount(): Promise<{ error: unknown }>
 }
 
 /** Único punto con llamadas a supabase.auth. */
@@ -47,6 +52,18 @@ export function createAuthRepository(getClient: () => SupabaseClient): AuthRepos
       try {
         const { error } = await getClient().auth.signOut()
         return { error }
+      } catch (error) {
+        return { error }
+      }
+    },
+
+    async deleteAccount() {
+      try {
+        const { error } = await getClient().rpc('delete_my_account')
+        if (error) return { error }
+        // La cuenta ya no existe en el servidor: basta con limpiar este navegador.
+        await getClient().auth.signOut({ scope: 'local' })
+        return { error: null }
       } catch (error) {
         return { error }
       }

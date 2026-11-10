@@ -21,6 +21,10 @@ function Probe() {
       <button type="button" onClick={() => void auth.signOut()}>
         salir
       </button>
+      <p>eliminada:{String(auth.accountDeleted)}</p>
+      <button type="button" onClick={() => void auth.deleteAccount('Florecer2026')}>
+        eliminar
+      </button>
       <button type="button" onClick={() => void auth.signUp('a@b.test', 'Florecer2026', 'Persona')}>
         registrar
       </button>
@@ -120,4 +124,34 @@ describe('AuthProvider', () => {
     act(() => emit('INITIAL_SESSION', fakeSession()))
     expect(hasDraft(otherKey)).toBe(false)
   })
+
+  it('eliminar la cuenta exige la contraseña correcta: si falla, no borra nada', async () => {
+    const user = userEvent.setup()
+    const { emit, repository } = setup()
+    act(() => emit('INITIAL_SESSION', fakeSession()))
+    repository.signIn.mockResolvedValueOnce({ error: { code: 'invalid_credentials', message: 'Invalid login credentials' } })
+
+    await user.click(screen.getByRole('button', { name: 'eliminar' }))
+    expect(repository.signIn).toHaveBeenCalledWith(TEST_USER.email, 'Florecer2026')
+    expect(repository.deleteAccount).not.toHaveBeenCalled()
+    expect(screen.getByText('estado:authenticated')).toBeInTheDocument()
+  })
+
+  it('eliminar la cuenta: borra, cierra sesión sin marcarla como caducada y limpia caché y borradores', async () => {
+    const user = userEvent.setup()
+    const { emit, repository, clearSpy } = setup()
+    act(() => emit('INITIAL_SESSION', fakeSession()))
+    const key = draftKey(TEST_USER.id, '2026-11-10')
+    saveDraft(key, { mood: 'happy', reflection: 'borrador', achievement: '' })
+    clearSpy.mockClear()
+
+    await user.click(screen.getByRole('button', { name: 'eliminar' }))
+    expect(repository.deleteAccount).toHaveBeenCalledTimes(1)
+    expect(screen.getByText('estado:anonymous')).toBeInTheDocument()
+    expect(screen.getByText('eliminada:true')).toBeInTheDocument()
+    expect(screen.getByText('caducada:false')).toBeInTheDocument()
+    expect(clearSpy).toHaveBeenCalled()
+    expect(hasDraft(key)).toBe(false)
+  })
 })
+

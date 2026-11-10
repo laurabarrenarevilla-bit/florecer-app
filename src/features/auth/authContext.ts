@@ -20,12 +20,16 @@ export interface AuthContextValue {
   sessionExpired: boolean
   /** La persona cerró sesión voluntariamente en esta pestaña (no se recuerda la ruta anterior). */
   signedOutManually: boolean
+  /** La cuenta se acaba de eliminar en esta pestaña: se confirma en /login. */
+  accountDeleted: boolean
   /** Cuenta recién creada en esta pestaña: se muestra una confirmación en Hoy. */
   justSignedUp: boolean
   dismissWelcome: () => void
   signIn: (email: string, password: string) => Promise<AuthActionResult>
   signUp: (email: string, password: string, name: string) => Promise<SignUpResult>
   signOut: () => Promise<AuthActionResult>
+  /** Comprueba la contraseña y elimina la cuenta y todos sus datos. Irreversible. */
+  deleteAccount: (password: string) => Promise<AuthActionResult>
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)

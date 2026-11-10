@@ -11,7 +11,7 @@ import { safeRedirectPath } from './redirect.ts'
 import { firstFieldErrors, loginSchema, type FieldErrors, type LoginValues } from './schema.ts'
 
 export function LoginForm() {
-  const { signIn, sessionExpired } = useAuth()
+  const { signIn, sessionExpired, accountDeleted } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const [values, setValues] = useState<LoginValues>({ email: '', password: '' })
@@ -60,6 +60,10 @@ export function LoginForm() {
 
   return (
     <form ref={formRef} className="form" onSubmit={handleSubmit} noValidate aria-label="Iniciar sesión">
+      {accountDeleted && !serverError && (
+        <InlineAlert tone="success">Tu cuenta y todos tus registros se han eliminado.</InlineAlert>
+      )}
+
       {sessionExpired && !serverError && (
         <InlineAlert tone="info">Tu sesión ha terminado. Inicia sesión para continuar.</InlineAlert>
       )}

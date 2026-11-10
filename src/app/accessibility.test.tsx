@@ -66,6 +66,13 @@ describe('Accesibilidad (axe-core)', () => {
     expect(await axeViolations()).toEqual([])
   })
 
+  it('Ajustes con el diálogo de eliminar cuenta abierto', async () => {
+    await renderAt('/ajustes')
+    await userEvent.setup().click(screen.getByRole('button', { name: 'Eliminar mi cuenta' }))
+    await screen.findByRole('alertdialog')
+    expect(await axeViolations()).toEqual([])
+  })
+
   it('página 404', async () => {
     await renderAt('/no-existe', { authenticated: false })
     expect(await axeViolations()).toEqual([])

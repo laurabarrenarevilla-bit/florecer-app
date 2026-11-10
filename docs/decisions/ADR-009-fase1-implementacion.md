@@ -90,3 +90,11 @@ El 10-11-2026 se observó que el proyecto tiene **«Confirm email» activado**: 
 
 **Resolución (10-11-2026):** con autorización del usuario se desactivó «Confirm email» en el proyecto. El registro vuelve a dar sesión inmediata y entra en Hoy. La pantalla «Revisa tu correo» solo aparecería si alguien reactivara la confirmación.
 
+## 14. Eliminación de la propia cuenta
+
+- Ajustes → «Eliminar cuenta»: diálogo de confirmación que vuelve a pedir la contraseña (se comprueba con `signInWithPassword` antes de borrar). El botón «Cancelar» tiene el foco por defecto.
+- Sin backend ni `service_role` en el navegador: función SQL `public.delete_my_account()` (`20261110000000`), `SECURITY DEFINER` y `search_path` vacío. No recibe parámetros: borra las entradas de `auth.uid()` y su fila de `auth.users`, y Supabase borra en cascada sesiones, identidades y tokens. Solo `authenticated` puede ejecutarla.
+- Tras el borrado se cierra la sesión local y `/login` confirma «Tu cuenta y todos tus registros se han eliminado.». Se limpian la caché y los borradores en memoria.
+- El token de acceso ya emitido sigue siendo válido hasta que caduca (los JWT no se revocan), pero ya no hay datos que leer ni cuenta que refrescar.
+- Si la función no existe en el proyecto, la app lo dice y no borra nada.
+

@@ -29,6 +29,7 @@ No aceptar "pasa" sin ejecución verificable. Pruebas unitarias de dominio, inte
 | F1-15 | Usuario anónimo | No consulta entradas ni muestra rutas privadas |
 | F1-16 | Sesión caducada | Manejo explícito, sin guardar falsamente |
 | F1-17 | 360px y escritorio | Layout navegable, sin scroll horizontal |
+| Cuenta | ✅ (cancelar, contraseña incorrecta, función inexistente, éxito) | ✅ alta, registro, eliminación y acceso imposible después; anónimo sin ejecución | `e2e/remote/account-deletion`, `tests/rls` |
 | F1-18 | Accesibilidad | Labels, foco visible, click/tap, teclado y diálogos |
 
 ## Estado de verificación de la fase 1 (10-11-2026)
@@ -52,6 +53,7 @@ Distinción estricta: **«local»** = aprobado con repositorios en memoria (jsdo
 | F1-15 | ✅ | ✅ anónimo → 42501 | `tests/rls`, `e2e/local` |
 | F1-16 | ✅ | ✅ login real + 401 simulado | `e2e/remote/session-and-layout` |
 | F1-17 | ✅ 360/1440 | ✅ 360 | `e2e/local`, `e2e/remote/session-and-layout` |
+| Cuenta | ✅ (cancelar, contraseña incorrecta, función inexistente, éxito) | ✅ alta, registro, eliminación y acceso imposible después; anónimo sin ejecución | `e2e/remote/account-deletion`, `tests/rls` |
 | F1-18 | ✅ axe jsdom y Chromium | ✅ axe con contraste | `e2e/remote/session-and-layout` |
 
 Fallos encontrados por las pruebas reales y corregidos el 10-11-2026:

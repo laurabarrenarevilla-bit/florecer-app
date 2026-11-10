@@ -14,6 +14,14 @@
     }
   }
 
+  &__section--danger {
+    border-color: a.$color-danger-border;
+
+    .settings__heading {
+      color: a.$color-danger-strong;
+    }
+  }
+
   &__heading {
     font-size: 0.875rem;
     font-weight: 700;

@@ -45,6 +45,10 @@ Requiere autorización expresa. Proyecto de destino: el de `VITE_SUPABASE_URL`; 
 
 Efecto sobre datos existentes: la migración solo crea objetos nuevos (`journal_entries`, su función, su trigger y sus políticas). No modifica ni borra tablas existentes ni `auth.users`; la clave foránea `on delete cascade` hace que **borrar una cuenta borre sus entradas**.
 
+## Migración `20261110000000_delete_my_account.sql`
+
+Solo crea la función `public.delete_my_account()`; no borra nada por sí misma. Vuelta atrás (sin efecto sobre datos): `drop function if exists public.delete_my_account();`. Una cuenta eliminada con la función no se puede recuperar.
+
 ## Observabilidad mínima
 
 Logs estructurados solo para estados/códigos/duración y request id no sensible. No guardar reflexión, payload IA, backup, email, JWT ni claves. Monitorización de fallos de guardado y de la función IA sin hacer session replay.

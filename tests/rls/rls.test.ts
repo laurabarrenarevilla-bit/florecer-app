@@ -152,6 +152,11 @@ describe.skipIf(!REMOTE_ENABLED)('RLS journal_entries', () => {
     expect(data ?? []).toHaveLength(0)
   })
 
+  it('un cliente anónimo no puede ejecutar delete_my_account', async () => {
+    const { error } = await newClient().rpc('delete_my_account')
+    expect(error?.code).toBe('42501')
+  })
+
   it('A borra su entrada y deja de existir', async () => {
     const repoA = createJournalRepository(() => clientA)
     await repoA.deleteByDate(DATE_A)

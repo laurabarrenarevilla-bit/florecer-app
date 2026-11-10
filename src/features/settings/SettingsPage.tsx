@@ -1,6 +1,7 @@
 import { useCurrentUser } from '@/features/auth/authContext.ts'
 import { SignOutButton } from '@/features/auth/SignOutButton.tsx'
 import { PageHeading } from '@/shared/ui/PageHeading.tsx'
+import { DeleteAccountSection } from './DeleteAccountSection.tsx'
 
 export function SettingsPage() {
   const user = useCurrentUser()
@@ -34,7 +35,10 @@ export function SettingsPage() {
         <p>
           Guarda tu contraseña en un lugar seguro: la aplicación no ofrece recuperarla por correo.
         </p>
+        <p>Puedes eliminar tu cuenta y todos tus registros en cualquier momento desde esta página.</p>
       </section>
+
+      <DeleteAccountSection />
     </section>
   )
 }

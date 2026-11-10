@@ -27,3 +27,28 @@ describe('authRepository.signUp', () => {
     expect(error).toBeNull()
   })
 })
+
+describe('authRepository.deleteAccount', () => {
+  function clientWith(rpcResult: unknown) {
+    const signOut = vi.fn(async () => ({ error: null }))
+    const rpc = vi.fn(async () => rpcResult)
+    const client = { rpc, auth: { signOut } } as unknown as SupabaseClient
+    return { client, rpc, signOut }
+  }
+
+  it('llama a delete_my_account y después cierra solo la sesión local', async () => {
+    const { client, rpc, signOut } = clientWith({ data: null, error: null })
+    const { error } = await createAuthRepository(() => client).deleteAccount()
+    expect(error).toBeNull()
+    expect(rpc).toHaveBeenCalledWith('delete_my_account')
+    expect(signOut).toHaveBeenCalledWith({ scope: 'local' })
+  })
+
+  it('si la función no existe (migración sin aplicar) no cierra sesión y lo explica', async () => {
+    const { client, signOut } = clientWith({ data: null, error: { code: 'PGRST202', message: 'Could not find the function' } })
+    const { error } = await createAuthRepository(() => client).deleteAccount()
+    expect(mapAuthError(error).code).toBe('ACCOUNT_DELETION_UNAVAILABLE')
+    expect(signOut).not.toHaveBeenCalled()
+  })
+})
+

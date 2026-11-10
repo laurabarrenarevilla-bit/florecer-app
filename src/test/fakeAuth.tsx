@@ -15,11 +15,13 @@ export function createFakeAuth(overrides: Partial<AuthContextValue> = {}): AuthC
     user: null,
     sessionExpired: false,
     signedOutManually: false,
+    accountDeleted: false,
     justSignedUp: false,
     dismissWelcome: vi.fn(),
     signIn: vi.fn(async () => ({ ok: true as const })),
     signUp: vi.fn(async () => ({ ok: true as const, sessionStarted: true })),
     signOut: vi.fn(async () => ({ ok: true as const })),
+    deleteAccount: vi.fn(async () => ({ ok: true as const })),
     ...overrides,
   }
 }

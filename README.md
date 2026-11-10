@@ -48,6 +48,7 @@ docs/             especificación, decisiones (ADR) y procedimientos
 
 - RLS por `auth.uid()` y privilegios por columna; el cliente nunca envía `user_id`.
 - Registro público con correo y contraseña, solo con Supabase Auth y sin SMTP externo. Si el proyecto exige confirmar el correo, la app pide revisarlo tras el registro; si no, entra directamente. No hay recuperación de contraseña por correo (ADR-009 §1 y §13).
+- Cada persona puede eliminar su cuenta y todos sus registros desde Ajustes, confirmando con su contraseña (función SQL `delete_my_account`, limitada a `auth.uid()`).
 - Los borradores sin guardar se conservan solo en memoria de la pestaña, nunca en `localStorage`.
 - CSP estricta y cabeceras de seguridad en `vercel.json`.
 
