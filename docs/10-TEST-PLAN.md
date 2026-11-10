@@ -33,28 +33,32 @@ No aceptar "pasa" sin ejecución verificable. Pruebas unitarias de dominio, inte
 
 ## Estado de verificación de la fase 1 (10-11-2026)
 
-Distinción estricta: **«local»** = aprobado con repositorios en memoria (jsdom) o en navegador real sin Supabase; **«Supabase real»** = comprobado contra el proyecto de Laura. Ninguna fila está verificada todavía contra Supabase: la migración no está aplicada.
+Distinción estricta: **«local»** = aprobado con repositorios en memoria (jsdom) o en navegador real sin Supabase. **«Supabase real»** = comprobado contra el proyecto de producción con dos cuentas sintéticas (A/B) y la clave publicable, el 10-11-2026 tras aplicar la migración `20261109000000`.
 
-| ID | Local (aprobado) | Prueba preparada contra Supabase real | Estado real |
+| ID | Local | Supabase real | Prueba real |
 |---|---|---|---|
-| F1-01 | `TodayPage.test` | `e2e/remote/journal` | Pendiente |
-| F1-02/03 | `TodayPage.test` | `e2e/remote/journal` | Pendiente |
-| F1-04 | — (necesita backend) | `e2e/remote/journal` (recarga y contexto nuevo) | Pendiente |
-| F1-05 | `TodayPage.test`, `CalendarPage.test` | `e2e/remote/journal` + recuento de filas | Pendiente |
-| F1-06 | `CalendarPage.test` | `e2e/remote/calendar` | Pendiente |
-| F1-07 | `CalendarPage.test` (sin consulta) | `e2e/remote/calendar` + trigger SQL en `test:rls` | Pendiente |
-| F1-08 | `CalendarPage.test` | `e2e/remote/calendar` + recuento de filas | Pendiente |
-| F1-09 | `calendarGrid.test`, `CalendarPage.test` | `e2e/remote/calendar` | Pendiente |
-| F1-10/11 | `dates.test`, `calendarGrid.test` (TZ Europe/Madrid) | — (lógica pura) | Cubierto localmente |
-| F1-12 | `TodayPage.test` | `e2e/remote/journal` + recuento | Pendiente |
-| F1-13 | `TodayPage.test` | `e2e/remote/journal` (`setOffline`) | Pendiente |
-| F1-14 | — (necesita RLS) | `tests/rls` (11 casos) + `e2e/remote/isolation` | Pendiente |
-| F1-15 | `AuthPage.test`, `e2e/local` | `tests/rls` (anónimo) | Parcial: UI local OK |
-| F1-16 | `sessionExpiry.test`, `AuthProvider.test` | `e2e/remote/session-and-layout` (login real + 401 simulado) | Pendiente |
-| F1-17 | `e2e/local` (páginas públicas, 360/1440) | `e2e/remote/session-and-layout` | Parcial |
-| F1-18 | `accessibility.test` (axe, jsdom), `e2e/local` (axe con contraste) | `e2e/remote/session-and-layout` | Parcial |
+| F1-01 | ✅ | ✅ | `e2e/remote/journal` |
+| F1-02/03 | ✅ | ✅ (1 fila) | `e2e/remote/journal` + recuento |
+| F1-04 | — | ✅ recarga y contexto nuevo | `e2e/remote/journal` |
+| F1-05 | ✅ | ✅ (sigue 1 fila) | `e2e/remote/journal` + recuento |
+| F1-06 | ✅ | ✅ | `e2e/remote/calendar` |
+| F1-07 | ✅ | ✅ UI + trigger SQL | `e2e/remote/calendar`, `tests/rls` |
+| F1-08 | ✅ | ✅ (0 filas tras borrar) | `e2e/remote/calendar` + recuento |
+| F1-09 | ✅ | ✅ | `e2e/remote/calendar` |
+| F1-10/11 | ✅ (TZ Europe/Madrid) | — lógica pura | `dates.test`, `calendarGrid.test` |
+| F1-12 | ✅ | ✅ (1 fila) | `e2e/remote/journal` + recuento |
+| F1-13 | ✅ | ✅ (`setOffline`) | `e2e/remote/journal` |
+| F1-14 | — | ✅ 11 casos RLS + UI | `tests/rls`, `e2e/remote/isolation` |
+| F1-15 | ✅ | ✅ anónimo → 42501 | `tests/rls`, `e2e/local` |
+| F1-16 | ✅ | ✅ login real + 401 simulado | `e2e/remote/session-and-layout` |
+| F1-17 | ✅ 360/1440 | ✅ 360 | `e2e/local`, `e2e/remote/session-and-layout` |
+| F1-18 | ✅ axe jsdom y Chromium | ✅ axe con contraste | `e2e/remote/session-and-layout` |
 
-Revisión manual adicional (10-11-2026, navegador real con datos en memoria, fuera del repositorio): axe-core sin infracciones (contraste incluido) en Hoy, Calendario, detalle, edición y confirmación a 360 y 1440 px. Teclado: Enter abre el detalle, el foco queda atrapado, Escape cierra y devuelve el foco a la celda, y las flechas cambian la emoción.
+Fallos encontrados por las pruebas reales y corregidos el 10-11-2026:
+- Tras cerrar sesión, la siguiente persona entraba en la pantalla anterior (p. ej. Ajustes) en lugar de en Hoy.
+- Sin red, TanStack Query pausaba el guardado en silencio («Guardando…» indefinido); ahora falla al momento con «No hay conexión».
+
+Pendiente en la URL desplegada: smoke del guion de 90 s de `docs/03` en un móvil real.
 
 ## Fase 2 — obligatorio
 

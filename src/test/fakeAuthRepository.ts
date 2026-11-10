@@ -38,6 +38,8 @@ export function createFakeAuthRepository() {
     signUp: vi.fn<AuthRepository['signUp']>(async () => ({ session: fakeSession(), error: null })),
     signOut: vi.fn<AuthRepository['signOut']>(async () => {
       listener('SIGNED_OUT', null)
+      // Como supabase-js: la interfaz reacciona al evento antes de que la promesa termine.
+      await new Promise((resolve) => setTimeout(resolve, 0))
       return { error: null }
     }),
     expireSession: vi.fn<AuthRepository['expireSession']>(async () => {

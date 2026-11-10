@@ -2,7 +2,7 @@
 
 Diario emocional personal en español de España. Cada día se registra cómo te has sentido (Feliz, Normal o Triste), con una reflexión y un pequeño logro opcionales, y se consulta en un calendario de colores.
 
-**Estado (10-11-2026):** fase 1 implementada y probada localmente. **Aún no verificada contra Supabase ni desplegada**: faltan la migración remota, las pruebas RLS/E2E reales y el despliegue, pendientes de autorización (ver `docs/10-TEST-PLAN.md`, sección «Estado de verificación»).
+**Estado (10-11-2026):** fase 1 implementada y verificada contra Supabase real: migración aplicada, RLS con dos cuentas y E2E remotas en verde (ver `docs/10-TEST-PLAN.md`, «Estado de verificación»). **Pendiente: despliegue en Vercel** y smoke en un móvil real.
 
 ## Stack
 

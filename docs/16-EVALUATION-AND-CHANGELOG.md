@@ -52,3 +52,12 @@ No crear entradas artificiales para demostrar uso. Mostrar profesor calendario c
 ## Plantilla del informe final
 
 1. Problema y usuario; 2. PMV enseñado (qué hacía); 3. Qué se aprendió usándolo; 4. Cambios: necesidad → mejora → prueba; 5. Evidencia de uso (agregada); 6. Seguridad y almacenamiento; 7. Tests y fallos encontrados/corregidos; 8. Limitaciones.
+
+## Registro de operaciones sobre Supabase
+
+| Fecha | Proyecto | Operación | Método | Verificación |
+|---|---|---|---|---|
+| 10-11-2026 | producción (ref. en el panel; no se versiona) | Migración `20261109000000_journal_entries` (sha256 `a39e0b74…`) en una transacción, registrada en `supabase_migrations.schema_migrations` | Management API (equivale al SQL Editor), con autorización expresa | `rls_checks.sql`: RLS activada, 4 políticas `authenticated`, `anon` sin privilegios, insert/update por columna, 7 restricciones y trigger |
+| 10-11-2026 | producción | Auth: Confirm email OFF (`mailer_autoconfirm`), contraseña mínima 8 con minúsculas, mayúsculas y dígitos | Management API, cuenta Owner, con autorización | Lectura de la configuración tras el cambio. Ya estaban: signup ON, Email ON, anónimos OFF, sin SMTP |
+| 10-11-2026 | producción | Alta de cuentas sintéticas A/B por el registro público (una sola vez) | `pnpm test:rls` | 3 cuentas en total; 0 filas de prueba tras las pruebas |
+

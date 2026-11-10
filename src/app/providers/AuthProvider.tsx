@@ -27,6 +27,7 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
   const [status, setStatus] = useState<AuthStatus>('loading')
   const [user, setUser] = useState<AuthUser | null>(null)
   const [sessionExpired, setSessionExpired] = useState(false)
+  const [signedOutManually, setSignedOutManually] = useState(false)
   const [justSignedUp, setJustSignedUp] = useState(false)
   const manualSignOutRef = useRef(false)
   const currentUserIdRef = useRef<string | null>(null)
@@ -49,10 +50,12 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
 
       if (event === 'SIGNED_OUT') {
         setSessionExpired(!manualSignOutRef.current)
+        setSignedOutManually(manualSignOutRef.current)
         manualSignOutRef.current = false
         setJustSignedUp(false)
       } else if (nextUser) {
         setSessionExpired(false)
+        setSignedOutManually(false)
       }
     })
     return unsubscribe
@@ -103,8 +106,8 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
   const dismissWelcome = useCallback(() => setJustSignedUp(false), [])
 
   const value = useMemo<AuthContextValue>(
-    () => ({ status, user, sessionExpired, justSignedUp, dismissWelcome, signIn, signUp, signOut }),
-    [status, user, sessionExpired, justSignedUp, dismissWelcome, signIn, signUp, signOut],
+    () => ({ status, user, sessionExpired, signedOutManually, justSignedUp, dismissWelcome, signIn, signUp, signOut }),
+    [status, user, sessionExpired, signedOutManually, justSignedUp, dismissWelcome, signIn, signUp, signOut],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -18,6 +18,8 @@ export interface AuthContextValue {
   user: AuthUser | null
   /** La sesión terminó sin que la persona cerrara sesión (caducidad, otra pestaña). */
   sessionExpired: boolean
+  /** La persona cerró sesión voluntariamente en esta pestaña (no se recuerda la ruta anterior). */
+  signedOutManually: boolean
   /** Cuenta recién creada en esta pestaña: se muestra una confirmación en Hoy. */
   justSignedUp: boolean
   dismissWelcome: () => void

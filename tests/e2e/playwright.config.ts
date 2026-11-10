@@ -32,6 +32,8 @@ export default defineConfig({
     browserName: 'chromium',
     locale: 'es-ES',
     timezoneId: 'Europe/Madrid',
+    // Sin animaciones: axe no debe medir contraste a mitad de un fundido.
+    reducedMotion: 'reduce',
     // Sin trazas: guardarían tokens de sesión y textos de las peticiones.
     trace: 'off',
     screenshot: 'only-on-failure',

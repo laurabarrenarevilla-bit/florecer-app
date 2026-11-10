@@ -10,6 +10,8 @@ import { REMOTE_ENABLED, REMOTE_SKIP_REASON, testAccounts } from '../support/env
 setup.skip(!REMOTE_ENABLED, REMOTE_SKIP_REASON)
 
 setup('cuentas de prueba A y B disponibles (registro público solo la primera vez)', async ({ page }) => {
+  // Dos inicios y cierres de sesión reales contra Supabase.
+  setup.setTimeout(90_000)
   const { a, b } = testAccounts()
   for (const account of [a, b]) {
     await page.goto('/login')

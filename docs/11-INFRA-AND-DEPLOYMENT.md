@@ -23,7 +23,7 @@ Ver `.env.example` del paquete. `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE
 
 ## Configuración Supabase Auth
 
-URL del sitio y redirects correctos para local y producción. Según ADR-009: signup público ON, *Confirm email* OFF (el 10-11-2026 estaba ON: ver ADR-009 §13 sobre los límites del correo integrado), política de contraseñas (mín. 8, mayúsculas, minúsculas y dígitos), rate limits revisados, CAPTCHA nativo disponible si hay abuso. Sin SMTP externo ni recuperación por correo. Las URLs no deben permitir open redirect. Consistencia con dominio Vercel.
+URL del sitio y redirects correctos para local y producción. Según ADR-009: signup público ON, *Confirm email* OFF (aplicado el 10-11-2026; ver ADR-009 §13), política de contraseñas (mín. 8, mayúsculas, minúsculas y dígitos), rate limits revisados, CAPTCHA nativo disponible si hay abuso. Sin SMTP externo ni recuperación por correo. Las URLs no deben permitir open redirect. Consistencia con dominio Vercel.
 
 ## Despliegue frontend Vite en Vercel
 

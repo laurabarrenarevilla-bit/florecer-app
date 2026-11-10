@@ -87,3 +87,6 @@ El 10-11-2026 se observó que el proyecto tiene **«Confirm email» activado**: 
 - Si la confirmación se desactiva, `signUp` devuelve sesión y se entra directamente en Hoy: la app funciona en los dos modos sin cambios.
 
 **Riesgo pendiente de decidir:** el servicio de correo integrado de Supabase solo entrega a direcciones del equipo de la organización y con un límite muy bajo de envíos por hora. Para cualquier otra persona, el correo de confirmación puede no llegar nunca y la cuenta quedaría sin poder entrar. También hay que revisar la *Site URL*, porque el enlace del correo redirige allí tras confirmar. Mientras no haya SMTP propio (descartado en §1), lo coherente para un registro abierto es desactivar «Confirm email»; mantenerla activada solo funciona para cuentas del equipo.
+
+**Resolución (10-11-2026):** con autorización del usuario se desactivó «Confirm email» en el proyecto. El registro vuelve a dar sesión inmediata y entra en Hoy. La pantalla «Revisa tu correo» solo aparecería si alguien reactivara la confirmación.
+

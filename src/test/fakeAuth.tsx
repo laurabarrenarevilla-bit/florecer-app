@@ -14,6 +14,7 @@ export function createFakeAuth(overrides: Partial<AuthContextValue> = {}): AuthC
     status: 'anonymous',
     user: null,
     sessionExpired: false,
+    signedOutManually: false,
     justSignedUp: false,
     dismissWelcome: vi.fn(),
     signIn: vi.fn(async () => ({ ok: true as const })),
