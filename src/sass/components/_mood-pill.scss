@@ -1,0 +1,20 @@
+@use 'sass:map';
+@use '@abstracts/abstracts' as a;
+
+// Etiqueta de emoción con su color y tinta legible.
+.mood-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: a.$space-2;
+  padding: 0.4375rem a.$space-4 0.4375rem a.$space-3;
+  border-radius: a.$radius-pill;
+  font-size: 0.875rem;
+  font-weight: 700;
+
+  @each $name, $mood in a.$moods {
+    &--#{$name} {
+      background: map.get($mood, bg);
+      color: map.get($mood, ink);
+    }
+  }
+}

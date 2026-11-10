@@ -4,6 +4,8 @@ import type { ReactNode } from 'react'
 import { MemoryRouter } from 'react-router'
 import { vi } from 'vitest'
 import { AuthContext, type AuthContextValue } from '@/features/auth/authContext.ts'
+import type { JournalRepository } from '@/features/journal/journalRepository.ts'
+import { JournalRepositoryContext } from '@/features/journal/repositoryContext.ts'
 import { ToastProvider } from '@/shared/ui/ToastProvider.tsx'
 
 /** Contexto de auth falso para pruebas de componentes (sin Supabase). */
@@ -31,15 +33,25 @@ interface RenderOptions {
   auth?: AuthContextValue
   path?: string
   queryClient?: QueryClient
+  /** Repositorio del diario en memoria; sin él se usaría el real (Supabase). */
+  journalRepository?: JournalRepository
 }
 
-export function renderWithProviders(ui: ReactNode, { auth = createFakeAuth(), path = '/', queryClient }: RenderOptions = {}) {
+export function renderWithProviders(
+  ui: ReactNode,
+  { auth = createFakeAuth(), path = '/', queryClient, journalRepository }: RenderOptions = {},
+) {
   const client = queryClient ?? createTestQueryClient()
+  const content = <ToastProvider>{ui}</ToastProvider>
   const result = render(
     <QueryClientProvider client={client}>
       <MemoryRouter initialEntries={[path]}>
         <AuthContext.Provider value={auth}>
-          <ToastProvider>{ui}</ToastProvider>
+          {journalRepository ? (
+            <JournalRepositoryContext.Provider value={journalRepository}>{content}</JournalRepositoryContext.Provider>
+          ) : (
+            content
+          )}
         </AuthContext.Provider>
       </MemoryRouter>
     </QueryClientProvider>,

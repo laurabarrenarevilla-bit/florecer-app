@@ -40,15 +40,4 @@ export const signUpSchema = z
 export type LoginValues = z.input<typeof loginSchema>
 export type SignUpValues = z.input<typeof signUpSchema>
 
-export type FieldErrors = Partial<Record<string, string>>
-
-/** Primer mensaje de error por campo. */
-export function firstFieldErrors(error: z.ZodError): FieldErrors {
-  const result: FieldErrors = {}
-  for (const issue of error.issues) {
-    const key = issue.path[0]
-    if (typeof key !== 'string') continue
-    if (result[key] === undefined) result[key] = issue.message
-  }
-  return result
-}
+export { firstFieldErrors, type FieldErrors } from '@/shared/lib/fieldErrors.ts'

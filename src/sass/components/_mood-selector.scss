@@ -1,0 +1,95 @@
+@use 'sass:map';
+@use '@abstracts/abstracts' as a;
+
+// Selector de emoción: radios nativos ocultos dentro de tarjetas-etiqueta.
+.mood-selector {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  &__legend {
+    padding: 0;
+    margin-bottom: a.$space-4;
+    font-size: a.$font-size-lg;
+    font-weight: 600;
+    color: a.$color-primary;
+  }
+
+  &__options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: a.$space-3;
+  }
+
+  &__option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: a.$space-2;
+    min-height: a.$tap-target;
+    padding: a.$space-5 a.$space-2;
+    border: 1.5px solid a.$color-border-strong;
+    border-radius: a.$radius-xl;
+    background: a.$color-surface;
+    color: a.$color-text-secondary;
+    cursor: pointer;
+    transition:
+      background-color a.$duration-fast a.$easing,
+      border-color a.$duration-fast a.$easing,
+      color a.$duration-fast a.$easing,
+      transform a.$duration-fast a.$easing;
+
+    &:hover {
+      border-color: a.$color-border-input;
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    // El radio está oculto: el anillo de foco se dibuja en la tarjeta.
+    &:has(.mood-selector__input:focus-visible) {
+      @include a.focus-ring;
+    }
+
+    @include a.reduced-motion {
+      transition: none;
+
+      &:active {
+        transform: none;
+      }
+    }
+  }
+
+  @each $name, $mood in a.$moods {
+    &__option--#{$name}:has(.mood-selector__input:checked) {
+      border-color: map.get($mood, bg);
+      background: map.get($mood, bg);
+      color: map.get($mood, ink);
+    }
+  }
+
+  &__input {
+    @include a.visually-hidden;
+  }
+
+  &__label {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  &[aria-invalid='true'] .mood-selector__option {
+    border-color: a.$color-danger;
+  }
+
+  &:disabled .mood-selector__option {
+    cursor: default;
+    opacity: 0.75;
+  }
+
+  .field__error {
+    margin-top: a.$space-3;
+  }
+}

@@ -1,0 +1,9 @@
+@use '@abstracts/abstracts' as a;
+
+// Página Hoy (/hoy): la portada de la aplicación autenticada.
+.today {
+  .page-heading__lead {
+    font-size: a.$font-size-base;
+    line-height: 1.5;
+  }
+}

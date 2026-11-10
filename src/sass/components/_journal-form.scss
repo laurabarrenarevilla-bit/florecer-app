@@ -1,0 +1,21 @@
+@use '@abstracts/abstracts' as a;
+
+// Formulario de una entrada (Hoy y edición de días pasados).
+.journal-form {
+  &__mood {
+    padding: a.$space-5;
+
+    @include a.breakpoint(tablet) {
+      padding: a.$space-6;
+    }
+  }
+
+  &__hint {
+    font-size: a.$font-size-sm;
+    color: a.$color-text-secondary;
+  }
+
+  .btn-row > .btn--secondary {
+    flex: 0 0 auto;
+  }
+}
