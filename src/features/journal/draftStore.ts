@@ -16,6 +16,20 @@ export interface JournalDraft {
 }
 
 const drafts = new Map<string, JournalDraft>()
+const listeners = new Set<() => void>()
+
+export function hasUnsavedDrafts(): boolean {
+  return drafts.size > 0
+}
+
+export function subscribeToDrafts(listener: () => void): () => void {
+  listeners.add(listener)
+  return () => { listeners.delete(listener) }
+}
+
+function notifyDrafts() {
+  for (const listener of listeners) listener()
+}
 
 export function draftKey(userId: string, date: LocalDate): string {
   return `${userId}:${date}`
@@ -31,15 +45,18 @@ export function hasDraft(key: string): boolean {
 
 export function saveDraft(key: string, draft: JournalDraft): void {
   drafts.set(key, { ...draft })
+  notifyDrafts()
 }
 
 export function clearDraft(key: string): void {
   drafts.delete(key)
+  notifyDrafts()
 }
 
 /** Al cerrar sesión: no debe quedar texto de nadie en memoria. */
 export function clearAllDrafts(): void {
   drafts.clear()
+  notifyDrafts()
 }
 
 /** Al entrar otra cuenta en la misma pestaña: se descartan los borradores ajenos. */
@@ -47,4 +64,5 @@ export function clearDraftsExcept(userId: string): void {
   for (const key of drafts.keys()) {
     if (!key.startsWith(`${userId}:`)) drafts.delete(key)
   }
+  notifyDrafts()
 }

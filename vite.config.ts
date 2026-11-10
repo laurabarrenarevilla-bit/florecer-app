@@ -2,6 +2,7 @@
 import { fileURLToPath, URL } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 const sassDir = (folder: string) =>
   fileURLToPath(new URL(`./src/sass/${folder}`, import.meta.url))
@@ -12,7 +13,25 @@ const sassFolders = ['abstracts', 'base', 'components', 'layout', 'pages', 'them
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), VitePWA({
+    manifest: false,
+    injectRegister: false,
+    registerType: 'prompt',
+    includeAssets: ['favicon/*.png', 'favicon/favicon.ico', 'favicon/site.webmanifest'],
+    workbox: {
+      cacheId: 'florecer',
+      globPatterns: ['**/*.{js,css,html,woff2}'],
+      globIgnores: ['**/pwa-lifecycle.js'],
+      importScripts: ['/pwa-lifecycle.js'],
+      navigateFallback: '/index.html',
+      navigateFallbackDenylist: [/^\/api(?:\/|$)/, /^\/assets\//, /^\/favicon\//, /\.[^/]+$/],
+      runtimeCaching: [],
+      cleanupOutdatedCaches: true,
+      skipWaiting: false,
+      clientsClaim: false,
+    },
+    devOptions: { enabled: false },
+  })],
   resolve: {
     alias: [
       { find: /^@\//, replacement: `${fileURLToPath(new URL('./src', import.meta.url))}/` },

@@ -1,6 +1,7 @@
 import { useCurrentUser } from '@/features/auth/authContext.ts'
 import { SignOutButton } from '@/features/auth/SignOutButton.tsx'
 import { PageHeading } from '@/shared/ui/PageHeading.tsx'
+import { InstallSection } from '@/features/pwa/InstallSection.tsx'
 import { DeleteAccountSection } from './DeleteAccountSection.tsx'
 
 export function SettingsPage() {
@@ -38,6 +39,7 @@ export function SettingsPage() {
         <p>Puedes eliminar tu cuenta y todos tus registros en cualquier momento desde esta página.</p>
       </section>
 
+      <InstallSection />
       <DeleteAccountSection />
     </section>
   )

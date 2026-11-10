@@ -39,6 +39,17 @@ Build `pnpm build`; output habitual `dist` tras confirmar config. SPA fallback p
 4. Tras el primer despliegue: Supabase → Authentication → URL Configuration → *Site URL* = URL de producción; *Redirect URLs* = esa URL y `http://localhost:5173/**`.
 5. Smoke: deep link a `/calendario?mes=…`, recarga en `/hoy`, guion de 90 s de `docs/03`.
 
+## PWA: configuración local preparada (10-11-2026)
+
+Ver `decisions/ADR-010-pwa-instalable.md`. El build genera `sw.js` y Workbox;
+el manifest sigue en `/favicon/site.webmanifest`. Registro solo en build de
+producción, con actualizaciones solicitadas por la persona. La caché contiene
+solo archivos públicos; Supabase y las API siguen requiriendo conexión.
+`vercel.json` añade revalidación del worker/script de ciclo de vida/manifest,
+tipo MIME del manifest, `worker-src 'self'` y exclusiones del rewrite SPA.
+Verificar estos cambios en HTTPS tras autorización de despliegue. Instalación
+real Android/iOS y retirada de worker aún pendientes de ensayo en dispositivos.
+
 ## CI mínima
 
 Pull request: instalación lockfile `pnpm install --frozen-lockfile`; `typecheck`, `lint`, `test`, `build`; Playwright según recursos; escaneo básico de secretos/dependencias. Tests contra Supabase de prueba y sin archivos personales. Gate verde antes de deploy final.

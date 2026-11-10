@@ -36,6 +36,12 @@ Una cuenta de uso controlado y sin registro público innecesario. **Sustituida e
 
 Ver `docs/decisions/ADR-009-fase1-implementacion.md`.
 
+## ADR-010: PWA instalable con caché estática (implementada localmente)
+
+Ver `docs/decisions/ADR-010-pwa-instalable.md`. Solicitada por el usuario:
+instalación, caché de archivos públicos y actualización protegida; sin diario offline.
+Pendiente validación instalada en dispositivos y publicación HTTPS autorizada.
+
 ## Riesgos
 
 | Riesgo | Impacto | Plan |

@@ -96,6 +96,25 @@ Con dos usuarios de test A/B: SELECT, INSERT con `user_id` ajeno, UPDATE, DELETE
 3. Login A → añadir día anterior → eliminación con confirm → refresh.
 4. Fase 2: export/import prueba aislada; IA previsualiza y cancela sin red; confirma con proveedor mock de pruebas y recibe schema válido.
 
+## PWA: validación local del 10-11-2026
+
+- `pnpm lint`: correcto, sin avisos.
+- `pnpm test`: 20 archivos, 137 pruebas aprobadas (10 nuevas de PWA).
+- `pnpm build`: TypeScript y Vite correctos; worker generado con 29 recursos
+  precacheados, aproximadamente 794 KiB. Sin caché dinámica de peticiones.
+- `pnpm exec tsc -p tsconfig.tests.json --noEmit`: correcto, incluye tests E2E.
+- `pnpm e2e`: 32 pruebas aprobadas en Chromium, 360px y 1440px.
+  Incluye 6 ejecuciones PWA: manifest/iconos, arranque offline, caché limitada
+  a archivos públicos, nueva versión con dos ventanas y borrador conservado
+  al pasar de Hoy a Ajustes y aplazar. Auth/REST se simulan e interceptan en
+  el contexto aislado de esa prueba; no se crean cuentas ni filas remotas.
+- Ajustes con aviso de actualización: axe sin infracciones, sin desbordamiento
+  horizontal y revisión de capturas móvil/escritorio con cuenta sintética.
+- Las pruebas de nueva versión alteran los bytes del worker compilado y los
+  restauran; no equivalen a probar dos publicaciones HTTPS distintas.
+- Pendientes: instalación nativa Android/iOS, sesión desde icono, teclado en
+  dispositivo real, cabeceras/rutas Vercel y ensayo de retirada de worker.
+
 ## Evidencias del profesor
 
 Capturas del calendario con datos voluntarios; notas reales de uso diario (solo fechas y mejoras, sin contenido íntimo); informe de mejora en `16`. No subir reflexiones personales ni tokens a repositorios o documentos públicos.

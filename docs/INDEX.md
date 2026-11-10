@@ -22,6 +22,7 @@
 18. `17-API-AND-ERROR-CONTRACTS.md`: tipos, endpoints, errores y límites.
 19. `18-OPERATIONS-AND-RECOVERY.md`: incidentes, restauración y procedimientos.
 20. `references/`: prototipo de Claude Design como referencia, no implementación.
+21. `decisions/ADR-010-pwa-instalable.md`: instalación PWA, caché estática, actualizaciones y retirada.
 
 ## Precedencia
 

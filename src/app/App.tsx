@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { BrowserRouter } from 'react-router'
 import { readSupabaseEnv } from '@/lib/supabase/env.ts'
 import { ToastProvider } from '@/shared/ui/ToastProvider.tsx'
+import { PwaStatus } from '@/features/pwa/PwaStatus.tsx'
 import { ConfigErrorPage } from '@/pages/ConfigErrorPage.tsx'
 import { ErrorBoundary } from './ErrorBoundary.tsx'
 import { AuthProvider } from './providers/AuthProvider.tsx'
@@ -22,6 +23,7 @@ export function App() {
         <BrowserRouter>
           <AuthProvider>
             <ToastProvider>
+              <PwaStatus />
               <AppRoutes />
             </ToastProvider>
           </AuthProvider>
