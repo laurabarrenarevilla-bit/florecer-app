@@ -36,11 +36,13 @@ Una cuenta de uso controlado y sin registro público innecesario. **Sustituida e
 
 Ver `docs/decisions/ADR-009-fase1-implementacion.md`.
 
-## ADR-010: PWA instalable con caché estática (implementada localmente)
+## ADR-010: PWA instalable con caché estática (en producción, se mantiene)
 
 Ver `docs/decisions/ADR-010-pwa-instalable.md`. Solicitada por el usuario:
 instalación, caché de archivos públicos y actualización protegida; sin diario offline.
-Pendiente validación instalada en dispositivos y publicación HTTPS autorizada.
+Publicada en florecer-diario.vercel.app y revisada el 10-11-2026 (la caché no contiene
+datos personales). El usuario decide mantenerla en la fase 1, como excepción a CLAUDE.md.
+Pendiente: validar la instalación en dispositivos Android/iOS reales.
 
 ## Riesgos
 
