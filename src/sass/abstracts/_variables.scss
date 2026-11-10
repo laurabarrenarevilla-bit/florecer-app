@@ -9,25 +9,25 @@ $primary-font: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-se
 $secondary-font: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
 
 // ---------------------------------------------------------------------------
-// Colores de Florecer (docs/06). Los textos secundarios se oscurecen respecto
-// al prototipo (#777A73, #A79F8B) para alcanzar contraste AA sobre crema.
+// Colores de Florecer (docs/06). Superficies salvia y acentos verdes;
+// textos secundarios oscuros para mantener contraste AA.
 // ---------------------------------------------------------------------------
-$color-bg: #FAF8F3; // crema
+$color-bg: #F2F7F2; // verde salvia muy suave
 $color-surface: #FFFFFF;
-$color-surface-soft: #FFFDF8; // fondo de campos de texto
-$color-muted-bg: #F1EEE5; // segmentados, fondos neutros
+$color-surface-soft: #FFFFFF; // fondo de campos de texto
+$color-muted-bg: #E7EFE7; // segmentados, fondos neutros
 $color-sage-soft: #EEF2EC;
 
 $color-primary: #354E41; // verde oscuro
-$color-primary-ink: #FAF8F3; // texto sobre primario
+$color-primary-ink: #FFFFFF; // texto sobre primario
 $color-sage: #8BAA91; // verde salvia (decorativo, no para texto pequeño)
 
-$color-text: #2E2B26;
-$color-text-secondary: #62655E; // ≥ 5:1 sobre crema
-$color-text-subtle: #6F6858; // etiqueta "Opcional"
-$color-border: #ECE7DA;
-$color-border-strong: #DCD6C6;
-$color-border-input: #948D7C; // borde de inputs con ≥ 3:1 (WCAG 1.4.11)
+$color-text: #29332D;
+$color-text-secondary: #59685E;
+$color-text-subtle: #607065; // etiqueta "Opcional"
+$color-border: #DBE5DC;
+$color-border-strong: #C7D5C9;
+$color-border-input: #7E9082; // borde de inputs con ≥ 3:1 (WCAG 1.4.11)
 
 $color-danger: #B5513D;
 $color-danger-strong: #8A4332;

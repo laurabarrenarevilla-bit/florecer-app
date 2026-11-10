@@ -6,13 +6,15 @@
 
 ## Identidad
 
-- Fondo crema `#FAF8F3`; superficies blancas `#FFFFFF`; verde oscuro `#354E41`; verde salvia `#8BAA91`.
+- Fondo verde salvia muy suave `#F2F7F2`; superficies y campos blancos `#FFFFFF`; fondos neutros secundarios `#E7EFE7`; verde oscuro `#354E41`; verde salvia `#8BAA91`.
 - Feliz amarillo `#F5D36A`; normal naranja `#F2A66E`; triste azul `#91BCE0`.
-- Texto primario aprox. `#2E2B26`, secundario `#777A73`, borde `#ECE7DA`.
+- Texto primario `#29332D`, secundario `#59685E`, sutil `#607065`; borde `#DBE5DC`, borde fuerte `#C7D5C9` y borde de campos `#7E9082`.
 - Tipos: Fraunces (títulos), DM Sans (cuerpo), alternativas de sistema si no cargan.
 - Respeto editorial, cálido, sin dashboard corporativo ni gradientes violetas.
 - Colores emoción accesibles con etiquetas y/o iconos, no solo color.
 - No adoptar automáticamente los colores del prototipo si rompen WCAG; ajustar contraste conservando estética.
+
+Actualización 10-11-2026 por petición del usuario: sustituir el crema del prototipo por una base salvia suave y acogedora (el gris se descarta por resultar frío), incluidos campos, bordes, metadatos del navegador y manifest PWA. Se conserva la estructura SASS 7-1 real y el único entrypoint `src/sass/main.scss`; sin divergencias estructurales con `02`.
 
 ## NAV y pantallas
 
