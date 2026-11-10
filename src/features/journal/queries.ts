@@ -15,12 +15,13 @@ export const entryKeys = {
   range: (userId: string, from: LocalDate, to: LocalDate) => ['entries', userId, 'range', from, to] as const,
 }
 
-export function useEntryByDate(date: LocalDate) {
+export function useEntryByDate(date: LocalDate, { enabled = true }: { enabled?: boolean } = {}) {
   const { id: userId } = useCurrentUser()
   const repository = useJournalRepository()
   return useQuery({
     queryKey: entryKeys.day(userId, date),
     queryFn: () => repository.getByDate(date),
+    enabled,
   })
 }
 

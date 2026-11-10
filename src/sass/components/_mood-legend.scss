@@ -1,0 +1,41 @@
+@use 'sass:map';
+@use '@abstracts/abstracts' as a;
+
+.mood-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: a.$space-2 a.$space-4;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: a.$space-2;
+    font-size: a.$font-size-xs;
+    color: a.$color-text-secondary;
+  }
+
+  &__swatch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.3125rem;
+
+    @each $name, $mood in a.$moods {
+      &--#{$name} {
+        background: map.get($mood, bg);
+        color: map.get($mood, ink);
+      }
+    }
+
+    &--empty {
+      background: a.$color-muted-bg;
+      border: 1px solid a.$color-border-strong;
+    }
+  }
+}

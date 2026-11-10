@@ -1,0 +1,69 @@
+@use 'sass:map';
+@use '@abstracts/abstracts' as a;
+
+// Día del calendario. Emoción = color + icono (no solo color).
+.day-cell {
+  @extend %reset-button;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  width: 100%;
+  aspect-ratio: 1;
+  min-height: a.$tap-target;
+  border-radius: a.$radius-md;
+  font-size: a.$font-size-sm;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: transform a.$duration-fast a.$easing, box-shadow a.$duration-fast a.$easing;
+
+  &--empty {
+    background: a.$color-muted-bg;
+    color: a.$color-text;
+  }
+
+  @each $name, $mood in a.$moods {
+    &--#{$name} {
+      background: map.get($mood, bg);
+      color: map.get($mood, ink);
+    }
+  }
+
+  &__mood {
+    display: inline-flex;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  // Hoy: borde verde. Seleccionado: anillo exterior.
+  &[aria-current='date'] {
+    box-shadow: inset 0 0 0 2px a.$color-primary;
+  }
+
+  &--selected {
+    box-shadow: 0 0 0 2px a.$color-surface, 0 0 0 4px a.$color-primary;
+  }
+
+  &--selected[aria-current='date'] {
+    box-shadow: inset 0 0 0 2px a.$color-primary, 0 0 0 2px a.$color-surface, 0 0 0 4px a.$color-primary;
+  }
+
+  &:disabled {
+    cursor: default;
+    background: transparent;
+    color: a.$color-text-secondary;
+    font-weight: 500;
+  }
+
+  @include a.reduced-motion {
+    transition: none;
+
+    &:hover:not(:disabled) {
+      transform: none;
+    }
+  }
+}

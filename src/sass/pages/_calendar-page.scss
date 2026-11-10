@@ -1,0 +1,16 @@
+@use '@abstracts/abstracts' as a;
+
+// Página Calendario (/calendario) y contenido de su diálogo de día.
+.calendar-page {
+  &__back {
+    align-self: center;
+  }
+}
+
+.day-detail {
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-4;
+  }
+}
