@@ -22,6 +22,21 @@ export default defineConfig({
       })),
     ],
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        // Librerías en chunks propios: cambian poco y la caché del navegador
+        // las conserva entre despliegues de la aplicación.
+        codeSplitting: {
+          groups: [
+            { name: 'react', test: /[\\/]node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/, priority: 3 },
+            { name: 'supabase', test: /[\\/]node_modules[\\/]@supabase[\\/]/, priority: 2 },
+            { name: 'vendor', test: /[\\/]node_modules[\\/]/, priority: 1 },
+          ],
+        },
+      },
+    },
+  },
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],

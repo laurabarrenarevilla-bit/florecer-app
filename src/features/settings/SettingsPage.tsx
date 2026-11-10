@@ -14,7 +14,10 @@ export function SettingsPage() {
           Cuenta
         </h2>
         <div className="settings__row">
-          <p className="settings__email">{user.email ?? 'Cuenta sin correo'}</p>
+          <div>
+            {user.name && <p className="settings__name">{user.name}</p>}
+            <p className="settings__email">{user.email ?? 'Cuenta sin correo'}</p>
+          </div>
           <SignOutButton />
         </div>
       </section>
@@ -29,8 +32,7 @@ export function SettingsPage() {
           garantizar una protección absoluta.
         </p>
         <p>
-          Tu dirección de correo no se verifica: sirve solo para identificarte al iniciar sesión. Guarda tu contraseña
-          en un lugar seguro, porque no se puede recuperar por correo.
+          Guarda tu contraseña en un lugar seguro: la aplicación no ofrece recuperarla por correo.
         </p>
       </section>
     </section>

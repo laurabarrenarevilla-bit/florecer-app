@@ -6,6 +6,7 @@ export type AuthErrorCode =
   | 'WEAK_PASSWORD'
   | 'INVALID_EMAIL'
   | 'RATE_LIMITED'
+  | 'EMAIL_RATE_LIMITED'
   | 'SIGNUP_DISABLED'
   | 'EMAIL_NOT_CONFIRMED'
   | 'NETWORK'
@@ -23,7 +24,10 @@ export const AUTH_ERROR_MESSAGES: Record<AuthErrorCode, string> = {
   INVALID_EMAIL: 'Revisa el correo electrónico: parece que no es válido.',
   RATE_LIMITED: 'Demasiados intentos seguidos. Espera unos minutos y vuelve a probar.',
   SIGNUP_DISABLED: 'El registro no está disponible ahora mismo.',
-  EMAIL_NOT_CONFIRMED: 'Esta cuenta aún no puede acceder porque requiere una verificación que no está disponible.',
+  EMAIL_RATE_LIMITED:
+    'Ahora mismo no podemos enviar el correo de confirmación porque se ha alcanzado el límite de envíos. Inténtalo más tarde.',
+  EMAIL_NOT_CONFIRMED:
+    'Aún no has confirmado tu cuenta. Abre el enlace del correo de confirmación que te enviamos y vuelve a intentarlo.',
   NETWORK: 'No hay conexión. Comprueba tu red e inténtalo de nuevo.',
   UNKNOWN: 'No hemos podido completar la acción. Inténtalo de nuevo.',
 }
@@ -36,7 +40,7 @@ const CODE_MAP: Record<string, AuthErrorCode> = {
   email_address_invalid: 'INVALID_EMAIL',
   validation_failed: 'INVALID_EMAIL',
   over_request_rate_limit: 'RATE_LIMITED',
-  over_email_send_rate_limit: 'RATE_LIMITED',
+  over_email_send_rate_limit: 'EMAIL_RATE_LIMITED',
   signup_disabled: 'SIGNUP_DISABLED',
   email_provider_disabled: 'SIGNUP_DISABLED',
   email_not_confirmed: 'EMAIL_NOT_CONFIRMED',

@@ -56,3 +56,34 @@ Se respeta `src/sass/` (7-1). Los alias `@abstracts/…` que ya usaba `main.scss
 ## 8. Alcance visible en fase 1
 
 Navegación con Hoy, Calendario y Ajustes. Evolución, IA, copias y estadísticas no se muestran hasta la fase 2. Ajustes solo muestra cuenta, cierre de sesión y privacidad.
+
+## 9. Sesión caducada y borradores (bloque 6)
+
+- Si el backend rechaza el token (`AUTH_REQUIRED`), las cachés de React Query lo notifican, `AuthProvider` cierra la sesión **solo localmente** (`signOut({ scope: 'local' })`) y se redirige a `/login` con «Tu sesión ha terminado». Nunca se muestra un guardado falso.
+- Lo escrito y aún no guardado se conserva en un `Map` **en memoria** (`features/journal/draftStore.ts`), por usuario y fecha. Al volver a entrar en la misma pestaña, el formulario lo recupera y lo indica. No se usa `localStorage` ni `sessionStorage`: al recargar, cerrar la pestaña o cerrar sesión, desaparece. Al entrar otra cuenta se descartan los borradores ajenos.
+
+## 10. Carga diferida y chunks
+
+Las pantallas se cargan con `React.lazy` y las librerías se separan en chunks `react`, `supabase` y `vendor` (`build.rolldownOptions.output.codeSplitting`). Desaparece el aviso de chunk > 500 kB sin añadir dependencias.
+
+## 11. Cabeceras de Vercel y CSP
+
+`vercel.json` define el rewrite SPA (excepto `/api/`), una CSP estricta (`script-src 'self'`, `connect-src` limitado a `*.supabase.co`, `frame-ancestors 'none'`) y cabeceras `nosniff`, `Referrer-Policy`, `X-Frame-Options` y `Permissions-Policy`. Zod se configura en modo `jitless` (`src/lib/zodConfig.ts`) para no usar `new Function`, que la CSP bloquearía. Una prueba E2E local aplica la CSP del archivo al build y falla ante cualquier violación.
+
+## 12. Pruebas locales frente a pruebas remotas
+
+- `pnpm test` y `pnpm e2e` no contactan con Supabase (repositorios en memoria; peticiones externas bloqueadas en Playwright).
+- `pnpm test:rls` y `pnpm e2e:remote` solo se ejecutan con `FLORECER_REMOTE_TESTS=1` (lo ponen los scripts). Sin esa variable las suites se omiten sin leer credenciales. Exigen cuentas sintéticas (correo con «test») y distintas, usan solo la clave publicable y borran únicamente filas propias en fechas concretas.
+- Las cuentas A/B se crean una sola vez por el registro público de la UI (`remote/accounts.setup.ts`); las ejecuciones siguientes solo inician sesión.
+- Sin trazas de Playwright: guardarían tokens y textos de las peticiones.
+
+## 13. Confirmación de correo activa en el proyecto (actualiza §1)
+
+El 10-11-2026 se observó que el proyecto tiene **«Confirm email» activado**: `signUp` no devuelve sesión y Supabase envía su correo de confirmación con el servicio de correo integrado (sigue sin haber SMTP externo). A petición del usuario, la interfaz se adapta:
+
+- Tras registrarse sin sesión, el formulario y las pestañas se sustituyen por «Revisa tu correo», con la dirección usada y el botón «Ir a iniciar sesión». Este aviso solo aparece cuando `signUp` termina sin error y sin sesión, es decir, cuando Supabase ha aceptado el registro y ha enviado el correo.
+- Con la confirmación activa, Supabase no da error si el correo ya está registrado (devuelve un usuario sin identidades y no envía nada). La app lo detecta y muestra «Ya existe una cuenta…», en lugar de pedir que se revise un correo que no llegará.
+- Iniciar sesión sin haber confirmado muestra un mensaje específico (`email_not_confirmed`). El límite de envíos (`over_email_send_rate_limit`) tiene también su propio mensaje.
+- Si la confirmación se desactiva, `signUp` devuelve sesión y se entra directamente en Hoy: la app funciona en los dos modos sin cambios.
+
+**Riesgo pendiente de decidir:** el servicio de correo integrado de Supabase solo entrega a direcciones del equipo de la organización y con un límite muy bajo de envíos por hora. Para cualquier otra persona, el correo de confirmación puede no llegar nunca y la cuenta quedaría sin poder entrar. También hay que revisar la *Site URL*, porque el enlace del correo redirige allí tras confirmar. Mientras no haya SMTP propio (descartado en §1), lo coherente para un registro abierto es desactivar «Confirm email»; mantenerla activada solo funciona para cuentas del equipo.

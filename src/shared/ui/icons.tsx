@@ -97,3 +97,12 @@ export function LockIcon(props: IconProps) {
     </svg>
   )
 }
+
+export function MailIcon(props: IconProps) {
+  return (
+    <svg {...base({ size: 28, ...props })} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="5" width="18" height="14" rx="2.5" />
+      <path d="M4 7l8 6 8-6" />
+    </svg>
+  )
+}

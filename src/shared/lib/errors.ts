@@ -10,6 +10,7 @@ export type AppErrorCode =
   | 'ENTRY_NOT_FOUND'
   | 'NETWORK_UNAVAILABLE'
   | 'DB_UNAVAILABLE'
+  | 'DB_NOT_READY'
   | 'UNKNOWN'
 
 export const ERROR_MESSAGES: Record<AppErrorCode, string> = {
@@ -20,6 +21,7 @@ export const ERROR_MESSAGES: Record<AppErrorCode, string> = {
   ENTRY_NOT_FOUND: 'Este registro ya no existe. Hemos actualizado la vista.',
   NETWORK_UNAVAILABLE: 'No hay conexión. Comprueba tu red e inténtalo de nuevo.',
   DB_UNAVAILABLE: 'El servicio no responde ahora mismo. Inténtalo de nuevo en unos minutos.',
+  DB_NOT_READY: 'El diario todavía no está disponible: falta preparar la base de datos del proyecto.',
   UNKNOWN: 'Ha ocurrido un error inesperado. Inténtalo de nuevo.',
 }
 
@@ -78,6 +80,10 @@ export function toAppError(error: unknown): AppError {
       return new AppError('VALIDATION_ERROR')
     case '42501':
       return new AppError('PERMISSION_DENIED')
+    // La tabla no existe: la migración no se ha aplicado en este proyecto.
+    case 'PGRST205':
+    case '42P01':
+      return new AppError('DB_NOT_READY')
     case 'PGRST301':
     case 'PGRST302':
     case 'PGRST303':

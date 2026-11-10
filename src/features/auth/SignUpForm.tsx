@@ -7,14 +7,19 @@ import { TextField } from '@/shared/ui/TextField.tsx'
 import { useAuth } from './authContext.ts'
 import type { AuthFailure } from './authErrors.ts'
 import { PasswordField } from './PasswordField.tsx'
-import { firstFieldErrors, PASSWORD_REQUIREMENTS_TEXT, signUpSchema, type FieldErrors, type SignUpValues } from './schema.ts'
+import { firstFieldErrors, NAME_MAX_LENGTH, PASSWORD_REQUIREMENTS_TEXT, signUpSchema, type FieldErrors, type SignUpValues } from './schema.ts'
 
-type Outcome = { kind: 'error'; error: AuthFailure } | { kind: 'no-session' } | null
+type Outcome = { kind: 'error'; error: AuthFailure } | null
 
-export function SignUpForm() {
+interface SignUpFormProps {
+  /** La cuenta se creó pero Supabase exige confirmar el correo antes de entrar. */
+  onConfirmationRequired: (email: string) => void
+}
+
+export function SignUpForm({ onConfirmationRequired }: SignUpFormProps) {
   const { signUp } = useAuth()
   const navigate = useNavigate()
-  const [values, setValues] = useState<SignUpValues>({ email: '', password: '', confirmPassword: '' })
+  const [values, setValues] = useState<SignUpValues>({ name: '', email: '', password: '', confirmPassword: '' })
   const [errors, setErrors] = useState<FieldErrors>({})
   const [submitted, setSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -48,7 +53,7 @@ export function SignUpForm() {
     }
     setErrors({})
     setIsSubmitting(true)
-    const response = await signUp(result.data.email, result.data.password)
+    const response = await signUp(result.data.email, result.data.password, result.data.name)
     setIsSubmitting(false)
 
     if (!response.ok) {
@@ -63,9 +68,8 @@ export function SignUpForm() {
       return
     }
     if (!response.sessionStarted) {
-      // La configuración remota exige una verificación que no está disponible.
-      setOutcome({ kind: 'no-session' })
-      setAttempt((n) => n + 1)
+      // Supabase ha enviado el correo de confirmación: se cambia el formulario por el aviso.
+      onConfirmationRequired(result.data.email)
       return
     }
     // La confirmación visual se muestra en Hoy (justSignedUp).
@@ -74,6 +78,19 @@ export function SignUpForm() {
 
   return (
     <form ref={formRef} className="form" onSubmit={handleSubmit} noValidate aria-label="Crear cuenta">
+      <TextField
+        label="Nombre"
+        hint="Así te saludaremos en la aplicación."
+        name="name"
+        autoComplete="given-name"
+        maxLength={NAME_MAX_LENGTH}
+        value={values.name}
+        onChange={(e) => update('name', e.target.value)}
+        error={errors.name}
+        disabled={isSubmitting}
+        required
+      />
+
       <TextField
         label="Correo electrónico"
         type="email"
@@ -122,13 +139,6 @@ export function SignUpForm() {
           }
         >
           {outcome.error.message}
-        </InlineAlert>
-      )}
-
-      {outcome?.kind === 'no-session' && (
-        <InlineAlert ref={alertRef} tone="info">
-          Tu cuenta se ha creado, pero todavía no puedes acceder: el acceso requiere una verificación que ahora mismo no
-          está disponible.
         </InlineAlert>
       )}
 

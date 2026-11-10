@@ -4,7 +4,7 @@ import { safeRedirectPath } from './redirect.ts'
 import { loginSchema, signUpSchema } from './schema.ts'
 
 describe('signUpSchema', () => {
-  const valid = { email: 'Persona@Ejemplo.test', password: 'Florecer2026', confirmPassword: 'Florecer2026' }
+  const valid = { name: 'Persona', email: 'Persona@Ejemplo.test', password: 'Florecer2026', confirmPassword: 'Florecer2026' }
 
   it('acepta datos válidos y normaliza el correo', () => {
     expect(signUpSchema.parse(valid).email).toBe('persona@ejemplo.test')
@@ -64,5 +64,17 @@ describe('safeRedirectPath', () => {
     expect(safeRedirectPath({ from: 'https://malicioso.example' })).toBe('/hoy')
     expect(safeRedirectPath({ from: '/login' })).toBe('/hoy')
     expect(safeRedirectPath(null)).toBe('/hoy')
+  })
+})
+
+describe('confirmación de correo activa en Supabase', () => {
+  it('login sin confirmar explica que falta abrir el enlace del correo', () => {
+    const failure = mapAuthError({ name: 'AuthApiError', status: 400, code: 'email_not_confirmed', message: 'Email not confirmed' })
+    expect(failure.code).toBe('EMAIL_NOT_CONFIRMED')
+    expect(failure.message).toMatch(/confirmado tu cuenta/)
+  })
+
+  it('el límite de envíos de correo tiene su propio mensaje', () => {
+    expect(mapAuthError({ status: 429, code: 'over_email_send_rate_limit' }).code).toBe('EMAIL_RATE_LIMITED')
   })
 })

@@ -1,19 +1,56 @@
-# Florecer — documentación de implementación
+# Florecer
 
-Paquete de especificaciones para implementar Florecer con Claude Code o Codex.
+Diario emocional personal en español de España. Cada día se registra cómo te has sentido (Feliz, Normal o Triste), con una reflexión y un pequeño logro opcionales, y se consulta en un calendario de colores.
 
-**Estado:** planificación; NO incluye una aplicación implementada, credenciales ni cambios sobre `src/sass/`.
+**Estado (10-11-2026):** fase 1 implementada y probada localmente. **Aún no verificada contra Supabase ni desplegada**: faltan la migración remota, las pruebas RLS/E2E reales y el despliegue, pendientes de autorización (ver `docs/10-TEST-PLAN.md`, sección «Estado de verificación»).
 
-## Cómo integrarlo en el repositorio existente
+## Stack
 
-1. Copiar `docs/`, `README.md` (si no existe otro; si existe, fusionar), `.env.example` (si procede) y `scripts/` a la raíz del repositorio.
-2. Asegurar que `AGENTS.md` y `CLAUDE.md` son **symlinks al mismo archivo** `docs/AGENT_RULES.md` (incluidos en este ZIP).
-3. Verificar los symlinks: `ls -l AGENTS.md CLAUDE.md` en Linux/macOS/WSL. En Windows, extraer con una herramienta compatible con symlinks o ejecutar `scripts/create-agent-links.ps1` (requiere permisos para crear symlinks; el script explica el fallo).
-4. Iniciar Claude Code o Codex en la raíz, solicitar: **"Lee AGENTS.md, docs/INDEX.md y docs/09-IMPLEMENTATION-PLAN.md. Inspecciona el repo y especialmente src/sass antes de modificar nada. Ejecuta la fase 1 respetando criterios de aceptación."**
-5. Configurar Supabase/Vercel y variables de entorno con **valores reales** suministrados por quien administra el proyecto; nunca poner secretos en el repositorio.
+React 19 + Vite 8 + TypeScript (strict) · React Router · TanStack Query · Supabase (Auth + PostgreSQL con RLS) · Zod · SASS 7-1 en `src/sass/` · Vitest + Testing Library · Playwright + axe-core · Vercel.
 
-**Orden de lectura:** `AGENTS.md` → `docs/INDEX.md` → `docs/01-PRODUCT.md` → `docs/02-ARCHITECTURE.md` → `docs/03-MVP-PHASE1.md` → `docs/09-IMPLEMENTATION-PLAN.md`.
+## Puesta en marcha local
 
-**Fechas de evaluación:** 12 de noviembre de 2026 (PMV), 26 de noviembre de 2026 (final). Son fechas académicas; no se deben sacrificar seguridad y persistencia real por aparentar avances.
+```bash
+pnpm install
+cp .env.example .env.local   # rellenar SOLO VITE_SUPABASE_URL y VITE_SUPABASE_PUBLISHABLE_KEY
+pnpm dev
+```
 
-**Nota:** `docs/references/claude-design-v2.dc.html` es una **referencia de diseño**, NO un HTML desplegable ni código fuente React. Contiene marcado y lógica del entorno Claude Design, datos ficticios y funciones simuladas.
+En el navegador solo se publica la clave **publicable** de Supabase. Nunca `service_role` ni secretos (`env.ts` rechaza claves `sb_secret_`).
+
+## Scripts
+
+| Script | Qué hace | ¿Toca Supabase? |
+|---|---|---|
+| `pnpm typecheck` / `lint` / `build` | Tipos, oxlint y build de producción | No |
+| `pnpm test` | Unitarias y de integración (jsdom, repositorios en memoria, axe-core) | No |
+| `pnpm e2e` | Navegador real contra el build: rutas públicas, validación, accesibilidad con contraste, CSP de `vercel.json`, secretos en el bundle. Bloquea cualquier petición externa | No |
+| `pnpm test:rls` | Aislamiento RLS con dos cuentas (A/B) y la clave publicable | **Sí** (con autorización) |
+| `pnpm e2e:remote` | Flujos completos de la fase 1 en el navegador contra el proyecto real | **Sí** (con autorización) |
+
+Las pruebas remotas necesitan `.env.test.local` (ignorado por git) con `TEST_A_EMAIL`, `TEST_A_PASSWORD`, `TEST_B_EMAIL` y `TEST_B_PASSWORD`. Son cuentas sintéticas: el correo debe contener «test». Se registran una sola vez por el registro público y después solo inician sesión. Solo borran sus propias filas en fechas concretas; nunca hacen limpiezas globales.
+
+## Estructura
+
+```
+src/app/          composición: rutas, proveedores, React Query, ErrorBoundary
+src/features/     auth, journal (Hoy), calendar, settings
+src/shared/       utilidades puras (fechas, errores) y componentes de UI
+src/lib/supabase/ cliente y validación del entorno
+src/sass/         estilos (7-1): abstracts, base, components, layout, pages, themes
+supabase/         migraciones, comprobaciones SQL y vuelta atrás manual
+tests/rls/        aislamiento RLS (remoto)
+tests/e2e/        Playwright: local/ (sin red) y remote/ (Supabase real)
+docs/             especificación, decisiones (ADR) y procedimientos
+```
+
+## Seguridad y privacidad
+
+- RLS por `auth.uid()` y privilegios por columna; el cliente nunca envía `user_id`.
+- Registro público con correo y contraseña, solo con Supabase Auth y sin SMTP externo. Si el proyecto exige confirmar el correo, la app pide revisarlo tras el registro; si no, entra directamente. No hay recuperación de contraseña por correo (ADR-009 §1 y §13).
+- Los borradores sin guardar se conservan solo en memoria de la pestaña, nunca en `localStorage`.
+- CSP estricta y cabeceras de seguridad en `vercel.json`.
+
+## Documentación
+
+Empieza por `CLAUDE.md` (= `AGENTS.md`) y `docs/INDEX.md`. Decisiones de esta implementación: `docs/decisions/ADR-009-fase1-implementacion.md`. Migración y recuperación: `docs/18-OPERATIONS-AND-RECOVERY.md`.

@@ -23,11 +23,21 @@ Ver `.env.example` del paquete. `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE
 
 ## Configuración Supabase Auth
 
-URL del sitio y redirects correctos para local y producción. Según ADR-009: signup público ON, *Confirm email* OFF, política de contraseñas (mín. 8, mayúsculas, minúsculas y dígitos), rate limits revisados, CAPTCHA nativo disponible si hay abuso. Sin SMTP externo ni recuperación por correo. Las URLs no deben permitir open redirect. Consistencia con dominio Vercel.
+URL del sitio y redirects correctos para local y producción. Según ADR-009: signup público ON, *Confirm email* OFF (el 10-11-2026 estaba ON: ver ADR-009 §13 sobre los límites del correo integrado), política de contraseñas (mín. 8, mayúsculas, minúsculas y dígitos), rate limits revisados, CAPTCHA nativo disponible si hay abuso. Sin SMTP externo ni recuperación por correo. Las URLs no deben permitir open redirect. Consistencia con dominio Vercel.
 
 ## Despliegue frontend Vite en Vercel
 
 Build `pnpm build`; output habitual `dist` tras confirmar config. SPA fallback para rutas protegidas React Router (rewrite a `index.html` cuando proceda, sin tragarse endpoints `/api/`). En fase 2 verificar que Vercel Functions se reconocen en deploy. El agente debe comprobar documentación/config del framework **vigente** y evitar plantillas obsoletas.
+
+## Vercel: configuración preparada (sin desplegar)
+
+`vercel.json`: framework Vite, `pnpm install --frozen-lockfile`, `pnpm build`, salida `dist`, rewrite SPA a `index.html` excepto `/api/`, CSP y cabeceras de seguridad, y caché inmutable para `/assets/`. Pasos pendientes de autorización:
+
+1. Importar el repositorio en la cuenta de Vercel de Laura (rama `main`).
+2. Variables de entorno **Production**: `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`. Nada más: ni secretos ni `NVIDIA_*` en fase 1.
+3. No conectar las previews al proyecto Supabase con datos reales (no definir esas variables en Preview).
+4. Tras el primer despliegue: Supabase → Authentication → URL Configuration → *Site URL* = URL de producción; *Redirect URLs* = esa URL y `http://localhost:5173/**`.
+5. Smoke: deep link a `/calendario?mes=…`, recarga en `/hoy`, guion de 90 s de `docs/03`.
 
 ## CI mínima
 

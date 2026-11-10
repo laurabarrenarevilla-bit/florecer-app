@@ -2,13 +2,15 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { AppRoutes } from '@/app/router.tsx'
-import { createFakeAuth, renderWithProviders, TEST_USER } from '@/test/fakeAuth.tsx'
+import { createFakeAuth, renderRoute, TEST_USER } from '@/test/fakeAuth.tsx'
+import { createFakeJournalRepository } from '@/test/fakeJournalRepository.ts'
 import { AUTH_ERROR_MESSAGES } from './authErrors.ts'
 
 const VALID_PASSWORD = 'Florecer2026'
 
-async function fillSignUp(email: string, password: string, confirm: string) {
+async function fillSignUp(email: string, password: string, confirm: string, name = 'Persona') {
   const user = userEvent.setup()
+  if (name) await user.type(screen.getByLabelText('Nombre'), name)
   await user.type(screen.getByLabelText('Correo electrónico'), email)
   await user.type(screen.getByLabelText('Contraseña'), password)
   await user.type(screen.getByLabelText('Repite la contraseña'), confirm)
@@ -18,7 +20,7 @@ async function fillSignUp(email: string, password: string, confirm: string) {
 describe('Pantalla de acceso: pestañas', () => {
   it('muestra las pestañas Iniciar sesión y Crear cuenta y cambia entre ellas', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<AppRoutes />, { path: '/login' })
+    await renderRoute(<AppRoutes />, { path: '/login' })
     const nav = screen.getByRole('navigation', { name: 'Acceso a la cuenta' })
     expect(nav).toBeInTheDocument()
     expect(screen.getByRole('form', { name: 'Iniciar sesión' })).toBeInTheDocument()
@@ -32,19 +34,19 @@ describe('Pantalla de acceso: pestañas', () => {
 describe('Registro', () => {
   it('A1: crea la cuenta con el correo normalizado y lleva a Hoy', async () => {
     const auth = createFakeAuth()
-    renderWithProviders(<AppRoutes />, { path: '/registro', auth })
+    await renderRoute(<AppRoutes />, { path: '/registro', auth })
     const user = await fillSignUp('  Persona@Ejemplo.TEST ', VALID_PASSWORD, VALID_PASSWORD)
     await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
 
     expect(auth.signUp).toHaveBeenCalledTimes(1)
-    expect(auth.signUp).toHaveBeenCalledWith('persona@ejemplo.test', VALID_PASSWORD)
+    expect(auth.signUp).toHaveBeenCalledWith('persona@ejemplo.test', VALID_PASSWORD, 'Persona')
     // Con el contexto falso sigue anónimo: Hoy redirige a /login. Comprobamos la navegación a /hoy.
     await waitFor(() => expect(screen.getByRole('form', { name: 'Iniciar sesión' })).toBeInTheDocument())
   })
 
   it('A2: rechaza un correo inválido sin llamar a Supabase', async () => {
     const auth = createFakeAuth()
-    renderWithProviders(<AppRoutes />, { path: '/registro', auth })
+    await renderRoute(<AppRoutes />, { path: '/registro', auth })
     const user = await fillSignUp('persona@', VALID_PASSWORD, VALID_PASSWORD)
     await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
 
@@ -56,7 +58,7 @@ describe('Registro', () => {
 
   it('A3: rechaza contraseñas diferentes', async () => {
     const auth = createFakeAuth()
-    renderWithProviders(<AppRoutes />, { path: '/registro', auth })
+    await renderRoute(<AppRoutes />, { path: '/registro', auth })
     const user = await fillSignUp('persona@ejemplo.test', VALID_PASSWORD, 'Florecer2027')
     await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
 
@@ -67,7 +69,7 @@ describe('Registro', () => {
 
   it('A4: exige la política de contraseñas', async () => {
     const auth = createFakeAuth()
-    renderWithProviders(<AppRoutes />, { path: '/registro', auth })
+    await renderRoute(<AppRoutes />, { path: '/registro', auth })
     const user = await fillSignUp('persona@ejemplo.test', 'florecer', 'florecer')
     await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
 
@@ -82,7 +84,7 @@ describe('Registro', () => {
         error: { code: 'USER_ALREADY_EXISTS' as const, message: AUTH_ERROR_MESSAGES.USER_ALREADY_EXISTS },
       })),
     })
-    renderWithProviders(<AppRoutes />, { path: '/registro', auth })
+    await renderRoute(<AppRoutes />, { path: '/registro', auth })
     const user = await fillSignUp('persona@ejemplo.test', VALID_PASSWORD, VALID_PASSWORD)
     await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
 
@@ -91,20 +93,40 @@ describe('Registro', () => {
     expect(screen.getByRole('link', { name: 'Ir a iniciar sesión' })).toHaveAttribute('href', '/login')
   })
 
-  it('A11: si no se inicia sesión tras registrarse, lo dice sin mencionar correos enviados', async () => {
+  it('A11: si Supabase exige confirmar el correo, quita el formulario y pide revisar el correo', async () => {
     const auth = createFakeAuth({ signUp: vi.fn(async () => ({ ok: true as const, sessionStarted: false })) })
-    renderWithProviders(<AppRoutes />, { path: '/registro', auth })
-    const user = await fillSignUp('persona@ejemplo.test', VALID_PASSWORD, VALID_PASSWORD)
+    await renderRoute(<AppRoutes />, { path: '/registro', auth })
+    const user = await fillSignUp('Persona@Ejemplo.test', VALID_PASSWORD, VALID_PASSWORD)
     await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
 
-    const notice = await screen.findByText(/Tu cuenta se ha creado, pero todavía no puedes acceder/)
-    expect(notice).toBeInTheDocument()
-    expect(document.body.textContent).not.toMatch(/te hemos enviado|revisa tu (correo|bandeja)/i)
+    const heading = await screen.findByRole('heading', { name: 'Revisa tu correo' })
+    expect(heading).toHaveFocus()
+    expect(screen.getByText('persona@ejemplo.test')).toBeInTheDocument()
+    expect(screen.queryByRole('form', { name: 'Crear cuenta' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('navigation', { name: 'Acceso a la cuenta' })).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Contraseña')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('link', { name: 'Ir a iniciar sesión' }))
+    expect(await screen.findByRole('form', { name: 'Iniciar sesión' })).toBeInTheDocument()
+  })
+
+  it('exige el nombre y lo envía al registrarse', async () => {
+    const auth = createFakeAuth()
+    await renderRoute(<AppRoutes />, { path: '/registro', auth })
+    const user = await fillSignUp('persona@ejemplo.test', VALID_PASSWORD, VALID_PASSWORD, '')
+    await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
+    expect(screen.getByText('Escribe tu nombre.')).toBeInTheDocument()
+    expect(screen.getByLabelText('Nombre')).toHaveFocus()
+    expect(auth.signUp).not.toHaveBeenCalled()
+
+    await user.type(screen.getByLabelText('Nombre'), '  Laura  ')
+    await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
+    expect(auth.signUp).toHaveBeenCalledWith('persona@ejemplo.test', VALID_PASSWORD, 'Laura')
   })
 
   it('A9: muestra y oculta la contraseña', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<AppRoutes />, { path: '/registro' })
+    await renderRoute(<AppRoutes />, { path: '/registro' })
     const input = screen.getByLabelText('Contraseña')
     const toggle = screen.getByRole('button', { name: 'Mostrar contraseña: Contraseña' })
 
@@ -121,7 +143,7 @@ describe('Registro', () => {
     const auth = createFakeAuth({
       signUp: vi.fn(() => new Promise<{ ok: true; sessionStarted: boolean }>((r) => (resolve = r))),
     })
-    renderWithProviders(<AppRoutes />, { path: '/registro', auth })
+    await renderRoute(<AppRoutes />, { path: '/registro', auth })
     const user = await fillSignUp('persona@ejemplo.test', VALID_PASSWORD, VALID_PASSWORD)
     const button = screen.getByRole('button', { name: 'Crear cuenta' })
     await user.click(button)
@@ -137,7 +159,7 @@ describe('Inicio de sesión', () => {
   it('A6: inicia sesión con credenciales correctas', async () => {
     const user = userEvent.setup()
     const auth = createFakeAuth()
-    renderWithProviders(<AppRoutes />, { path: '/login', auth })
+    await renderRoute(<AppRoutes />, { path: '/login', auth })
     await user.type(screen.getByLabelText('Correo electrónico'), 'persona@ejemplo.test')
     await user.type(screen.getByLabelText('Contraseña'), VALID_PASSWORD)
     await user.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
@@ -153,7 +175,7 @@ describe('Inicio de sesión', () => {
         error: { code: 'INVALID_CREDENTIALS' as const, message: AUTH_ERROR_MESSAGES.INVALID_CREDENTIALS },
       })),
     })
-    renderWithProviders(<AppRoutes />, { path: '/login', auth })
+    await renderRoute(<AppRoutes />, { path: '/login', auth })
     await user.type(screen.getByLabelText('Correo electrónico'), 'persona@ejemplo.test')
     await user.type(screen.getByLabelText('Contraseña'), 'Incorrecta1')
     await user.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
@@ -169,7 +191,7 @@ describe('Inicio de sesión', () => {
     const auth = createFakeAuth({
       signIn: vi.fn(async () => ({ ok: false as const, error: { code: 'NETWORK' as const, message: AUTH_ERROR_MESSAGES.NETWORK } })),
     })
-    renderWithProviders(<AppRoutes />, { path: '/login', auth })
+    await renderRoute(<AppRoutes />, { path: '/login', auth })
     await user.type(screen.getByLabelText('Correo electrónico'), 'persona@ejemplo.test')
     await user.type(screen.getByLabelText('Contraseña'), VALID_PASSWORD)
     await user.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
@@ -181,35 +203,36 @@ describe('Inicio de sesión', () => {
   it('pide los campos vacíos sin llamar a Supabase', async () => {
     const user = userEvent.setup()
     const auth = createFakeAuth()
-    renderWithProviders(<AppRoutes />, { path: '/login', auth })
+    await renderRoute(<AppRoutes />, { path: '/login', auth })
     await user.click(screen.getByRole('button', { name: 'Iniciar sesión' }))
     expect(screen.getByText('Escribe tu correo electrónico.')).toBeInTheDocument()
     expect(screen.getByText('Escribe tu contraseña.')).toBeInTheDocument()
     expect(auth.signIn).not.toHaveBeenCalled()
   })
 
-  it('avisa cuando la sesión ha caducado', () => {
-    renderWithProviders(<AppRoutes />, { path: '/login', auth: createFakeAuth({ sessionExpired: true }) })
+  it('avisa cuando la sesión ha caducado', async () => {
+    await renderRoute(<AppRoutes />, { path: '/login', auth: createFakeAuth({ sessionExpired: true }) })
     expect(screen.getByText('Tu sesión ha terminado. Inicia sesión para continuar.')).toBeInTheDocument()
   })
 })
 
 describe('Rutas protegidas y sesión', () => {
-  it('redirige a /login sin sesión', () => {
-    renderWithProviders(<AppRoutes />, { path: '/calendario' })
+  it('redirige a /login sin sesión', async () => {
+    await renderRoute(<AppRoutes />, { path: '/calendario' })
     expect(screen.getByRole('form', { name: 'Iniciar sesión' })).toBeInTheDocument()
   })
 
-  it('no muestra contenido privado mientras se resuelve la sesión', () => {
-    renderWithProviders(<AppRoutes />, { path: '/hoy', auth: createFakeAuth({ status: 'loading' }) })
+  it('no muestra contenido privado mientras se resuelve la sesión', async () => {
+    await renderRoute(<AppRoutes />, { path: '/hoy', auth: createFakeAuth({ status: 'loading' }) })
     expect(screen.getByText('Cargando tu espacio…')).toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Hoy' })).not.toBeInTheDocument()
   })
 
-  it('con sesión, /login lleva a Hoy y se muestra la confirmación de registro', () => {
-    renderWithProviders(<AppRoutes />, {
+  it('con sesión, /login lleva a Hoy y se muestra la confirmación de registro', async () => {
+    await renderRoute(<AppRoutes />, {
       path: '/login',
       auth: createFakeAuth({ status: 'authenticated', user: TEST_USER, justSignedUp: true }),
+      journalRepository: createFakeJournalRepository().repository,
     })
     expect(screen.getAllByText('Tu cuenta está lista.')[0]).toBeInTheDocument()
   })
@@ -225,7 +248,7 @@ describe('Rutas protegidas y sesión', () => {
         return { ok: true as const }
       }),
     })
-    renderWithProviders(<AppRoutes />, { path: '/ajustes', auth })
+    await renderRoute(<AppRoutes />, { path: '/ajustes', auth })
     expect(screen.getAllByText(TEST_USER.email).length).toBeGreaterThan(0)
 
     const [button] = screen.getAllByRole('button', { name: 'Cerrar sesión' })

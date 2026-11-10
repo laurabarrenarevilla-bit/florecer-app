@@ -59,3 +59,57 @@
     }
   }
 }
+
+// Aviso "Revisa tu correo" tras registrarse (sustituye al formulario).
+.check-email {
+  @extend %card;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: a.$space-3;
+  padding: a.$space-8 a.$space-5 a.$space-6;
+  text-align: center;
+  line-height: 1.55;
+  animation: fade-up 0.35s a.$easing;
+
+  &__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    margin-bottom: a.$space-1;
+    border-radius: 50%;
+    background: a.$color-sage-soft;
+    color: a.$color-primary;
+  }
+
+  &__title {
+    font-family: a.$secondary-font;
+    font-weight: 500;
+    font-size: a.$font-size-xl;
+    color: a.$color-primary;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__address {
+    overflow-wrap: anywhere;
+    color: a.$color-text;
+  }
+
+  &__hint {
+    font-size: a.$font-size-sm;
+    color: a.$color-text-secondary;
+  }
+
+  .btn {
+    margin-top: a.$space-3;
+  }
+
+  @include a.reduced-motion {
+    animation: none;
+  }
+}

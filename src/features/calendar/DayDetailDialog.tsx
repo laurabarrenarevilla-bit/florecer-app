@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useCurrentUser } from '@/features/auth/authContext.ts'
+import { draftKey, hasDraft } from '@/features/journal/draftStore.ts'
 import { EntrySummary } from '@/features/journal/EntrySummary.tsx'
 import { JournalForm } from '@/features/journal/JournalForm.tsx'
 import { useDeleteEntry, useEntryByDate, useSaveEntry } from '@/features/journal/queries.ts'
@@ -38,13 +40,15 @@ function messageOf(error: unknown): string {
 }
 
 function DayDetail({ date, today, onDone }: { date: LocalDate; today: LocalDate; onDone: () => void }) {
+  const { id: userId } = useCurrentUser()
+  const formDraftKey = draftKey(userId, date)
   const isFuture = isFutureDate(date, today)
   // Un día futuro no puede tener registro: ni siquiera se consulta.
   const entryQuery = useEntryByDate(date, { enabled: !isFuture })
   const save = useSaveEntry()
   const remove = useDeleteEntry()
   const { showToast } = useToast()
-  const [editing, setEditing] = useState(false)
+  const [editing, setEditing] = useState(() => hasDraft(formDraftKey))
   const [confirmOpen, setConfirmOpen] = useState(false)
 
   if (isFuture) {
@@ -70,7 +74,7 @@ function DayDetail({ date, today, onDone }: { date: LocalDate; today: LocalDate;
 
   const entry = entryQuery.data ?? null
 
-  const handleSubmit = async (content: JournalEntryContent) => {
+  const handleSubmit = async (content: JournalEntryContent): Promise<boolean> => {
     try {
       await save.mutateAsync(
         entry
@@ -79,10 +83,11 @@ function DayDetail({ date, today, onDone }: { date: LocalDate; today: LocalDate;
       )
     } catch {
       // El error (y el borrador) se quedan en el formulario.
-      return
+      return false
     }
     setEditing(false)
     showToast(entry ? 'Cambios guardados.' : 'Registro guardado.')
+    return true
   }
 
   const handleDelete = async () => {
@@ -111,6 +116,7 @@ function DayDetail({ date, today, onDone }: { date: LocalDate; today: LocalDate;
     return (
       <JournalForm
         initial={entry}
+        draftKey={formDraftKey}
         moodLegend="¿Cómo te sentiste este día?"
         submitLabel={entry ? 'Guardar cambios' : 'Guardar registro'}
         savingLabel="Guardando…"

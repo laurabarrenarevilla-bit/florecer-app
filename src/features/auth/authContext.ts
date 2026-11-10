@@ -6,6 +6,8 @@ export type AuthStatus = 'loading' | 'anonymous' | 'authenticated'
 export interface AuthUser {
   id: string
   email: string | null
+  /** Nombre indicado al registrarse (metadatos de la cuenta); null en cuentas antiguas. */
+  name: string | null
 }
 
 export type AuthActionResult = { ok: true } | { ok: false; error: AuthFailure }
@@ -20,7 +22,7 @@ export interface AuthContextValue {
   justSignedUp: boolean
   dismissWelcome: () => void
   signIn: (email: string, password: string) => Promise<AuthActionResult>
-  signUp: (email: string, password: string) => Promise<SignUpResult>
+  signUp: (email: string, password: string, name: string) => Promise<SignUpResult>
   signOut: () => Promise<AuthActionResult>
 }
 

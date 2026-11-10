@@ -6,6 +6,7 @@ import { Button } from '@/shared/ui/Button.tsx'
 import { InlineAlert } from '@/shared/ui/InlineAlert.tsx'
 import { TextArea } from '@/shared/ui/TextArea.tsx'
 import { TextField } from '@/shared/ui/TextField.tsx'
+import { clearDraft, readDraft, saveDraft, type JournalDraft } from './draftStore.ts'
 import { ACHIEVEMENT_MAX_LENGTH, REFLECTION_MAX_LENGTH, type Mood } from './mood.ts'
 import { MoodSelector } from './MoodSelector.tsx'
 import { entryContentSchema } from './schema.ts'
@@ -14,14 +15,21 @@ import type { JournalEntryContent } from './types.ts'
 interface JournalFormProps {
   /** Contenido inicial (edición). Solo se lee al montar: el borrador es local. */
   initial?: JournalEntryContent | null
+  /** Clave del borrador en memoria (usuario + fecha); ver draftStore. */
+  draftKey: string
   moodLegend: string
   submitLabel: string
   savingLabel: string
   isSaving: boolean
   /** Error del último intento de guardado (backend o red). */
   error: Error | null
-  onSubmit: (content: JournalEntryContent) => Promise<unknown>
+  /** Devuelve true solo si el backend confirmó el guardado. */
+  onSubmit: (content: JournalEntryContent) => Promise<boolean>
   onCancel?: (() => void) | undefined
+}
+
+function sameContent(a: JournalDraft, b: JournalDraft): boolean {
+  return a.mood === b.mood && a.reflection === b.reflection && a.achievement === b.achievement
 }
 
 function errorMessage(error: Error): string {
@@ -38,6 +46,7 @@ function errorMessage(error: Error): string {
  */
 export function JournalForm({
   initial,
+  draftKey,
   moodLegend,
   submitLabel,
   savingLabel,
@@ -46,9 +55,16 @@ export function JournalForm({
   onSubmit,
   onCancel,
 }: JournalFormProps) {
-  const [mood, setMood] = useState<Mood | null>(initial?.mood ?? null)
-  const [reflection, setReflection] = useState(initial?.reflection ?? '')
-  const [achievement, setAchievement] = useState(initial?.achievement ?? '')
+  const [baseline] = useState<JournalDraft>(() => ({
+    mood: initial?.mood ?? null,
+    reflection: initial?.reflection ?? '',
+    achievement: initial?.achievement ?? '',
+  }))
+  const [restoredDraft] = useState(() => readDraft(draftKey))
+  const start = restoredDraft ?? baseline
+  const [mood, setMood] = useState<Mood | null>(start.mood)
+  const [reflection, setReflection] = useState(start.reflection)
+  const [achievement, setAchievement] = useState(start.achievement)
   const [errors, setErrors] = useState<FieldErrors>({})
   const [attempt, setAttempt] = useState(0)
   const formRef = useRef<HTMLFormElement>(null)
@@ -63,6 +79,13 @@ export function JournalForm({
     if (error) alertRef.current?.focus()
   }, [error])
 
+  // Copia en memoria de lo escrito y aún no guardado (nunca en el almacenamiento del navegador).
+  useEffect(() => {
+    const draft = { mood, reflection, achievement }
+    if (sameContent(draft, baseline)) clearDraft(draftKey)
+    else saveDraft(draftKey, draft)
+  }, [mood, reflection, achievement, baseline, draftKey])
+
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (submittingRef.current || isSaving) return
@@ -76,12 +99,16 @@ export function JournalForm({
     setErrors({})
     submittingRef.current = true
     try {
-      await onSubmit(result.data)
-    } catch {
-      // El error queda en el estado de la mutación y se muestra en la alerta.
+      // El error, si lo hay, queda en el estado de la mutación y se muestra en la alerta.
+      if (await onSubmit(result.data)) clearDraft(draftKey)
     } finally {
       submittingRef.current = false
     }
+  }
+
+  const handleCancel = () => {
+    clearDraft(draftKey)
+    onCancel?.()
   }
 
   const canSubmit = mood !== null
@@ -121,6 +148,10 @@ export function JournalForm({
         autoComplete="off"
       />
 
+      {restoredDraft && !error && (
+        <InlineAlert tone="info">Hemos recuperado lo que estabas escribiendo y aún no se había guardado.</InlineAlert>
+      )}
+
       {error && (
         <InlineAlert ref={alertRef} tone="error">
           {errorMessage(error)}
@@ -135,7 +166,7 @@ export function JournalForm({
 
       <div className="btn-row">
         {onCancel && (
-          <Button variant="secondary" onClick={onCancel} disabled={isSaving}>
+          <Button variant="secondary" onClick={handleCancel} disabled={isSaving}>
             Cancelar
           </Button>
         )}

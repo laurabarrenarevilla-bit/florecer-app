@@ -11,7 +11,9 @@
     "test": "TZ=Europe/Madrid vitest run",
     "test:watch": "TZ=Europe/Madrid vitest",
     "preview": "vite preview",
-    "test:rls": "vitest run --config tests/rls/vitest.config.ts --mode test"
+    "test:rls": "FLORECER_REMOTE_TESTS=1 vitest run --config tests/rls/vitest.config.ts --mode test",
+    "e2e": "playwright test -c tests/e2e/playwright.config.ts --project=local-mobile --project=local-desktop",
+    "e2e:remote": "FLORECER_REMOTE_TESTS=1 playwright test -c tests/e2e/playwright.config.ts --project=remote"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",
@@ -24,6 +26,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.65.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
@@ -32,6 +35,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "axe-core": "^4.14.0",
     "jsdom": "^31.0.0",
     "oxlint": "^1.90.0",
     "sass": "^1.108.1",

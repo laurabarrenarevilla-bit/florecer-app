@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
 import { afterEach } from 'vitest'
+import { clearAllDrafts } from '@/features/journal/draftStore.ts'
 
 // jsdom no implementa <dialog>.showModal()/close(): polyfill mínimo para tests.
 if (typeof HTMLDialogElement !== 'undefined' && !HTMLDialogElement.prototype.showModal) {
@@ -19,4 +20,6 @@ if (typeof HTMLDialogElement !== 'undefined' && !HTMLDialogElement.prototype.sho
 
 afterEach(() => {
   cleanup()
+  // Los borradores viven en memoria del módulo: no deben pasar de una prueba a otra.
+  clearAllDrafts()
 })

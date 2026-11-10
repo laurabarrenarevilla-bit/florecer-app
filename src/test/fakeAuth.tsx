@@ -1,8 +1,8 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { render } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { MemoryRouter } from 'react-router'
-import { vi } from 'vitest'
+import { expect, vi } from 'vitest'
 import { AuthContext, type AuthContextValue } from '@/features/auth/authContext.ts'
 import type { JournalRepository } from '@/features/journal/journalRepository.ts'
 import { JournalRepositoryContext } from '@/features/journal/repositoryContext.ts'
@@ -23,7 +23,7 @@ export function createFakeAuth(overrides: Partial<AuthContextValue> = {}): AuthC
   }
 }
 
-export const TEST_USER = { id: '550e8400-e29b-41d4-a716-446655440000', email: 'persona@ejemplo.test' }
+export const TEST_USER = { id: '550e8400-e29b-41d4-a716-446655440000', email: 'persona@ejemplo.test', name: 'Persona' }
 
 export function createTestQueryClient(): QueryClient {
   return new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 }, mutations: { retry: false } } })
@@ -57,4 +57,11 @@ export function renderWithProviders(
     </QueryClientProvider>,
   )
   return { ...result, auth, queryClient: client }
+}
+
+/** Renderiza y espera a que termine la carga diferida de la pantalla (React.lazy). */
+export async function renderRoute(ui: ReactNode, options: RenderOptions = {}) {
+  const result = renderWithProviders(ui, options)
+  await waitFor(() => expect(screen.queryByText('Cargando…')).not.toBeInTheDocument())
+  return result
 }

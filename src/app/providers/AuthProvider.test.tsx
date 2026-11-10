@@ -1,48 +1,14 @@
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { useAuth } from '@/features/auth/authContext.ts'
-import type { AuthRepository } from '@/features/auth/authRepository.ts'
+import { createQueryClient } from '@/app/queryClient.ts'
+import { draftKey, hasDraft, saveDraft } from '@/features/journal/draftStore.ts'
+import { AppError } from '@/shared/lib/errors.ts'
 import { createTestQueryClient, TEST_USER } from '@/test/fakeAuth.tsx'
+import { createFakeAuthRepository, fakeSession } from '@/test/fakeAuthRepository.ts'
 import { AuthProvider } from './AuthProvider.tsx'
-
-type Listener = (event: AuthChangeEvent, session: Session | null) => void
-
-function fakeSession(): Session {
-  return {
-    access_token: 'token-de-prueba',
-    refresh_token: 'refresh-de-prueba',
-    expires_in: 3600,
-    token_type: 'bearer',
-    user: {
-      id: TEST_USER.id,
-      email: TEST_USER.email,
-      app_metadata: {},
-      user_metadata: {},
-      aud: 'authenticated',
-      created_at: '2026-11-09T10:00:00Z',
-    },
-  }
-}
-
-function createFakeRepository() {
-  let listener: Listener = () => {}
-  const repository: AuthRepository = {
-    onAuthStateChange: vi.fn((cb: Listener) => {
-      listener = cb
-      return () => {}
-    }),
-    signIn: vi.fn(async () => ({ error: null })),
-    signUp: vi.fn(async () => ({ session: fakeSession(), error: null })),
-    signOut: vi.fn(async () => {
-      listener('SIGNED_OUT', null)
-      return { error: null }
-    }),
-  }
-  return { repository, emit: (event: AuthChangeEvent, session: Session | null) => listener(event, session) }
-}
 
 function Probe() {
   const auth = useAuth()
@@ -55,16 +21,15 @@ function Probe() {
       <button type="button" onClick={() => void auth.signOut()}>
         salir
       </button>
-      <button type="button" onClick={() => void auth.signUp('a@b.test', 'Florecer2026')}>
+      <button type="button" onClick={() => void auth.signUp('a@b.test', 'Florecer2026', 'Persona')}>
         registrar
       </button>
     </div>
   )
 }
 
-function setup() {
-  const fake = createFakeRepository()
-  const queryClient = createTestQueryClient()
+function setup(queryClient = createTestQueryClient()) {
+  const fake = createFakeAuthRepository()
   const clearSpy = vi.spyOn(queryClient, 'clear')
   render(
     <QueryClientProvider client={queryClient}>
@@ -73,7 +38,7 @@ function setup() {
       </AuthProvider>
     </QueryClientProvider>,
   )
-  return { ...fake, clearSpy }
+  return { ...fake, clearSpy, queryClient }
 }
 
 describe('AuthProvider', () => {
@@ -117,5 +82,42 @@ describe('AuthProvider', () => {
     act(() => emit('INITIAL_SESSION', null))
     await user.click(screen.getByRole('button', { name: 'registrar' }))
     expect(screen.getByText('recién:true')).toBeInTheDocument()
+  })
+
+  it('cerrar sesión borra los borradores en memoria', async () => {
+    const user = userEvent.setup()
+    const { emit } = setup()
+    act(() => emit('INITIAL_SESSION', fakeSession()))
+    const key = draftKey(TEST_USER.id, '2026-11-10')
+    saveDraft(key, { mood: 'happy', reflection: 'borrador', achievement: '' })
+
+    await user.click(screen.getByRole('button', { name: 'salir' }))
+    expect(hasDraft(key)).toBe(false)
+  })
+
+  it('F1-16: si el backend rechaza el token, cierra la sesión local, la marca como caducada y conserva el borrador', async () => {
+    const { emit, repository, queryClient } = setup(createQueryClient())
+    act(() => emit('INITIAL_SESSION', fakeSession()))
+    const key = draftKey(TEST_USER.id, '2026-11-10')
+    saveDraft(key, { mood: 'sad', reflection: 'borrador', achievement: '' })
+
+    await act(() =>
+      queryClient
+        .fetchQuery({ queryKey: ['entries', TEST_USER.id], queryFn: () => Promise.reject(new AppError('AUTH_REQUIRED')) })
+        .catch(() => undefined),
+    )
+
+    expect(repository.expireSession).toHaveBeenCalledTimes(1)
+    expect(screen.getByText('estado:anonymous')).toBeInTheDocument()
+    expect(screen.getByText('caducada:true')).toBeInTheDocument()
+    expect(hasDraft(key)).toBe(true)
+  })
+
+  it('al entrar otra cuenta se descartan los borradores de la anterior', () => {
+    const { emit } = setup()
+    const otherKey = draftKey('00000000-0000-4000-8000-00000000ffff', '2026-11-10')
+    saveDraft(otherKey, { mood: 'happy', reflection: 'ajeno', achievement: '' })
+    act(() => emit('INITIAL_SESSION', fakeSession()))
+    expect(hasDraft(otherKey)).toBe(false)
   })
 })

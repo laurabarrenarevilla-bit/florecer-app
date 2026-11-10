@@ -29,6 +29,11 @@
     gap: a.$space-3;
   }
 
+  &__name {
+    font-weight: 600;
+    color: a.$color-primary;
+  }
+
   &__email {
     min-width: 0;
     overflow-wrap: anywhere;

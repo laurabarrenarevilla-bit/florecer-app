@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useCurrentUser } from '@/features/auth/authContext.ts'
 import { WelcomeNotice } from '@/features/auth/WelcomeNotice.tsx'
 import { formatLongDate } from '@/shared/lib/dates.ts'
 import { ERROR_MESSAGES, isAppError } from '@/shared/lib/errors.ts'
@@ -9,6 +10,7 @@ import { InlineAlert } from '@/shared/ui/InlineAlert.tsx'
 import { LoadingState } from '@/shared/ui/LoadingState.tsx'
 import { PageHeading } from '@/shared/ui/PageHeading.tsx'
 import { useToast } from '@/shared/ui/toastContext.ts'
+import { draftKey, hasDraft } from './draftStore.ts'
 import { EntrySummary } from './EntrySummary.tsx'
 import { JournalForm } from './JournalForm.tsx'
 import { useEntryByDate, useSaveEntry } from './queries.ts'
@@ -16,10 +18,13 @@ import type { JournalEntryContent } from './types.ts'
 
 export function TodayPage() {
   const today = useToday()
+  const { id: userId, name } = useCurrentUser()
+  const formDraftKey = draftKey(userId, today)
   const entryQuery = useEntryByDate(today)
   const save = useSaveEntry()
   const { showToast } = useToast()
-  const [editing, setEditing] = useState(false)
+  // Si quedó un borrador sin guardar (p. ej. tras caducar la sesión), se reabre el formulario.
+  const [editing, setEditing] = useState(() => hasDraft(formDraftKey))
   // El saludo se calcula al abrir la página; no necesita cambiar mientras se escribe.
   const [greeting] = useState(() => greetingForHour(new Date().getHours()))
   const summaryRef = useRef<HTMLElement>(null)
@@ -35,7 +40,7 @@ export function TodayPage() {
 
   const entry = entryQuery.data ?? null
 
-  const handleSubmit = async (content: JournalEntryContent) => {
+  const handleSubmit = async (content: JournalEntryContent): Promise<boolean> => {
     try {
       await save.mutateAsync(
         entry
@@ -46,11 +51,12 @@ export function TodayPage() {
       // Si el día cambió en otra pestaña, se mantiene el formulario con el
       // borrador sobre la versión recién cargada.
       if (isAppError(error) && (error.code === 'ENTRY_CONFLICT' || error.code === 'ENTRY_NOT_FOUND')) setEditing(true)
-      return
+      return false
     }
     setEditing(false)
     focusSummaryRef.current = true
     showToast('Tu día se ha guardado.')
+    return true
   }
 
   const startEditing = () => {
@@ -72,7 +78,7 @@ export function TodayPage() {
     <section className="page today">
       <PageHeading
         eyebrow={capitalizeFirst(formatLongDate(today))}
-        title={greeting}
+        title={name ? `${greeting}, ${name}` : greeting}
         lead={entryQuery.isSuccess ? lead : undefined}
         documentTitle="Hoy"
       />
@@ -95,6 +101,7 @@ export function TodayPage() {
       ) : showForm ? (
         <JournalForm
           initial={entry}
+          draftKey={formDraftKey}
           moodLegend="¿Cómo te has sentido hoy?"
           submitLabel={entry ? 'Guardar cambios' : 'Guardar mi día'}
           savingLabel="Guardando…"

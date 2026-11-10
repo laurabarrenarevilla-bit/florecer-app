@@ -37,6 +37,7 @@ describe('TodayPage', () => {
     const { repository } = setup()
     expect(await screen.findByRole('radio', { name: 'Feliz' })).toBeInTheDocument()
     expect(repository.getByDate).toHaveBeenCalledWith(todayLocal())
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/, Persona$/)
   })
 
   it('F1-01: sin emoción no se puede guardar ni se llama al backend', async () => {
@@ -194,4 +195,32 @@ describe('TodayPage', () => {
     await user.click(within(alert).getByRole('button', { name: 'Reintentar' }))
     expect(await screen.findByRole('radio', { name: 'Feliz' })).toBeInTheDocument()
   })
+
+  it('si se sale sin guardar y se vuelve, recupera el borrador (solo en memoria)', async () => {
+    const { user, view } = setup()
+    await user.click(await screen.findByRole('radio', { name: 'Normal' }))
+    await user.type(screen.getByLabelText(/qué te gustaría recordar/i), 'a medio escribir')
+    view.unmount()
+    expect(window.localStorage.length).toBe(0)
+    expect(window.sessionStorage.length).toBe(0)
+
+    setup()
+    expect(await screen.findByText(/hemos recuperado lo que estabas escribiendo/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/qué te gustaría recordar/i)).toHaveValue('a medio escribir')
+    expect(screen.getByRole('radio', { name: 'Normal' })).toBeChecked()
+  })
+
+  it('cancelar una edición descarta el borrador', async () => {
+    const entry = buildEntry({ date: todayLocal(), mood: 'happy', reflection: 'texto inicial' })
+    const first = setup([entry])
+    await first.user.click(await screen.findByRole('button', { name: 'Editar' }))
+    await first.user.type(screen.getByLabelText(/qué te gustaría recordar/i), ' y más')
+    await first.user.click(screen.getByRole('button', { name: 'Cancelar' }))
+    first.view.unmount()
+
+    setup([entry])
+    expect(await screen.findByRole('article', { name: 'Tu registro de hoy' })).toHaveTextContent('texto inicial')
+    expect(screen.queryByText(/hemos recuperado/i)).not.toBeInTheDocument()
+  })
 })
+

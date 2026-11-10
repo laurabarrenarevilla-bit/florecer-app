@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import '@fontsource-variable/dm-sans'
 import '@fontsource-variable/fraunces'
 import './sass/main.scss'
+import './lib/zodConfig.ts'
 import { App } from './app/App.tsx'
 
 const rootElement = document.getElementById('root')

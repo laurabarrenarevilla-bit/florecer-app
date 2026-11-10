@@ -31,6 +31,31 @@ No aceptar "pasa" sin ejecución verificable. Pruebas unitarias de dominio, inte
 | F1-17 | 360px y escritorio | Layout navegable, sin scroll horizontal |
 | F1-18 | Accesibilidad | Labels, foco visible, click/tap, teclado y diálogos |
 
+## Estado de verificación de la fase 1 (10-11-2026)
+
+Distinción estricta: **«local»** = aprobado con repositorios en memoria (jsdom) o en navegador real sin Supabase; **«Supabase real»** = comprobado contra el proyecto de Laura. Ninguna fila está verificada todavía contra Supabase: la migración no está aplicada.
+
+| ID | Local (aprobado) | Prueba preparada contra Supabase real | Estado real |
+|---|---|---|---|
+| F1-01 | `TodayPage.test` | `e2e/remote/journal` | Pendiente |
+| F1-02/03 | `TodayPage.test` | `e2e/remote/journal` | Pendiente |
+| F1-04 | — (necesita backend) | `e2e/remote/journal` (recarga y contexto nuevo) | Pendiente |
+| F1-05 | `TodayPage.test`, `CalendarPage.test` | `e2e/remote/journal` + recuento de filas | Pendiente |
+| F1-06 | `CalendarPage.test` | `e2e/remote/calendar` | Pendiente |
+| F1-07 | `CalendarPage.test` (sin consulta) | `e2e/remote/calendar` + trigger SQL en `test:rls` | Pendiente |
+| F1-08 | `CalendarPage.test` | `e2e/remote/calendar` + recuento de filas | Pendiente |
+| F1-09 | `calendarGrid.test`, `CalendarPage.test` | `e2e/remote/calendar` | Pendiente |
+| F1-10/11 | `dates.test`, `calendarGrid.test` (TZ Europe/Madrid) | — (lógica pura) | Cubierto localmente |
+| F1-12 | `TodayPage.test` | `e2e/remote/journal` + recuento | Pendiente |
+| F1-13 | `TodayPage.test` | `e2e/remote/journal` (`setOffline`) | Pendiente |
+| F1-14 | — (necesita RLS) | `tests/rls` (11 casos) + `e2e/remote/isolation` | Pendiente |
+| F1-15 | `AuthPage.test`, `e2e/local` | `tests/rls` (anónimo) | Parcial: UI local OK |
+| F1-16 | `sessionExpiry.test`, `AuthProvider.test` | `e2e/remote/session-and-layout` (login real + 401 simulado) | Pendiente |
+| F1-17 | `e2e/local` (páginas públicas, 360/1440) | `e2e/remote/session-and-layout` | Parcial |
+| F1-18 | `accessibility.test` (axe, jsdom), `e2e/local` (axe con contraste) | `e2e/remote/session-and-layout` | Parcial |
+
+Revisión manual adicional (10-11-2026, navegador real con datos en memoria, fuera del repositorio): axe-core sin infracciones (contraste incluido) en Hoy, Calendario, detalle, edición y confirmación a 360 y 1440 px. Teclado: Enter abre el detalle, el foco queda atrapado, Escape cierra y devuelve el foco a la celda, y las flechas cambian la emoción.
+
 ## Fase 2 — obligatorio
 
 | ID | Flujo / riesgo | Esperado |

@@ -8,6 +8,7 @@ export function AuthenticatedLayout() {
     <AppShell
       sidebarFooter={
         <>
+          {user.name && <strong>{user.name}</strong>}
           {user.email && <span>{user.email}</span>}
           <SignOutButton variant="ghost" />
         </>

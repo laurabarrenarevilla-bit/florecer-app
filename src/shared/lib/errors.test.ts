@@ -27,4 +27,9 @@ describe('toAppError', () => {
     const error = toAppError({ code: 'XX000', message: 'detalle interno con datos' })
     expect(error.message).not.toContain('detalle interno')
   })
+
+  it('la tabla inexistente (migración sin aplicar) da un mensaje claro, no "error inesperado"', () => {
+    expect(toAppError({ code: 'PGRST205', message: "Could not find the table 'public.journal_entries'" }).code).toBe('DB_NOT_READY')
+    expect(toAppError({ code: '42P01', message: 'relation does not exist' }).code).toBe('DB_NOT_READY')
+  })
 })

@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router'
 import { readSupabaseEnv } from '@/lib/supabase/env.ts'
 import { ToastProvider } from '@/shared/ui/ToastProvider.tsx'
 import { ConfigErrorPage } from '@/pages/ConfigErrorPage.tsx'
+import { ErrorBoundary } from './ErrorBoundary.tsx'
 import { AuthProvider } from './providers/AuthProvider.tsx'
 import { createQueryClient } from './queryClient.ts'
 import { AppRoutes } from './router.tsx'
@@ -16,14 +17,16 @@ export function App() {
   if (!supabaseConfigured) return <ConfigErrorPage />
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AuthProvider>
-          <ToastProvider>
-            <AppRoutes />
-          </ToastProvider>
-        </AuthProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AuthProvider>
+            <ToastProvider>
+              <AppRoutes />
+            </ToastProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   )
 }

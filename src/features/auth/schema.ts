@@ -20,6 +20,15 @@ const newPasswordSchema = z
   .regex(/[A-Z]/, { error: 'Incluye al menos una letra mayúscula.' })
   .regex(/\d/, { error: 'Incluye al menos un número.' })
 
+export const NAME_MAX_LENGTH = 50
+
+/** Nombre para el saludo. Se guarda en los metadatos de la cuenta de Supabase Auth. */
+export const nameSchema = z
+  .string()
+  .trim()
+  .min(1, { error: 'Escribe tu nombre.' })
+  .max(NAME_MAX_LENGTH, { error: `Usa como máximo ${NAME_MAX_LENGTH} caracteres.` })
+
 export const loginSchema = z.object({
   email: emailSchema,
   // En el acceso no se revela la política: solo se exige que no esté vacía.
@@ -28,6 +37,7 @@ export const loginSchema = z.object({
 
 export const signUpSchema = z
   .object({
+    name: nameSchema,
     email: emailSchema,
     password: newPasswordSchema,
     confirmPassword: z.string().min(1, { error: 'Repite la contraseña.' }),

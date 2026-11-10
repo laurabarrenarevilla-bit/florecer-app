@@ -4,15 +4,22 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { AuthContext, type AuthContextValue, type AuthStatus, type AuthUser } from '@/features/auth/authContext.ts'
 import { mapAuthError } from '@/features/auth/authErrors.ts'
 import { authRepository as defaultRepository, type AuthRepository } from '@/features/auth/authRepository.ts'
+import { clearAllDrafts, clearDraftsExcept } from '@/features/journal/draftStore.ts'
+import { subscribeToAuthRequired } from '../queryClient.ts'
 
 interface AuthProviderProps {
   children: ReactNode
   repository?: AuthRepository
 }
 
+function displayName(session: Session): string | null {
+  const value: unknown = session.user.user_metadata['display_name']
+  return typeof value === 'string' && value.trim() ? value.trim().slice(0, 50) : null
+}
+
 function toUser(session: Session | null): AuthUser | null {
   if (!session) return null
-  return { id: session.user.id, email: session.user.email ?? null }
+  return { id: session.user.id, email: session.user.email ?? null, name: displayName(session) }
 }
 
 export function AuthProvider({ children, repository = defaultRepository }: AuthProviderProps) {
@@ -32,6 +39,8 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
       // Al cambiar de cuenta o cerrar sesión no debe quedar nada en caché.
       if (currentUserIdRef.current !== (nextUser?.id ?? null)) {
         queryClient.clear()
+        // Los borradores en memoria nunca pasan de una cuenta a otra.
+        if (nextUser) clearDraftsExcept(nextUser.id)
       }
       currentUserIdRef.current = nextUser?.id ?? null
 
@@ -49,6 +58,17 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
     return unsubscribe
   }, [repository, queryClient])
 
+  // El backend rechazó el token (caducado o revocado): se cierra la sesión
+  // local, lo que emite SIGNED_OUT y marca la sesión como caducada. Los
+  // borradores en memoria se conservan para recuperarlos al volver a entrar.
+  useEffect(
+    () =>
+      subscribeToAuthRequired(() => {
+        if (currentUserIdRef.current) void repository.expireSession()
+      }),
+    [repository],
+  )
+
   const signIn = useCallback<AuthContextValue['signIn']>(
     async (email, password) => {
       const { error } = await repository.signIn(email, password)
@@ -59,8 +79,8 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
   )
 
   const signUp = useCallback<AuthContextValue['signUp']>(
-    async (email, password) => {
-      const { session, error } = await repository.signUp(email, password)
+    async (email, password, name) => {
+      const { session, error } = await repository.signUp(email, password, name)
       if (error) return { ok: false, error: mapAuthError(error) }
       if (session) setJustSignedUp(true)
       return { ok: true, sessionStarted: session !== null }
@@ -76,6 +96,7 @@ export function AuthProvider({ children, repository = defaultRepository }: AuthP
       return { ok: false, error: mapAuthError(error) }
     }
     queryClient.clear()
+    clearAllDrafts()
     return { ok: true }
   }, [repository, queryClient])
 

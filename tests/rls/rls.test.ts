@@ -4,6 +4,10 @@
  * Escribe y borra filas propias de test-a/test-b en fechas antiguas reservadas.
  *
  *   pnpm test:rls   (necesita .env.test.local con las variables de abajo)
+ *
+ * Salvaguardas: solo se ejecuta con FLORECER_REMOTE_TESTS=1 (lo pone el script,
+ * que se lanza con autorización), las cuentas deben ser sintéticas (su correo
+ * contiene "test") y solo se tocan las fechas reservadas de 2000.
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
@@ -16,9 +20,15 @@ function requireEnv(name: string): string {
   return value
 }
 
-const url = requireEnv('VITE_SUPABASE_URL')
-const key = requireEnv('VITE_SUPABASE_PUBLISHABLE_KEY')
-if (key.startsWith('sb_secret_')) throw new Error('Las pruebas RLS no pueden usar una clave secreta.')
+const REMOTE_ENABLED = process.env.FLORECER_REMOTE_TESTS === '1'
+let url = ''
+let key = ''
+
+function requireTestAccount(prefix: 'TEST_A' | 'TEST_B') {
+  const email = requireEnv(`${prefix}_EMAIL`)
+  if (!/test/i.test(email)) throw new Error(`${prefix}_EMAIL debe ser una cuenta sintética (su correo debe contener "test").`)
+  return { email, password: requireEnv(`${prefix}_PASSWORD`) }
+}
 
 // Fechas reservadas para pruebas: no coinciden con uso real.
 const DATE_A = '2000-01-03'
@@ -50,21 +60,29 @@ async function cleanup() {
 }
 
 beforeAll(async () => {
+  if (!REMOTE_ENABLED) return
+  url = requireEnv('VITE_SUPABASE_URL')
+  key = requireEnv('VITE_SUPABASE_PUBLISHABLE_KEY')
+  if (key.startsWith('sb_secret_')) throw new Error('Las pruebas RLS no pueden usar una clave secreta.')
+  const accountA = requireTestAccount('TEST_A')
+  const accountB = requireTestAccount('TEST_B')
+  if (accountA.email.toLowerCase() === accountB.email.toLowerCase()) throw new Error('A y B deben ser cuentas distintas.')
   clientA = newClient()
   clientB = newClient()
-  userA = await signInOrRegister(clientA, requireEnv('TEST_A_EMAIL'), requireEnv('TEST_A_PASSWORD'))
-  userB = await signInOrRegister(clientB, requireEnv('TEST_B_EMAIL'), requireEnv('TEST_B_PASSWORD'))
+  userA = await signInOrRegister(clientA, accountA.email, accountA.password)
+  userB = await signInOrRegister(clientB, accountB.email, accountB.password)
   expect(userA).not.toBe(userB)
   await cleanup()
 })
 
 afterAll(async () => {
+  if (!REMOTE_ENABLED) return
   await cleanup()
   await clientA?.auth.signOut()
   await clientB?.auth.signOut()
 })
 
-describe('RLS journal_entries', () => {
+describe.skipIf(!REMOTE_ENABLED)('RLS journal_entries', () => {
   it('A crea su entrada y el servidor asigna su user_id', async () => {
     const repoA = createJournalRepository(() => clientA)
     const entry = await repoA.create({ date: DATE_A, mood: 'happy', reflection: 'prueba sintética', achievement: '' })
