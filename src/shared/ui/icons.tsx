@@ -33,6 +33,23 @@ export function TodayIcon(props: IconProps) {
   )
 }
 
+export function UserIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
+      <circle cx="12" cy="8" r="3.5" />
+      <path d="M5 20v-2a7 7 0 0 1 14 0v2" />
+    </svg>
+  )
+}
+
+export function SignOutIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M10 12h10m-4-4 4 4-4 4" />
+    </svg>
+  )
+}
+
 export function CalendarIcon(props: IconProps) {
   return (
     <svg {...base(props)} stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">

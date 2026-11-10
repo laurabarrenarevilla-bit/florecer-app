@@ -56,9 +56,70 @@
     display: flex;
     flex-direction: column;
     gap: a.$space-2;
-    padding: 0 a.$space-2;
+    padding: a.$space-4 0 0;
+    border-top: 1px solid a.$color-border;
     font-size: a.$font-size-sm;
     color: a.$color-text-secondary;
     overflow-wrap: anywhere;
+
+    > .btn--ghost {
+      justify-content: flex-start;
+      gap: a.$space-3;
+      font-size: a.$font-size-sm;
+      font-weight: 500;
+      color: a.$color-text-secondary;
+    }
+  }
+
+  &__account {
+    display: flex;
+    align-items: center;
+    gap: a.$space-3;
+    min-width: 0;
+    min-height: a.$tap-target;
+    padding: a.$space-2;
+    border-radius: a.$radius-md;
+    text-decoration: none;
+
+    &:hover {
+      background: a.$color-muted-bg;
+    }
+  }
+
+  &__avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: a.$color-muted-bg;
+    color: a.$color-primary;
+  }
+
+  &__identity {
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-1;
+    min-width: 0;
+  }
+
+  &__name,
+  &__email {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__name {
+    color: a.$color-primary;
+    font-weight: 600;
+    font-size: a.$font-size-sm;
+  }
+
+  &__email {
+    color: a.$color-text-secondary;
+    font-size: a.$font-size-xs;
+    font-weight: 400;
   }
 }

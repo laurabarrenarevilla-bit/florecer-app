@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Button } from '@/shared/ui/Button.tsx'
 import { InlineAlert } from '@/shared/ui/InlineAlert.tsx'
+import { SignOutIcon } from '@/shared/ui/icons.tsx'
 import { useAuth } from './authContext.ts'
 
 interface SignOutButtonProps {
@@ -29,6 +30,7 @@ export function SignOutButton({ variant = 'danger-outline' }: SignOutButtonProps
   return (
     <>
       <Button variant={variant} onClick={handleClick} isLoading={pending} loadingText="Cerrando sesión…">
+        <SignOutIcon size={18} />
         Cerrar sesión
       </Button>
       {error && <InlineAlert tone="error">{error}</InlineAlert>}
