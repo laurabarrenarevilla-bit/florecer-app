@@ -14,7 +14,6 @@ import { PageHeading } from '@/shared/ui/PageHeading.tsx'
 import { MIN_DATE, MIN_MONTH, resolveVisibleMonth } from './calendarGrid.ts'
 import { DayDetailDialog } from './DayDetailDialog.tsx'
 import { MonthCalendar } from './MonthCalendar.tsx'
-import { MoodLegend } from './MoodLegend.tsx'
 
 function parseDayParam(value: string | null): LocalDate | null {
   return value && isValidLocalDate(value) && value >= MIN_DATE ? value : null
@@ -90,8 +89,6 @@ export function CalendarPage() {
           action={isCurrentMonth ? <Link className="btn btn--secondary" to="/hoy">Registrar hoy</Link> : undefined}
         />
       ) : null}
-
-      <MoodLegend />
 
       <DayDetailDialog date={day} today={today} onClose={closeDay} />
     </section>

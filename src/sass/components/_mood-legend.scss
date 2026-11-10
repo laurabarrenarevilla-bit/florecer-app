@@ -2,29 +2,35 @@
 @use '@abstracts/abstracts' as a;
 
 .mood-legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: a.$space-2 a.$space-4;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: a.$space-3 a.$space-4;
   margin: 0;
-  padding: 0;
+  padding: a.$space-2 a.$space-2 a.$space-4;
+  border-bottom: 1px solid a.$color-border;
   list-style: none;
+
+  @include a.breakpoint(tablet) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 
   &__item {
     display: inline-flex;
     align-items: center;
     gap: a.$space-2;
-    font-size: a.$font-size-xs;
-    color: a.$color-text-secondary;
+    font-size: a.$font-size-sm;
+    font-weight: 500;
+    color: a.$color-text;
   }
 
   &__swatch {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1rem;
-    height: 1rem;
-    border-radius: 0.3125rem;
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: a.$radius-sm;
 
     @each $name, $mood in a.$moods {
       &--#{$name} {

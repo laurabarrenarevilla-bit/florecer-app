@@ -7,7 +7,7 @@ export function MoodLegend() {
       {MOODS.map((mood) => (
         <li key={mood} className="mood-legend__item">
           <span className={`mood-legend__swatch mood-legend__swatch--${mood}`} aria-hidden="true">
-            <MoodIcon mood={mood} size={12} />
+            <MoodIcon mood={mood} size={16} />
           </span>
           {MOOD_LABELS[mood]}
         </li>

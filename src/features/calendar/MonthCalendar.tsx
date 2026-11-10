@@ -3,6 +3,7 @@ import { formatMonthYear, isFutureDate, type LocalDate, type MonthKey } from '@/
 import { ChevronLeftIcon, ChevronRightIcon } from '@/shared/ui/icons.tsx'
 import { buildMonthGrid, WEEKDAYS } from './calendarGrid.ts'
 import { DayCell } from './DayCell.tsx'
+import { MoodLegend } from './MoodLegend.tsx'
 
 interface MonthCalendarProps {
   month: MonthKey
@@ -49,6 +50,8 @@ export function MonthCalendar({
           <ChevronRightIcon />
         </button>
       </div>
+
+      <MoodLegend />
 
       <table className="calendar__grid">
         <caption className="visually-hidden">Registros de {monthLabel}</caption>
