@@ -95,3 +95,14 @@ Fuentes: [Vite PWA](https://vite-pwa-org.netlify.app/guide/),
 [actualizaciones con aviso](https://vite-pwa-org.netlify.app/guide/prompt-for-update.html),
 [Vercel](https://vite-pwa-org.netlify.app/deployment/vercel),
 [criterios de instalación](https://web.dev/articles/install-criteria).
+
+## Revisión (10-11-2026, tras el despliegue en florecer-diario.vercel.app)
+
+Comprobado en producción, en Chromium real con una cuenta sintética:
+
+- **Caché:** una sola caché `florecer-precache-v2` con 29 recursos públicos del build (html, js, css, fuentes, iconos y manifest). Ninguna URL externa, ninguna respuesta de Supabase (REST/Auth) y ningún texto del diario, después de iniciar sesión y guardar una entrada. `localStorage` solo contiene el token de sesión de Supabase, igual que sin PWA.
+- **Cabeceras:** `sw.js`, `pwa-lifecycle.js` y el manifest con `no-cache`; MIME correctos; CSP con `worker-src 'self'`; `workbox-*.js` revalidado.
+- **Sin conexión:** la interfaz abre desde la caché y no muestra datos antiguos. Sí había un problema, ajeno al worker: Hoy tardaba ~16 s («Cargando tu día…», 8 peticiones fallidas) en avisar, porque postgrest-js reintenta cada lectura 3 veces y React Query añadía otro reintento. Corregido: el repositorio falla al momento si `navigator.onLine === false` y React Query ya no reintenta fallos de red. Ahora el aviso es inmediato.
+- **Hallazgo menor:** el worker generado por Workbox incluye además su receptor estándar del mensaje `SKIP_WAITING`, que activaría la versión nueva sin pasar por la comprobación de una sola ventana. La aplicación no envía ese mensaje y solo pueden enviarlo páginas del mismo origen. Se deja anotado; eliminarlo exigiría pasar a `injectManifest`.
+- **Retirada:** el procedimiento está descrito arriba, pero el worker de retirada no está preparado. Si hubiera que quitar la PWA, primero hay que crearlo y probarlo en un origen aislado.
+- **Alcance:** CLAUDE.md excluye la PWA y el modo sin conexión de la fase 1. Esta mejora se pidió expresamente (ver «Fecha»), ya está en producción y no guarda datos personales en disco.

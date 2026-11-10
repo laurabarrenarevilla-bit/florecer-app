@@ -16,11 +16,17 @@ describe('reintentos de consultas', () => {
     expect(queryFn).toHaveBeenCalledTimes(1)
   })
 
-  it('un fallo de red se reintenta una vez', async () => {
+  it('un fallo de red no se reintenta aquí (ya lo hace postgrest-js)', async () => {
     const queryFn = vi.fn(() => Promise.reject(new AppError('NETWORK_UNAVAILABLE')))
+    await createQueryClient().fetchQuery({ queryKey: ['y'], queryFn }).catch(() => undefined)
+    expect(queryFn).toHaveBeenCalledTimes(1)
+  })
+
+  it('un servicio caído se reintenta una vez', async () => {
+    const queryFn = vi.fn(() => Promise.reject(new AppError('DB_UNAVAILABLE')))
     const client = createQueryClient()
     client.setDefaultOptions({ queries: { ...client.getDefaultOptions().queries, retryDelay: 0 } })
-    await client.fetchQuery({ queryKey: ['y'], queryFn }).catch(() => undefined)
+    await client.fetchQuery({ queryKey: ['w'], queryFn }).catch(() => undefined)
     expect(queryFn).toHaveBeenCalledTimes(2)
   })
 

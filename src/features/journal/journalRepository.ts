@@ -28,6 +28,15 @@ function parseRows(data: unknown): JournalEntry[] {
   return parsed.data
 }
 
+/**
+ * Sin conexión no se llama a Supabase: postgrest-js reintentaría cada lectura
+ * varios segundos antes de fallar. navigator.onLine === false es fiable
+ * (true no lo es, por eso solo se usa en ese sentido).
+ */
+function assertOnline(): void {
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) throw new AppError('NETWORK_UNAVAILABLE')
+}
+
 function validateDate(date: LocalDate): LocalDate {
   const parsed = localDateSchema.safeParse(date)
   if (!parsed.success) throw new AppError('VALIDATION_ERROR')
@@ -47,6 +56,7 @@ function validateContent(input: CreateJournalEntryInput | UpdateJournalEntryInpu
 export function createJournalRepository(getClient: () => SupabaseClient): JournalRepository {
   return {
     async listBetween(from, to) {
+      assertOnline()
       const { data, error } = await getClient()
         .from(TABLE)
         .select(COLUMNS)
@@ -58,6 +68,7 @@ export function createJournalRepository(getClient: () => SupabaseClient): Journa
     },
 
     async getByDate(date) {
+      assertOnline()
       const { data, error } = await getClient()
         .from(TABLE)
         .select(COLUMNS)
@@ -68,6 +79,7 @@ export function createJournalRepository(getClient: () => SupabaseClient): Journa
     },
 
     async create(input) {
+      assertOnline()
       const dateResult = notFutureDateSchema().safeParse(input.date)
       if (!dateResult.success) throw new AppError('VALIDATION_ERROR')
       const content = validateContent(input)
@@ -86,6 +98,7 @@ export function createJournalRepository(getClient: () => SupabaseClient): Journa
     },
 
     async update(input) {
+      assertOnline()
       const date = validateDate(input.date)
       const content = validateContent(input)
       const { data, error } = await getClient()
@@ -103,6 +116,7 @@ export function createJournalRepository(getClient: () => SupabaseClient): Journa
     },
 
     async deleteByDate(date) {
+      assertOnline()
       const { data, error } = await getClient()
         .from(TABLE)
         .delete()

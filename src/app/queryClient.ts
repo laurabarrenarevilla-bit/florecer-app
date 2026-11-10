@@ -20,6 +20,16 @@ export function isPermanentError(error: unknown): boolean {
   return isAppError(error) && PERMANENT_ERRORS.has(error.code)
 }
 
+/**
+ * React Query no reintenta fallos de red: postgrest-js ya reintenta cada
+ * lectura hasta 3 veces (1, 2 y 4 s). Dos capas sumaban ~16 s de "Cargando…".
+ */
+export function shouldRetryQuery(failureCount: number, error: unknown): boolean {
+  if (isPermanentError(error)) return false
+  if (isAppError(error) && error.code === 'NETWORK_UNAVAILABLE') return false
+  return failureCount < 1
+}
+
 function notifyIfAuthRequired(error: unknown) {
   if (isAppError(error) && error.code === 'AUTH_REQUIRED') {
     for (const listener of authRequiredListeners) listener()
@@ -39,7 +49,7 @@ export function createQueryClient(): QueryClient {
         // Revalida al volver a la pestaña: detecta cambios hechos en otro dispositivo.
         refetchOnWindowFocus: true,
         // Un reintento solo para fallos transitorios (red, servicio caído).
-        retry: (failureCount, error) => !isPermanentError(error) && failureCount < 1,
+        retry: shouldRetryQuery,
       },
       mutations: {
         // Las escrituras nunca se reintentan solas: la persona decide reintentar.
