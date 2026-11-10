@@ -13,7 +13,8 @@
     "preview": "vite preview",
     "test:rls": "FLORECER_REMOTE_TESTS=1 vitest run --config tests/rls/vitest.config.ts --mode test",
     "e2e": "playwright test -c tests/e2e/playwright.config.ts --project=local-mobile --project=local-desktop",
-    "e2e:remote": "FLORECER_REMOTE_TESTS=1 playwright test -c tests/e2e/playwright.config.ts --project=remote"
+    "e2e:remote": "FLORECER_REMOTE_TESTS=1 playwright test -c tests/e2e/playwright.config.ts --project=remote",
+    "e2e:prod": "E2E_BASE_URL=https://florecer-diario.vercel.app FLORECER_REMOTE_TESTS=1 playwright test -c tests/e2e/playwright.config.ts --project=remote"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",

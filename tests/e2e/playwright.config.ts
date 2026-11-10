@@ -9,6 +9,8 @@ import { loadEnv } from 'vite'
  *            `pnpm e2e`
  * - remote:  contra el proyecto Supabase configurado, con las cuentas de prueba
  *            A/B de .env.test.local. Requiere autorización. `pnpm e2e:remote`
+ * - smoke:   las mismas pruebas remotas contra la URL desplegada, sin build
+ *            local. `pnpm e2e:prod` (E2E_BASE_URL=https://florecer-diario.vercel.app)
  */
 const projectRoot = fileURLToPath(new URL('../../', import.meta.url))
 for (const [name, value] of Object.entries(loadEnv('test', projectRoot, ''))) {
@@ -16,6 +18,8 @@ for (const [name, value] of Object.entries(loadEnv('test', projectRoot, ''))) {
 }
 
 const PORT = 4173
+// Con E2E_BASE_URL se prueba un despliegue existente y no se levanta servidor local.
+const externalBaseUrl = process.env.E2E_BASE_URL
 const mobile = { viewport: { width: 360, height: 740 }, isMobile: true, hasTouch: true }
 const desktop = { viewport: { width: 1440, height: 900 } }
 
@@ -28,7 +32,7 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: externalBaseUrl ?? `http://localhost:${PORT}`,
     browserName: 'chromium',
     locale: 'es-ES',
     timezoneId: 'Europe/Madrid',
@@ -38,13 +42,15 @@ export default defineConfig({
     trace: 'off',
     screenshot: 'only-on-failure',
   },
-  webServer: {
-    command: `pnpm exec vite build && pnpm exec vite preview --port ${PORT} --strictPort`,
-    cwd: projectRoot,
-    url: `http://localhost:${PORT}`,
-    reuseExistingServer: false,
-    timeout: 180_000,
-  },
+  webServer: externalBaseUrl
+    ? undefined
+    : {
+        command: `pnpm exec vite build && pnpm exec vite preview --port ${PORT} --strictPort`,
+        cwd: projectRoot,
+        url: `http://localhost:${PORT}`,
+        reuseExistingServer: false,
+        timeout: 180_000,
+      },
   projects: [
     { name: 'local-mobile', testDir: './local', use: mobile },
     { name: 'local-desktop', testDir: './local', use: desktop },

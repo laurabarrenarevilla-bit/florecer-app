@@ -2,7 +2,7 @@
 
 Diario emocional personal en español de España. Cada día se registra cómo te has sentido (Feliz, Normal o Triste), con una reflexión y un pequeño logro opcionales, y se consulta en un calendario de colores.
 
-**Estado (10-11-2026):** fase 1 implementada y verificada contra Supabase real: migración aplicada, RLS con dos cuentas y E2E remotas en verde (ver `docs/10-TEST-PLAN.md`, «Estado de verificación»). **Pendiente: despliegue en Vercel** y smoke en un móvil real.
+**Estado (10-11-2026):** fase 1 implementada y verificada contra Supabase real: migración aplicada, RLS con dos cuentas y E2E remotas en verde (ver `docs/10-TEST-PLAN.md`, «Estado de verificación»). Desplegada en **https://florecer-diario.vercel.app**, donde también pasan las E2E (`pnpm e2e:prod`). Pendiente: prueba manual en un móvil real.
 
 ## Stack
 
@@ -27,6 +27,7 @@ En el navegador solo se publica la clave **publicable** de Supabase. Nunca `serv
 | `pnpm e2e` | Navegador real contra el build: rutas públicas, validación, accesibilidad con contraste, CSP de `vercel.json`, secretos en el bundle. Bloquea cualquier petición externa | No |
 | `pnpm test:rls` | Aislamiento RLS con dos cuentas (A/B) y la clave publicable | **Sí** (con autorización) |
 | `pnpm e2e:remote` | Flujos completos de la fase 1 en el navegador contra el proyecto real | **Sí** (con autorización) |
+| `pnpm e2e:prod` | Las mismas pruebas contra la URL desplegada (sin build local) | **Sí** (con autorización) |
 
 Las pruebas remotas necesitan `.env.test.local` (ignorado por git) con `TEST_A_EMAIL`, `TEST_A_PASSWORD`, `TEST_B_EMAIL` y `TEST_B_PASSWORD`. Son cuentas sintéticas: el correo debe contener «test». Se registran una sola vez por el registro público y después solo inician sesión. Solo borran sus propias filas en fechas concretas; nunca hacen limpiezas globales.
 

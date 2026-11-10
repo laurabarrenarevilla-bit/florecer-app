@@ -60,7 +60,7 @@ Fallos encontrados por las pruebas reales y corregidos el 10-11-2026:
 - Tras cerrar sesión, la siguiente persona entraba en la pantalla anterior (p. ej. Ajustes) en lugar de en Hoy.
 - Sin red, TanStack Query pausaba el guardado en silencio («Guardando…» indefinido); ahora falla al momento con «No hay conexión».
 
-Pendiente en la URL desplegada: smoke del guion de 90 s de `docs/03` en un móvil real.
+Producción (`https://florecer-diario.vercel.app`, 10-11-2026): las 17 E2E remotas pasan contra la URL desplegada (`pnpm e2e:prod`). Pendiente: el guion de 90 s de `docs/03` en un móvil real.
 
 ## Fase 2 — obligatorio
 

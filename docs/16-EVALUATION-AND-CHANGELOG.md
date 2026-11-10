@@ -62,4 +62,6 @@ No crear entradas artificiales para demostrar uso. Mostrar profesor calendario c
 | 10-11-2026 | producción | Alta de cuentas sintéticas A/B por el registro público (una sola vez) | `pnpm test:rls` | 3 cuentas en total; 0 filas de prueba tras las pruebas |
 | 10-11-2026 | producción | Migración `20261110000000_delete_my_account` (sha256 `e4b7023b…`): función `delete_my_account()` | Management API, transacción, con autorización | `SECURITY DEFINER`, `search_path` vacío, propietario `postgres`, ejecución solo para `authenticated`; registrada en `schema_migrations` |
 | 10-11-2026 | producción | Prueba real de eliminación con la cuenta sintética C (creada y eliminada en la misma prueba) | `pnpm e2e:remote` | Cuenta C inexistente, 0 identidades y 0 entradas huérfanas; siguen 3 cuentas |
+| 10-11-2026 | producción | Auth: *Site URL* `https://florecer-diario.vercel.app`; redirecciones permitidas a producción y `localhost:5173`/`4173` | Management API | Lectura de la configuración tras el cambio |
+| 10-11-2026 | producción | Prueba de humo sobre `https://florecer-diario.vercel.app` (rutas 200, cabeceras de `vercel.json`, bundle sin secretos, apunta al proyecto correcto) y 17 E2E remotas | `curl`, `pnpm e2e:prod` | 17/17; sin datos sintéticos restantes |
 
