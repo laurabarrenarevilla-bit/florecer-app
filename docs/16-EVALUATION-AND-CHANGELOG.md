@@ -48,7 +48,7 @@ No crear entradas artificiales para demostrar uso. Mostrar profesor calendario c
 | Preguntas de introspección | Planificado (ADR-011 §3) |
 | Ver anual/semanalmente | Planificado (Evolución) |
 | Gráfico tipo "quesito" de emociones | Planificado (gráfico de anillo) |
-| Emociones concretas dentro de cada principal | En curso: migración y pruebas locales listas el 22-11 |
+| Emociones concretas dentro de cada principal | En curso: migración aplicada en producción el 22-11; falta la interfaz |
 | Guardar sin conexión y subir después | Mejora futura, fuera del 26-11 (ADR-011 §5) |
 
 Actualizar el estado solo cuando esté implementado y verificado.
@@ -76,5 +76,6 @@ Actualizar el estado solo cuando esté implementado y verificado.
 | 10-11-2026 | producción | Migración `20261110000000_delete_my_account` (sha256 `e4b7023b…`): función `delete_my_account()` | Management API, transacción, con autorización | `SECURITY DEFINER`, `search_path` vacío, propietario `postgres`, ejecución solo para `authenticated`; registrada en `schema_migrations` |
 | 10-11-2026 | producción | Prueba real de eliminación con la cuenta sintética C (creada y eliminada en la misma prueba) | `pnpm e2e:remote` | Cuenta C inexistente, 0 identidades y 0 entradas huérfanas; siguen 3 cuentas |
 | 10-11-2026 | producción | Auth: *Site URL* `https://florecer-diario.vercel.app`; redirecciones permitidas a producción y `localhost:5173`/`4173` | Management API | Lectura de la configuración tras el cambio |
+| 22-11-2026 | producción | Migración `20261122000000_journal_emotions` (sha256 `0c92ea7d…`) en una transacción, registrada en `schema_migrations` | Supabase CLI `db query`, con autorización expresa | Columna `emotions text[] not null default '{}'`; 3 restricciones nuevas; `authenticated` con insert/update en `emotions`, `anon` sin acceso; 4 políticas; las 13 entradas existentes intactas y sin emociones; `pnpm test:rls` 14/14 y 0 filas de prueba restantes |
 | 10-11-2026 | producción | Prueba de humo sobre `https://florecer-diario.vercel.app` (rutas 200, cabeceras de `vercel.json`, bundle sin secretos, apunta al proyecto correcto) y 17 E2E remotas | `curl`, `pnpm e2e:prod` | 17/17; sin datos sintéticos restantes |
 
