@@ -11,6 +11,7 @@ const AuthPage = lazy(() => import('@/features/auth/AuthPage.tsx').then((m) => (
 const TodayPage = lazy(() => import('@/features/journal/TodayPage.tsx').then((m) => ({ default: m.TodayPage })))
 const CalendarPage = lazy(() => import('@/features/calendar/CalendarPage.tsx').then((m) => ({ default: m.CalendarPage })))
 const EvolutionPage = lazy(() => import('@/features/evolution/EvolutionPage.tsx').then((m) => ({ default: m.EvolutionPage })))
+const WeeklySummaryPage = lazy(() => import('@/features/ai/WeeklySummaryPage.tsx').then((m) => ({ default: m.WeeklySummaryPage })))
 const SettingsPage = lazy(() => import('@/features/settings/SettingsPage.tsx').then((m) => ({ default: m.SettingsPage })))
 
 function Page({ children, fullscreen = false }: { children: ReactNode; fullscreen?: boolean }) {
@@ -32,6 +33,7 @@ export function AppRoutes() {
           <Route path="/hoy" element={<Page><TodayPage /></Page>} />
           <Route path="/calendario" element={<Page><CalendarPage /></Page>} />
           <Route path="/evolucion" element={<Page><EvolutionPage /></Page>} />
+          <Route path="/evolucion/resumen" element={<Page><WeeklySummaryPage /></Page>} />
           <Route path="/ajustes" element={<Page><SettingsPage /></Page>} />
         </Route>
       </Route>

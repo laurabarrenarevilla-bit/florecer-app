@@ -16,6 +16,8 @@ Fase 1 entregada el 12-11. Incorpora el feedback del profesor (ADR-011) y las de
 | mié 25 | IA y cierre | Copiar para ChatGPT; resumen semanal NVIDIA (vista previa completa, selección, confirmación; recuentos por código); regresión completa; despliegue con autorización. |
 | jue 26 | Entrega | — |
 
+**Estado 22-11:** domingo a miércoles implementados en local (ver `16`). El resumen NVIDIA no se guarda: se aplica el primer recorte. Quedan pendientes, por orden de recorte, la búsqueda y exportar/importar JSON.
+
 **Orden de recorte si falta tiempo:** guardar resúmenes NVIDIA → búsqueda → exportar/importar JSON. **No se recortan:** emociones secundarias, preguntas, evolución (son el feedback del profesor), ni persistencia/RLS.
 
 **Excluido:** guardar sin conexión y sincronizar después (ADR-011 §5), recordatorios, PDF, análisis mensual con IA, detección de patrones con IA.

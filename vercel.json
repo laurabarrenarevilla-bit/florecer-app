@@ -3,6 +3,7 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
+  "functions": { "api/ai/analyze.ts": { "maxDuration": 30 } },
   "rewrites": [{ "source": "/((?!api(?:/|$)|assets/|favicon/|sw\\.js$|pwa-lifecycle\\.js$|workbox-[^/]+\\.js$).*)", "destination": "/index.html" }],
   "headers": [
     {

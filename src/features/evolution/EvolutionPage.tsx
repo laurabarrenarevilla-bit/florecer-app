@@ -88,6 +88,13 @@ export function EvolutionPage() {
         documentTitle="Evolución"
       />
 
+      <Link className="evolution__summary-link card" to="/evolucion/resumen">
+        <span className="evolution__summary-title">
+          Resumen de la semana <span aria-hidden="true">→</span>
+        </span>
+        <span className="evolution__muted">Revisa tus últimos 7 días y, si quieres, prepara un resumen con IA o cópialo para ChatGPT.</span>
+      </Link>
+
       <div className="evolution__controls">
         <ul className="segmented" aria-label="Período">
           {PERIOD_KINDS.map((kind) => (

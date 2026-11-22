@@ -2,6 +2,29 @@
 
 // Página Evolución (/evolucion).
 .evolution {
+  &__summary-link {
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-1;
+    padding: a.$space-4 a.$space-5;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color a.$duration-fast a.$easing;
+
+    &:hover {
+      border-color: a.$color-sage;
+    }
+
+    @include a.reduced-motion {
+      transition: none;
+    }
+  }
+
+  &__summary-title {
+    font-weight: 700;
+    color: a.$color-primary;
+  }
+
   &__controls {
     display: flex;
     flex-direction: column;

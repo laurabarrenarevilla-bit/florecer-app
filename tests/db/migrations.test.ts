@@ -138,3 +138,42 @@ describe('RLS con dos cuentas (local)', () => {
     ).rejects.toThrow(/permission denied/)
   })
 })
+
+describe('cuota de IA (consume_ai_quota)', () => {
+  beforeEach(async () => {
+    await db.exec('reset role; delete from public.ai_usage;')
+  })
+
+  const consume = (user: string | null) => as(user, () => db.query('select public.consume_ai_quota()'))
+
+  it('permite una petición y bloquea la siguiente en el mismo minuto', async () => {
+    await consume(USER_A)
+    await expect(consume(USER_A)).rejects.toThrow(/AI_RATE_LIMIT_MINUTE/)
+  })
+
+  it('la cuota es por persona', async () => {
+    await consume(USER_A)
+    await expect(consume(USER_B)).resolves.toBeDefined()
+  })
+
+  it('bloquea a partir de 10 peticiones en 24 horas', async () => {
+    await db.exec(`insert into public.ai_usage (user_id, created_at)
+      select '${USER_A}', now() - (n || ' hours')::interval from generate_series(1, 10) as n`)
+    await expect(consume(USER_A)).rejects.toThrow(/AI_RATE_LIMIT_DAY/)
+  })
+
+  it('las marcas de más de 2 días se limpian al consumir', async () => {
+    await db.exec(`insert into public.ai_usage (user_id, created_at) values ('${USER_A}', now() - interval '3 days')`)
+    await consume(USER_A)
+    const { rows } = await db.query<{ n: number }>(`select count(*)::int as n from public.ai_usage where user_id = '${USER_A}'`)
+    expect(rows[0]?.n).toBe(1)
+  })
+
+  it('anon no puede consumir y authenticated no puede leer ni escribir la tabla', async () => {
+    await expect(consume(null)).rejects.toThrow(/permission denied/)
+    await expect(as(USER_A, () => db.query('select * from public.ai_usage'))).rejects.toThrow(/permission denied/)
+    await expect(
+      as(USER_A, () => db.query(`insert into public.ai_usage (user_id) values ('${USER_A}')`)),
+    ).rejects.toThrow(/permission denied/)
+  })
+})

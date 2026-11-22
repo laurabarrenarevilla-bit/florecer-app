@@ -9,7 +9,8 @@
   },
   "include": [
     "tests/**/*.ts",
-    "src"
+    "src",
+    "api"
   ],
   "exclude": [
     "tests/rls/vitest.config.ts"

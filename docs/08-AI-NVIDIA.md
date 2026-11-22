@@ -70,3 +70,33 @@ No loguear prompts, salidas, tokens, JWT ni reflexiones; solo request id, estado
 ## Pruebas
 
 Cancelación/copy sin red NVIDIA, deselección de todo, entradas sin reflexión, cambios posteriores a preview, 401 no auth, usuario B intentando IDs de A, errores 429/5xx/timeout, JSON inválido, contenidos adversariales en reflexión, límites de caracteres, validación de resultados, fallo al cargar clave (no exponer secreto).
+
+## Implementación (22-11-2026)
+
+- **Página:** `/evolucion/resumen`, "Resumen de la semana", enlazada desde Evolución. Período fijo de 7 días (hoy y los 6 anteriores), decisión del 10-11.
+- **Recuentos:** los días registrados, los ánimos y los días con logro los calcula el código (`summarize`). La IA solo redacta.
+- **Vista previa:** muestra íntegros la fecha, el ánimo, las emociones, la reflexión y el logro. Vienen marcadas las entradas con texto, y los días sin texto no se pueden incluir.
+- **Cambios de selección:** cambiar la selección retira el resultado anterior; para obtener uno nuevo hay que volver a confirmar.
+- **Copiar para ChatGPT:** construye el texto en el navegador y lo copia al portapapeles; si no puede, ofrece el texto para copiarlo a mano. No hace ninguna petición.
+- **Envío a NVIDIA:**
+  - pide confirmación (`ConfirmDialog`) indicando cuántas entradas y qué campos se envían;
+  - el cliente manda solo `id` y `updatedAt` (`src/features/ai/aiClient.ts`).
+- **Función** `api/ai/analyze.ts`:
+  - **Archivo:** está aislado y solo depende de paquetes npm.
+  - **Sesión:** verifica el JWT con `getUser` y lee las entradas con el JWT del usuario. Nunca usa service_role.
+  - **Entradas cambiadas:** si una entrada falta o su `updated_at` no coincide, responde `409 PREVIEW_STALE`.
+  - **Límites:** hasta 20.000 caracteres y entre 1 y 30 entradas.
+  - **Cuota:** consume la cuota justo antes de llamar a NVIDIA, solo si la configuración está completa.
+  - **NVIDIA:** usa la API compatible con OpenAI, `POST {NVIDIA_API_BASE_URL}/chat/completions`, con 25 s de límite y un reintento como máximo ante errores 5xx o de red.
+  - **Respuesta:** se valida con Zod y, si no es válida, devuelve `502 AI_INVALID_RESPONSE` sin publicar el texto.
+  - **Registro:** solo `requestId`, ruta, estado y latencia.
+- **Cuota persistente** (migración `20261123000000_ai_quota.sql`):
+  - Límites de 1 petición por minuto y 10 en 24 h por persona.
+  - La tabla `ai_usage` solo guarda quién y cuándo, sin políticas RLS de acceso; se gestiona únicamente mediante `consume_ai_quota()`, que es `SECURITY DEFINER`, no recibe parámetros y usa un bloqueo por usuario.
+  - Una petición que falla en NVIDIA consume cuota igualmente. Así se evita que los reintentos insistan sobre el proveedor.
+- **No se guardan** el prompt, el resultado ni el resumen (ADR-005 sigue vigente). El recorte "guardar resúmenes" de `04` se aplica.
+- **Pruebas:**
+  - `tests/api/analyze.test.ts`: 23 casos sin red (401, 400, 409, 413, 429, 502, 504, reintento, registro sin datos personales, prompt con datos delimitados);
+  - `src/features/ai/*.test.ts(x)`;
+  - cuota en `pnpm test:db`.
+- **Modelo:** lo decide `NVIDIA_MODEL` en el entorno del servidor; no se fija en el código.

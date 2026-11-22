@@ -60,6 +60,12 @@ describe('Accesibilidad (axe-core)', () => {
     expect(await axeViolations()).toEqual([])
   })
 
+  it('Resumen de la semana con vista previa', async () => {
+    await renderAt('/evolucion/resumen', { withEntries: true })
+    await screen.findByRole('region', { name: 'Qué entradas incluir' })
+    expect(await axeViolations()).toEqual([])
+  })
+
   it('Evolución sin registros', async () => {
     await renderAt('/evolucion')
     await screen.findByText('Aún no hay registros en este período')
