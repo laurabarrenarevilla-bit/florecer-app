@@ -24,6 +24,7 @@
 20. `references/`: prototipo de Claude Design como referencia, no implementación.
 21. `decisions/ADR-010-pwa-instalable.md`: instalación PWA, caché estática, actualizaciones y retirada.
 22. `decisions/ADR-011-emociones-secundarias.md`: feedback del profesor, emociones secundarias, preguntas, patrones y alcance de fase 2.
+23. `INFORME-FASE2.md`: informe de la entrega final para el profesor (feedback → cambios → pruebas → limitaciones).
 
 ## Precedencia
 
