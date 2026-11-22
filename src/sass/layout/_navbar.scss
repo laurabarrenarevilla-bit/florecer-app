@@ -27,15 +27,43 @@
     justify-content: center;
     gap: 2px;
     min-width: 4.5rem;
-    padding: a.$space-2;
+    padding: a.$space-2 a.$space-2 a.$space-3;
     border-radius: a.$radius-md;
     font-size: 0.6875rem;
     font-weight: 600;
+    position: relative;
     color: a.$color-text-secondary;
     text-decoration: none;
+    transition:
+      background-color a.$duration-fast a.$easing,
+      color a.$duration-fast a.$easing;
 
-    &[aria-current='page'] {
+    &:hover {
       color: a.$color-primary;
+    }
+
+    // Sección activa: fondo suave (como la barra lateral) y línea inferior.
+    // No depende solo del color: también cambian el fondo y el grosor.
+    &[aria-current='page'] {
+      background: a.$color-muted-bg;
+      color: a.$color-primary;
+      font-weight: 700;
+
+      &::before {
+        content: '';
+        position: absolute;
+        bottom: a.$space-1;
+        left: 50%;
+        width: 1.5rem;
+        height: 3px;
+        border-radius: a.$radius-pill;
+        background: a.$color-primary;
+        transform: translateX(-50%);
+      }
+    }
+
+    @include a.reduced-motion {
+      transition: none;
     }
   }
 }

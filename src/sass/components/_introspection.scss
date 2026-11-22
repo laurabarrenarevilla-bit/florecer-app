@@ -6,9 +6,10 @@
   grid-template-columns: minmax(0, 1fr);
   align-items: center;
   gap: a.$space-1 a.$space-3;
+  @extend %card;
   padding: a.$space-4 a.$space-5;
-  border-radius: a.$radius-xl;
-  background: a.$color-sage-soft;
+  // Franja salvia: la distingue de las tarjetas de formulario sin competir con ellas.
+  border-left: 4px solid a.$color-sage;
 
   // En móvil el botón va debajo para que la pregunta use todo el ancho.
   @include a.breakpoint(tablet) {
