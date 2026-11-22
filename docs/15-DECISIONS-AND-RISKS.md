@@ -44,6 +44,10 @@ Publicada en florecer-diario.vercel.app y revisada el 10-11-2026 (la caché no c
 datos personales). El usuario decide mantenerla en la fase 1, como excepción a CLAUDE.md.
 Pendiente: validar la instalación en dispositivos Android/iOS reales.
 
+## ADR-011: Emociones secundarias y alcance de fase 2 (aceptada, 22-11-2026)
+
+Ver `docs/decisions/ADR-011-emociones-secundarias.md`. Feedback del profesor: emociones concretas dentro de cada ánimo (columna `emotions`, 0–3, validadas por grupo en DB), preguntas de introspección fijas, Evolución semanal/mensual/anual con gráfico de anillo y patrones descriptivos. Guardar sin conexión queda fuera de esta entrega.
+
 ## Riesgos
 
 | Riesgo | Impacto | Plan |
@@ -61,6 +65,9 @@ Pendiente: validar la instalación en dispositivos Android/iOS reales.
 | IA inventa hechos personales | P1 | schema, advertencias, textos prudentes |
 | Exceso de funciones antes del 12 | P0 de proyecto | gates y recorte de alcance |
 | Demostración expone reflexiones | P1 | cuenta demo aislada o datos agregados |
+| Migración `emotions` rompe entradas o clientes antiguos | P1 | columna con default `'{}'`, pruebas PGlite, cliente antiguo no envía la columna; reversión preparada |
+| Patrones leídos como diagnóstico | P1 | texto descriptivo en pasado, mínimo de datos, sin valoración |
+| Plazo de 4 días para la fase 2 | P0 de proyecto | plan por días y orden de recorte en `04` |
 
 ## Cambio de decisión
 

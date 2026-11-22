@@ -23,6 +23,7 @@
 19. `18-OPERATIONS-AND-RECOVERY.md`: incidentes, restauración y procedimientos.
 20. `references/`: prototipo de Claude Design como referencia, no implementación.
 21. `decisions/ADR-010-pwa-instalable.md`: instalación PWA, caché estática, actualizaciones y retirada.
+22. `decisions/ADR-011-emociones-secundarias.md`: feedback del profesor, emociones secundarias, preguntas, patrones y alcance de fase 2.
 
 ## Precedencia
 

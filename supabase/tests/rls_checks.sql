@@ -26,7 +26,12 @@ where table_schema = 'public' and table_name = 'journal_entries'
   and grantee = 'authenticated' and privilege_type in ('INSERT', 'UPDATE')
 order by privilege_type, column_name;
 
--- Restricciones
+-- Columna emotions (fase 2): text[] not null default '{}'
+select column_name, data_type, is_nullable, column_default
+from information_schema.columns
+where table_schema = 'public' and table_name = 'journal_entries' and column_name = 'emotions';
+
+-- Restricciones (fase 2: journal_entries_emotions_max/_no_nulls/_match_mood)
 select conname, pg_get_constraintdef(oid)
 from pg_constraint
 where conrelid = 'public.journal_entries'::regclass

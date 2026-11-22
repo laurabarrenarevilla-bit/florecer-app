@@ -18,6 +18,10 @@ Una pantalla breve, optativa, antes de la primera entrada; sin bloquear acceso r
 
 Nuevo día → emoción requerida → reflexión/logro opcionales → validar → guardar (loading) → DB éxito → vista de resumen + calendario actualizado. Error → feedback y reintento, manteniendo campos. Editar reabre datos reales y cancelar revierte borrador local.
 
+Fase 2 (ADR-011):
+- **Emociones secundarias.** Al elegir un ánimo aparecen sus emociones como chips seleccionables (`aria-pressed`, 44 px como mínimo). Se pueden marcar hasta 3; al llegar a la tercera, las demás quedan deshabilitadas y un texto lo explica. Si se cambia de ánimo, se quitan las emociones del grupo anterior. El detalle del día y el resumen de Hoy muestran las emociones marcadas.
+- **Preguntas de introspección.** Sobre el campo de reflexión aparece una pregunta orientativa y un botón "Otra pregunta". No se guarda y no bloquea nada.
+
 ## Calendario
 
 Cambiar mes, revisar fecha, crear si fecha pasada vacía, mostrar detalle si existe, modificar/borrar con confirmación. Días futuros son visibles pero no editables. Leyenda siempre clara, accesibilidad de celdas con fecha completa y estado. Mes vacío no debe parecer app rota.
@@ -28,7 +32,7 @@ Lista ordenada desc, búsqueda y filtros por estado; lista vacía si no hay regi
 
 ## Evolución
 
-Período 7/30/mes, números calculados, timeline emocional y lista de logros. Sin entradas, mostrar empty state con CTA a Hoy; no generar gráficos ficticios. Tocar un día lleva a su registro.
+Período semana/mes/año (22-11, sustituye a 7/30/mes) con anterior/siguiente, gráfico de anillo por ánimo, franja diaria, comparación con el período anterior, patrones descriptivos, emociones secundarias más frecuentes y lista de logros; números calculados. Sin entradas, mostrar empty state con CTA a Hoy; no generar gráficos ficticios. Tocar un día lleva a su registro.
 
 ## IA
 

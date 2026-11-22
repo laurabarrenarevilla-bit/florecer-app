@@ -14,7 +14,8 @@
     "test:rls": "FLORECER_REMOTE_TESTS=1 vitest run --config tests/rls/vitest.config.ts --mode test",
     "e2e": "playwright test -c tests/e2e/playwright.config.ts --project=local-mobile --project=local-desktop",
     "e2e:remote": "FLORECER_REMOTE_TESTS=1 playwright test -c tests/e2e/playwright.config.ts --project=remote",
-    "e2e:prod": "E2E_BASE_URL=https://florecer-diario.vercel.app FLORECER_REMOTE_TESTS=1 playwright test -c tests/e2e/playwright.config.ts --project=remote"
+    "e2e:prod": "E2E_BASE_URL=https://florecer-diario.vercel.app FLORECER_REMOTE_TESTS=1 playwright test -c tests/e2e/playwright.config.ts --project=remote",
+    "test:db": "vitest run --config tests/db/vitest.config.ts"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.3.0",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
+    "@electric-sql/pglite": "0.5.12",
     "@playwright/test": "^1.65.0",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

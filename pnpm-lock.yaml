@@ -36,6 +36,9 @@ importers:
       '@axe-core/playwright':
         specifier: ^4.14.0
         version: 4.14.0(playwright-core@1.65.0)
+      '@electric-sql/pglite':
+        specifier: 0.5.12
+        version: 0.5.12
       '@playwright/test':
         specifier: ^1.65.0
         version: 1.65.0
@@ -602,6 +605,9 @@ packages:
   '@babel/types@7.29.11':
     resolution: {integrity: sha512-WCsemW40Cpc6gouC1SrY6PBaZ+oLRlEVY9XBvZBI7il/HyUrb2nJ505wE1MHEFyDZNnrWDEuy4jL50WVHfTTSQ==}
     engines: {node: '>=6.9.0'}
+
+  '@electric-sql/pglite@0.5.12':
+    resolution: {integrity: sha512-IiAxv1ld1V9QP0AWsflliDqrGRo+20O+yXOr2fjk6YzBHsCvTPclwQhCB1uZ7eHtPrxUrSllNzWgqy/Ot76PEw==}
 
   '@exodus/bytes@1.16.0':
     resolution: {integrity: sha512-IcpW84uEn3N7ETtNZMlxKhfl6Pec8rUNGOTBtWbK1FKhJxIFAptZyVrvVRVBimAJxJCgc3PxepxkdWWG4DVzfA==}
@@ -3423,6 +3429,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.29.13
       '@babel/helper-validator-identifier': 7.29.7
+
+  '@electric-sql/pglite@0.5.12': {}
 
   '@exodus/bytes@1.16.0': {}
 

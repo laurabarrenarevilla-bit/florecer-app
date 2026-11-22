@@ -27,6 +27,35 @@ Las filas reales `journal_entries` del usuario actual. No almacenar totales/rach
 
 Una celda por fecha del período, color según mood; sin registro neutro. Mostrar fecha y etiqueta accesible; el azul no significa diagnóstico ni peor puntuación. Este mes termina hoy (no pintar futuro como hueco triste).
 
+## Períodos de Evolución (22-11, ADR-011)
+
+- Semana: lunes a domingo de la semana elegida, sin pasar de hoy.
+- Mes: día 1 al último día del mes, sin pasar de hoy.
+- Año: 1 de enero al 31 de diciembre, sin pasar de hoy.
+- Navegar al período anterior y al siguiente; el siguiente se limita al período actual.
+- Comparación: el mismo tipo de período inmediatamente anterior. Se muestran cantidades y porcentajes de cada uno, sin flechas de "mejor" ni "peor".
+
+## Gráfico de anillo ("quesito")
+
+Una porción por ánimo con su color, proporcional a `moodCount / registeredDays`. Opcionalmente, un segundo anillo con las emociones secundarias, sobre el total de emociones marcadas, indicando que las entradas sin emociones no cuentan. Sin registros: estado vacío, sin anillo gris. Los datos también aparecen en texto o tabla accesible, nunca solo por color.
+
+## Emociones secundarias
+
+- `emotionCount(e)` = número de entradas del período que incluyen `e`.
+- Una entrada con 3 emociones suma 1 a cada una.
+- El porcentaje se calcula sobre las entradas con al menos una emoción, y ese denominador se indica en pantalla.
+
+## Patrones descriptivos
+
+- Emoción secundaria más frecuente del período.
+- Ánimo predominante por día de la semana, en períodos con al menos 2 registros de ese día.
+- Días con logro y rachas.
+
+Reglas:
+- Mínimo para mostrar patrones: 5 días registrados en el período. Con menos, se muestra el mensaje "Aún hay pocos registros para ver patrones".
+- En caso de empate, se muestran todas las opciones empatadas, sin elegir una al azar.
+- El texto es descriptivo y en pasado ("registraste"). No predice nada, no diagnostica y no valora.
+
 ## Palabras frecuentes
 
 - Fuente: `reflection` (y opcional `achievement` si UI lo indica claramente), solo el período.

@@ -146,6 +146,19 @@ describe.skipIf(!REMOTE_ENABLED)('RLS journal_entries', () => {
     ).rejects.toMatchObject({ code: 'ENTRY_CONFLICT' })
   })
 
+  it('A guarda emociones de su grupo y B no puede verlas ni cambiarlas', async () => {
+    const saved = await clientA.from('journal_entries').update({ emotions: ['love', 'trust'] }).eq('entry_date', DATE_A).select('emotions')
+    expect(saved.error).toBeNull()
+    expect(saved.data?.[0]?.emotions).toEqual(['love', 'trust'])
+    const byB = await clientB.from('journal_entries').update({ emotions: [] }).eq('entry_date', DATE_A).select('id')
+    expect(byB.data ?? []).toHaveLength(0)
+  })
+
+  it('la base de datos rechaza emociones de otro grupo', async () => {
+    const { error } = await clientA.from('journal_entries').update({ emotions: ['anger'] }).eq('entry_date', DATE_A)
+    expect(error?.code).toBe('23514')
+  })
+
   it('un cliente anónimo no lee ninguna entrada', async () => {
     const anon = newClient()
     const { data } = await anon.from('journal_entries').select('id')

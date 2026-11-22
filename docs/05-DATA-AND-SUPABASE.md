@@ -57,6 +57,7 @@ create policy "delete own journal" on public.journal_entries
 | `mood` | `Mood` | `happy`, `neutral`, `sad` |
 | `reflection` | `string` | opcional en formulario, `''` en DB, máx. 5000 chars |
 | `achievement` | `string` | opcional en formulario, `''` en DB, máx. 500 chars |
+| `emotions` | `Emotion[]` | fase 2 (ADR-011): 0–3 códigos del grupo de `mood`, sin repetir, `'{}'` por defecto |
 | `created_at`,`updated_at` | ISO datetime | timestamps de auditoría, no reemplazan fecha civil |
 
 Mapeo visual: `happy → Feliz/#F5D36A`; `neutral → Normal/#F2A66E`; `sad → Triste/#91BCE0`. **NO** guardar strings visuales en castellano: el prototipo utiliza `feliz,normal,triste` y necesita adaptación al contrato. La capa repo transforma `snake_case` a dominio camelCase y viceversa.

@@ -4,6 +4,30 @@
 
 Fase 1 operativa en producción, sin bloqueadores de guardado/auth/RLS. Nada de añadir IA sobre un diario inestable.
 
+## Alcance acordado el 22-11-2026 (prevalece sobre las listas siguientes)
+
+Fase 1 entregada el 12-11. Incorpora el feedback del profesor (ADR-011) y las decisiones del 10-11.
+
+| Día | Bloque | Contenido |
+|---|---|---|
+| dom 22 | Documentación y datos | Esta documentación, ADR-011, migración `emotions` con pruebas locales (`pnpm test:db`). Migración en producción solo con autorización. |
+| lun 23 | Registro diario | Emociones secundarias en Hoy y calendario; preguntas de introspección; navegación con Evolución. |
+| mar 24 | Evolución | Semana/mes/año, gráfico de anillo por emoción, franja diaria, comparación con el período anterior, patrones descriptivos, logros. |
+| mié 25 | IA y cierre | Copiar para ChatGPT; resumen semanal NVIDIA (vista previa completa, selección, confirmación; recuentos por código); regresión completa; despliegue con autorización. |
+| jue 26 | Entrega | — |
+
+**Orden de recorte si falta tiempo:** guardar resúmenes NVIDIA → búsqueda → exportar/importar JSON. **No se recortan:** emociones secundarias, preguntas, evolución (son el feedback del profesor), ni persistencia/RLS.
+
+**Excluido:** guardar sin conexión y sincronizar después (ADR-011 §5), recordatorios, PDF, análisis mensual con IA, detección de patrones con IA.
+
+**Decisiones del 10-11 que se mantienen:**
+- Resumen semanal NVIDIA sobre los últimos 7 días: la IA redacta un resumen narrativo, experiencias relevantes y preguntas de reflexión, y no inventa nada si hay pocas reflexiones. Los recuentos de emociones y logros los calcula el código.
+- Comparación entre períodos con cantidades y porcentajes por emoción, días registrados y días con logro, sin puntuaciones y sin hablar de "mejora".
+- Guardar los resúmenes es opcional. Si se hace, cambia ADR-005 y requiere una tabla con RLS que guarde los ids y el `updated_at` de las entradas, nunca copias de las reflexiones.
+- Navegación:
+  - escritorio: Hoy, Calendario, Evolución y Ajustes, más Resúmenes cuando exista;
+  - móvil: hasta 4 pestañas y Ajustes desde la cabecera.
+
 ## P1: funciones que aportan nota y uso real
 
 1. **Estadísticas automáticas**: registros por período, distribución de tres emociones, porcentajes con denominador "días registrados", racha actual y racha máxima. Sin "puntuación de felicidad".

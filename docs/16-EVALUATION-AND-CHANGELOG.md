@@ -40,6 +40,19 @@ No crear entradas artificiales para demostrar uso. Mostrar profesor calendario c
 - Instrucciones para demo con cuenta permitida.
 - Registrar mejoras propuestas por profesor sin afirmarlas como ya implementadas.
 
+## Feedback del profesor sobre la fase 1 (recibido el 22-11-2026)
+
+| Feedback | Estado |
+|---|---|
+| Identificar patrones | Planificado (ADR-011 §4) |
+| Preguntas de introspección | Planificado (ADR-011 §3) |
+| Ver anual/semanalmente | Planificado (Evolución) |
+| Gráfico tipo "quesito" de emociones | Planificado (gráfico de anillo) |
+| Emociones concretas dentro de cada principal | En curso: migración y pruebas locales listas el 22-11 |
+| Guardar sin conexión y subir después | Mejora futura, fuera del 26-11 (ADR-011 §5) |
+
+Actualizar el estado solo cuando esté implementado y verificado.
+
 ## Checklist antes de 26 noviembre
 
 - Todas las regresiones del MVP pasan.
