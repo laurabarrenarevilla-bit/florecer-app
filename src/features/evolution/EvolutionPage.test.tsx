@@ -46,6 +46,17 @@ describe('EvolutionPage', () => {
     expect(screen.getByText(/aún hay pocos registros para ver patrones/i)).toBeInTheDocument()
   })
 
+  it('muestra la racha actual y la más larga de todo el historial', async () => {
+    setup([
+      buildEntry({ id: '00000000-0000-4000-8000-000000000011', date: today, mood: 'happy' }),
+      buildEntry({ id: '00000000-0000-4000-8000-000000000012', date: addCalendarDays(today, -1), mood: 'happy' }),
+      buildEntry({ id: '00000000-0000-4000-8000-000000000013', date: addCalendarDays(today, -400), mood: 'sad' }),
+    ])
+    const current = await screen.findByText('Racha actual')
+    expect(current.parentElement).toHaveTextContent('2 días')
+    expect(screen.getByText('Racha más larga').parentElement).toHaveTextContent('2 días')
+  })
+
   it('cambia a semana y año manteniendo la URL coherente, y no deja ir al futuro', async () => {
     const { user, repository } = setup([buildEntry({ date: today, mood: 'sad' })])
     await screen.findByRole('heading', { name: 'Cómo te has sentido' })

@@ -30,6 +30,26 @@
     }
   }
 
+  &__check {
+    @include a.tap-target;
+    display: inline-flex;
+    align-items: center;
+    gap: a.$space-2;
+    justify-self: start;
+    font-weight: 600;
+    cursor: pointer;
+
+    input {
+      width: 1.25rem;
+      height: 1.25rem;
+      accent-color: a.$color-primary;
+    }
+
+    @include a.breakpoint(tablet) {
+      grid-column: 1 / -1;
+    }
+  }
+
   &__clear {
     justify-self: start;
   }

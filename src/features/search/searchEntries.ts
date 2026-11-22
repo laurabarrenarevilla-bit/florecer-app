@@ -8,6 +8,8 @@ export interface SearchFilters {
   mood: Mood | null
   from: LocalDate | null
   to: LocalDate | null
+  /** Solo días con un logro escrito. */
+  onlyAchievements?: boolean
 }
 
 /** Minúsculas y sin tildes: "Día" encuentra "dia" y al revés. La ñ se conserva. */
@@ -35,6 +37,7 @@ export function searchEntries(entries: readonly JournalEntry[], filters: SearchF
       if (filters.mood && entry.mood !== filters.mood) return false
       if (filters.from && compareLocalDates(entry.date, filters.from) < 0) return false
       if (filters.to && compareLocalDates(entry.date, filters.to) > 0) return false
+      if (filters.onlyAchievements && entry.achievement.trim() === '') return false
       if (words.length === 0) return true
       const haystack = searchableText(entry)
       return words.every((word) => haystack.includes(word))
@@ -43,7 +46,7 @@ export function searchEntries(entries: readonly JournalEntry[], filters: SearchF
 }
 
 export function hasActiveFilters(filters: SearchFilters): boolean {
-  return filters.text.trim() !== '' || filters.mood !== null || filters.from !== null || filters.to !== null
+  return filters.text.trim() !== '' || filters.mood !== null || filters.from !== null || filters.to !== null || filters.onlyAchievements === true
 }
 
 /**

@@ -31,6 +31,10 @@ describe('searchEntries', () => {
     expect(searchEntries(entries, { ...none, from: '2026-11-05', to: '2026-11-10' }).map((e) => e.date)).toEqual(['2026-11-10', '2026-11-05'])
   })
 
+  it('filtra solo días con logro', () => {
+    expect(searchEntries(entries, { ...none, onlyAchievements: true }).map((e) => e.date)).toEqual(['2026-11-05'])
+  })
+
   it('recorta textos largos alrededor de la coincidencia', () => {
     const long = `${'a'.repeat(300)} palabra ${'b'.repeat(300)}`
     const cut = excerpt(long, 'palabra')

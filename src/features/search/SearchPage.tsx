@@ -39,12 +39,13 @@ export function SearchPage() {
       mood: moodParam(params.get('animo')),
       from: dateParam(params.get('desde')),
       to: dateParam(params.get('hasta')),
+      onlyAchievements: params.get('logro') === '1',
     }),
     [params],
   )
   const query = useAllEntries()
   const results = useMemo(() => searchEntries(query.data ?? [], filters), [query.data, filters])
-  const ids = { text: useId(), mood: useId(), from: useId(), to: useId() }
+  const ids = { text: useId(), mood: useId(), from: useId(), to: useId(), achievements: useId() }
 
   const update = (key: string, value: string) => {
     const next = new URLSearchParams(params)
@@ -122,6 +123,15 @@ export function SearchPage() {
             />
           </div>
         </div>
+        <label className="search__check" htmlFor={ids.achievements}>
+          <input
+            id={ids.achievements}
+            type="checkbox"
+            checked={filters.onlyAchievements === true}
+            onChange={(event) => update('logro', event.target.checked ? '1' : '')}
+          />
+          Solo días con logro
+        </label>
         {active && (
           <Button variant="ghost" className="search__clear" onClick={() => setParams(new URLSearchParams(), { replace: true })}>
             Quitar filtros

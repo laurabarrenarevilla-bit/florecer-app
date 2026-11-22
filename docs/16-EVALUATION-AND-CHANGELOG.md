@@ -49,6 +49,7 @@ No crear entradas artificiales para demostrar uso. Mostrar profesor calendario c
 | Ver anual/semanalmente | Implementado el 22-11: Evolución con semana, mes y año, navegación anterior/siguiente y estado en la URL |
 | Gráfico tipo "quesito" de emociones | Implementado el 22-11: anillo por ánimo, franja diaria (semana/mes) y barras apiladas por mes (año), con los datos también en texto |
 | Emociones concretas dentro de cada principal | Implementado el 22-11: migración en producción y RLS 14/14; interfaz en Hoy, calendario y resumen; tests RTL, E2E remota (guardar, recargar, editar, axe) en verde; falta desplegar |
+| (docs/04) Racha actual, palabras frecuentes y filtro de logros | Implementado el 22-11: rachas en Evolución sobre todo el historial, «Palabras que más usas» por período y «Solo días con logro» en la búsqueda |
 | Guardar sin conexión y subir después | Mejora futura, fuera del 26-11 (ADR-011 §5) |
 
 Actualizar el estado solo cuando esté implementado y verificado.

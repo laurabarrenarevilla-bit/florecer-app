@@ -1,0 +1,31 @@
+@use '@abstracts/abstracts' as a;
+
+// Palabras frecuentes (Evolución): chips con su recuento.
+.word-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: a.$space-2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    display: inline-flex;
+    align-items: baseline;
+    gap: a.$space-2;
+    padding: a.$space-2 a.$space-4;
+    border-radius: a.$radius-pill;
+    background: a.$color-sage-soft;
+    border: 1px solid a.$color-border;
+  }
+
+  &__word {
+    font-weight: 700;
+    color: a.$color-primary;
+  }
+
+  &__count {
+    font-size: a.$font-size-xs;
+    color: a.$color-text-secondary;
+  }
+}

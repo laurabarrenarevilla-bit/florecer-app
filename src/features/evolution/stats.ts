@@ -55,6 +55,21 @@ export function longestStreak(dates: readonly LocalDate[]): number {
   return best
 }
 
+/**
+ * Racha actual (docs/13): días seguidos con entrada que terminan hoy, o ayer
+ * si hoy aún no hay entrada (no se castiga no haber escrito todavía hoy).
+ */
+export function currentStreak(dates: readonly LocalDate[], today: LocalDate): number {
+  const set = new Set(dates)
+  let day = set.has(today) ? today : addCalendarDays(today, -1)
+  let count = 0
+  while (set.has(day)) {
+    count += 1
+    day = addCalendarDays(day, -1)
+  }
+  return count
+}
+
 export function summarize(entries: readonly JournalEntry[], elapsedDays: number): PeriodSummary {
   const registeredDays = entries.length
   const moodCounts = new Map<Mood, number>(MOODS.map((mood) => [mood, 0]))

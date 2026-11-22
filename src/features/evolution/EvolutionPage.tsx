@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { useEntriesBetween } from '@/features/journal/queries.ts'
+import { useAllEntries, useEntriesBetween } from '@/features/journal/queries.ts'
 import type { JournalEntry } from '@/features/journal/types.ts'
 import { compareLocalDates, monthKeyOf, type LocalDate } from '@/shared/lib/dates.ts'
 import { ERROR_MESSAGES, isAppError } from '@/shared/lib/errors.ts'
@@ -31,7 +31,8 @@ import {
   type Period,
   type PeriodKind,
 } from './periods.ts'
-import { MIN_DAYS_FOR_PATTERNS, describePatterns, summarize } from './stats.ts'
+import { MIN_DAYS_FOR_PATTERNS, currentStreak, describePatterns, longestStreak, summarize } from './stats.ts'
+import { MIN_REFLECTIONS_FOR_WORDS, frequentWords } from './words.ts'
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -62,6 +63,15 @@ export function EvolutionPage() {
   const entryMap = useMemo(() => new Map<LocalDate, JournalEntry>(entries.map((e) => [e.date, e])), [entries])
   const summary = useMemo(() => summarize(entries, dateRange(period.from, end).length), [entries, period.from, end])
   const patterns = useMemo(() => describePatterns(entries, summary), [entries, summary])
+  const words = useMemo(() => frequentWords(entries), [entries])
+
+  // Las rachas globales necesitan todo el historial, no solo el período visible.
+  const allQuery = useAllEntries()
+  const streaks = useMemo(() => {
+    if (!allQuery.data) return null
+    const dates = allQuery.data.map((e) => e.date)
+    return { current: currentStreak(dates, today), longest: longestStreak(dates) }
+  }, [allQuery.data, today])
   const previousSummary = useMemo(
     () =>
       previousQuery.data
@@ -94,6 +104,23 @@ export function EvolutionPage() {
         </span>
         <span className="evolution__muted">Revisa tus últimos 7 días y, si quieres, prepara un resumen con IA o cópialo para ChatGPT.</span>
       </Link>
+
+      {streaks && streaks.longest > 0 && (
+        <dl className="evolution__streaks">
+          <div className="evolution__streak">
+            <dt>Racha actual</dt>
+            <dd>
+              {streaks.current} {streaks.current === 1 ? 'día' : 'días'}
+            </dd>
+          </div>
+          <div className="evolution__streak">
+            <dt>Racha más larga</dt>
+            <dd>
+              {streaks.longest} {streaks.longest === 1 ? 'día' : 'días'}
+            </dd>
+          </div>
+        </dl>
+      )}
 
       <div className="evolution__controls">
         <ul className="segmented" aria-label="Período">
@@ -177,6 +204,29 @@ export function EvolutionPage() {
 
           <Section title="Emociones concretas">
             <EmotionBars emotions={summary.emotions} entriesWithEmotions={summary.entriesWithEmotions} />
+          </Section>
+
+          <Section title="Palabras que más usas">
+            {words.length > 0 ? (
+              <>
+                <ul className="word-list">
+                  {words.map((w) => (
+                    <li key={w.word} className="word-list__item">
+                      <span className="word-list__word">{w.word}</span>
+                      <span className="word-list__count">
+                        {w.count} {w.count === 1 ? 'vez' : 'veces'}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="evolution__muted">Contadas en tus reflexiones de este período, sin palabras comunes como «que» o «pero».</p>
+              </>
+            ) : (
+              <p className="evolution__muted">
+                Aún no hay suficientes reflexiones para mostrar palabras frecuentes (hacen falta al menos {MIN_REFLECTIONS_FOR_WORDS} en
+                el período y alguna palabra repetida).
+              </p>
+            )}
           </Section>
 
           <Section title="Patrones">

@@ -71,3 +71,14 @@ Extraer `entry.achievement.trim() !== ''`, ordenar desc fecha y mostrar referenc
 ## Casos extremos para tests
 
 Febrero bisiesto, diciembre→enero, marzo/octubre DST Europe/Madrid, medianoche, 30 días con meses de diferente longitud, fechas sin entrada y cambios al editar/borrar. `Date.parse('YYYY-MM-DD')` puede interpretarse UTC: encapsular utilidades `parseLocalDate`, `formatLocalDate`, `addCalendarDays`, `dateRange` y testarlas.
+
+## Implementación (22-11-2026)
+
+- **Racha actual y racha más larga:** se muestran arriba en Evolución y se calculan sobre todo el historial (`useAllEntries`), no solo sobre el período visible. Son `currentStreak` y `longestStreak` en `src/features/evolution/stats.ts`.
+- **Palabras frecuentes** (`src/features/evolution/words.ts`):
+  - salen de las reflexiones del período, segmentadas con `Intl.Segmenter`;
+  - se quitan las palabras vacías, las de menos de 3 letras y las que llevan números;
+  - al contar se ignoran las tildes, pero la ñ se respeta;
+  - se muestra la forma más escrita de cada palabra;
+  - salen las 8 primeras con al menos 2 apariciones, y solo si hay al menos 3 reflexiones.
+- **Limitación conocida:** sin análisis morfológico, palabras como "río" (sustantivo) y "rio" (verbo) cuentan juntas.

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { JournalEntry } from '@/features/journal/types.ts'
 import { buildEntry } from '@/test/fakeJournalRepository.ts'
-import { describePatterns, longestStreak, summarize } from './stats.ts'
+import { currentStreak, describePatterns, longestStreak, summarize } from './stats.ts'
 
 const entry = (date: string, mood: JournalEntry['mood'], extra: Partial<JournalEntry> = {}) => buildEntry({ date, mood, ...extra })
 
@@ -54,6 +54,15 @@ describe('longestStreak', () => {
     expect(longestStreak(['2026-12-30', '2026-12-31', '2027-01-01', '2027-01-03'])).toBe(3)
     expect(longestStreak(['2026-10-24', '2026-10-25', '2026-10-26'])).toBe(3)
     expect(longestStreak(['2028-02-28', '2028-02-29', '2028-03-01'])).toBe(3)
+  })
+})
+
+describe('currentStreak', () => {
+  it('termina hoy si hoy hay entrada, si no ayer; cruza meses y años', () => {
+    expect(currentStreak(['2026-12-30', '2026-12-31', '2027-01-01'], '2027-01-01')).toBe(3)
+    expect(currentStreak(['2026-12-30', '2026-12-31'], '2027-01-01')).toBe(2)
+    expect(currentStreak(['2026-12-29'], '2027-01-01')).toBe(0)
+    expect(currentStreak([], '2027-01-01')).toBe(0)
   })
 })
 
