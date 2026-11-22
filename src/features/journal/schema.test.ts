@@ -8,20 +8,41 @@ describe('entryContentSchema', () => {
   })
 
   it('acepta solo la emoción, con texto y logro vacíos', () => {
-    const result = entryContentSchema.safeParse({ mood: 'happy', reflection: '', achievement: '' })
+    const result = entryContentSchema.safeParse({ mood: 'happy', emotions: [], reflection: '', achievement: '' })
     expect(result.success).toBe(true)
   })
 
   it('recorta los extremos y conserva saltos de línea internos', () => {
-    const result = entryContentSchema.parse({ mood: 'sad', reflection: '  línea 1\nlínea 2  \n', achievement: ' logro ' })
+    const result = entryContentSchema.parse({ mood: 'sad', emotions: [], reflection: '  línea 1\nlínea 2  \n', achievement: ' logro ' })
     expect(result.reflection).toBe('línea 1\nlínea 2')
     expect(result.achievement).toBe('logro')
   })
 
   it('limita la longitud de reflexión y logro', () => {
-    expect(entryContentSchema.safeParse({ mood: 'neutral', reflection: 'a'.repeat(5000), achievement: '' }).success).toBe(true)
-    expect(entryContentSchema.safeParse({ mood: 'neutral', reflection: 'a'.repeat(5001), achievement: '' }).success).toBe(false)
-    expect(entryContentSchema.safeParse({ mood: 'neutral', reflection: '', achievement: 'a'.repeat(501) }).success).toBe(false)
+    expect(entryContentSchema.safeParse({ mood: 'neutral', emotions: [], reflection: 'a'.repeat(5000), achievement: '' }).success).toBe(true)
+    expect(entryContentSchema.safeParse({ mood: 'neutral', emotions: [], reflection: 'a'.repeat(5001), achievement: '' }).success).toBe(false)
+    expect(entryContentSchema.safeParse({ mood: 'neutral', emotions: [], reflection: '', achievement: 'a'.repeat(501) }).success).toBe(false)
+  })
+})
+
+describe('emociones secundarias (ADR-011)', () => {
+  const base = { reflection: '', achievement: '' }
+
+  it('acepta hasta 3 emociones del grupo del ánimo', () => {
+    expect(entryContentSchema.safeParse({ ...base, mood: 'sad', emotions: ['melancholy', 'anger', 'fear'] }).success).toBe(true)
+  })
+
+  it('rechaza más de 3, repetidas, desconocidas o de otro grupo', () => {
+    expect(entryContentSchema.safeParse({ ...base, mood: 'sad', emotions: ['melancholy', 'anger', 'fear', 'remorse'] }).success).toBe(false)
+    expect(entryContentSchema.safeParse({ ...base, mood: 'happy', emotions: ['love', 'love'] }).success).toBe(false)
+    expect(entryContentSchema.safeParse({ ...base, mood: 'happy', emotions: ['alegria'] }).success).toBe(false)
+    const mismatch = entryContentSchema.safeParse({ ...base, mood: 'happy', emotions: ['anger'] })
+    expect(mismatch.success).toBe(false)
+    expect(mismatch.error?.issues[0]?.path).toEqual(['emotions'])
+  })
+
+  it('exige la lista (vacía si no hay emociones)', () => {
+    expect(entryContentSchema.safeParse({ ...base, mood: 'happy' }).success).toBe(false)
   })
 })
 
@@ -42,12 +63,13 @@ describe('journalEntryRowSchema', () => {
       user_id: '550e8400-e29b-41d4-a716-446655440000',
       entry_date: '2026-11-09',
       mood: 'happy',
+      emotions: ['love'],
       reflection: 'texto de prueba',
       achievement: '',
       created_at: '2026-11-09T10:00:00.000000+00:00',
       updated_at: '2026-11-09T10:00:00.000000+00:00',
     })
-    expect(entry).toMatchObject({ userId: '550e8400-e29b-41d4-a716-446655440000', date: '2026-11-09', mood: 'happy' })
+    expect(entry).toMatchObject({ userId: '550e8400-e29b-41d4-a716-446655440000', date: '2026-11-09', mood: 'happy', emotions: ['love'] })
   })
 
   it('rechaza filas con mood desconocido', () => {
@@ -56,6 +78,7 @@ describe('journalEntryRowSchema', () => {
       user_id: '550e8400-e29b-41d4-a716-446655440000',
       entry_date: '2026-11-09',
       mood: 'feliz',
+      emotions: [],
       reflection: '',
       achievement: '',
       created_at: 'x',

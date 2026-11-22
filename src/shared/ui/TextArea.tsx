@@ -8,11 +8,21 @@ interface TextAreaProps extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>
   showCounter?: boolean
 }
 
-export function TextArea({ label, hint, error, optional, showCounter, maxLength, value, ...rest }: TextAreaProps) {
+export function TextArea({
+  label,
+  hint,
+  error,
+  optional,
+  showCounter,
+  maxLength,
+  value,
+  'aria-describedby': extraDescribedBy,
+  ...rest
+}: TextAreaProps) {
   const id = useId()
   const hintId = hint ? `${id}-hint` : undefined
   const errorId = error ? `${id}-error` : undefined
-  const describedBy = [hintId, errorId].filter(Boolean).join(' ') || undefined
+  const describedBy = [extraDescribedBy, hintId, errorId].filter(Boolean).join(' ') || undefined
   const length = typeof value === 'string' ? value.length : 0
 
   return (

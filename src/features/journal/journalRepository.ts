@@ -6,7 +6,7 @@ import { entryContentSchema, journalEntryRowSchema, journalEntryRowsSchema, loca
 import type { CreateJournalEntryInput, JournalEntry, UpdateJournalEntryInput } from './types.ts'
 
 const TABLE = 'journal_entries'
-const COLUMNS = 'id, user_id, entry_date, mood, reflection, achievement, created_at, updated_at'
+const COLUMNS = 'id, user_id, entry_date, mood, emotions, reflection, achievement, created_at, updated_at'
 
 export interface JournalRepository {
   listBetween(from: LocalDate, to: LocalDate): Promise<JournalEntry[]>
@@ -88,6 +88,7 @@ export function createJournalRepository(getClient: () => SupabaseClient): Journa
         .insert({
           entry_date: dateResult.data,
           mood: content.mood,
+          emotions: content.emotions,
           reflection: content.reflection,
           achievement: content.achievement,
         })
@@ -103,7 +104,7 @@ export function createJournalRepository(getClient: () => SupabaseClient): Journa
       const content = validateContent(input)
       const { data, error } = await getClient()
         .from(TABLE)
-        .update({ mood: content.mood, reflection: content.reflection, achievement: content.achievement })
+        .update({ mood: content.mood, emotions: content.emotions, reflection: content.reflection, achievement: content.achievement })
         .eq('entry_date', date)
         .eq('updated_at', input.expectedUpdatedAt)
         .select(COLUMNS)

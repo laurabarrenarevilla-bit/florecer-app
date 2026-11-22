@@ -15,7 +15,7 @@ describe('journalRepository sin conexión', () => {
     await expect(repository.getByDate('2026-11-10')).rejects.toMatchObject({ code: 'NETWORK_UNAVAILABLE' })
     await expect(repository.listBetween('2026-11-01', '2026-11-30')).rejects.toMatchObject({ code: 'NETWORK_UNAVAILABLE' })
     await expect(
-      repository.create({ date: '2026-11-10', mood: 'happy', reflection: '', achievement: '' }),
+      repository.create({ date: '2026-11-10', mood: 'happy', emotions: [], reflection: '', achievement: '' }),
     ).rejects.toMatchObject({ code: 'NETWORK_UNAVAILABLE' })
     await expect(repository.deleteByDate('2026-11-10')).rejects.toMatchObject({ code: 'NETWORK_UNAVAILABLE' })
     expect(getClient).not.toHaveBeenCalled()

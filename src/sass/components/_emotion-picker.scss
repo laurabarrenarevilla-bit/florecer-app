@@ -1,0 +1,101 @@
+@use 'sass:map';
+@use '@abstracts/abstracts' as a;
+
+// Emociones secundarias (ADR-011): casillas nativas ocultas dentro de chips.
+.emotion-picker {
+  min-width: 0;
+  margin: a.$space-5 0 0;
+  padding: a.$space-5 0 0;
+  border: 0;
+  border-top: 1px solid a.$color-border;
+  animation: fade-up 0.25s a.$easing;
+
+  @include a.reduced-motion {
+    animation: none;
+  }
+
+  &__legend {
+    // La leyenda no admite margin-bottom fiable: se separa con el padding del borde.
+    float: left;
+    width: 100%;
+    padding: 0;
+    font-size: a.$font-size-base;
+    font-weight: 600;
+    color: a.$color-primary;
+  }
+
+  &__hint {
+    clear: both;
+    padding-top: a.$space-1;
+    margin-bottom: a.$space-3;
+    font-size: a.$font-size-sm;
+    color: a.$color-text-secondary;
+  }
+
+  &__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: a.$space-2;
+  }
+
+  &__option {
+    display: inline-flex;
+    align-items: center;
+    min-height: a.$tap-target;
+    padding: 0 a.$space-4;
+    border: 1.5px solid a.$color-border-strong;
+    border-radius: a.$radius-pill;
+    background: a.$color-surface;
+    color: a.$color-text;
+    cursor: pointer;
+    transition:
+      background-color a.$duration-fast a.$easing,
+      border-color a.$duration-fast a.$easing;
+
+    &:hover {
+      border-color: a.$color-border-input;
+    }
+
+    &:has(.emotion-picker__input:focus-visible) {
+      @include a.focus-ring;
+    }
+
+    &:has(.emotion-picker__input:disabled) {
+      cursor: default;
+      opacity: 0.55;
+    }
+
+    @include a.reduced-motion {
+      transition: none;
+    }
+  }
+
+  @each $name, $mood in a.$moods {
+    &--#{$name} .emotion-picker__option:has(.emotion-picker__input:checked) {
+      border-color: map.get($mood, bg);
+      background: map.get($mood, bg);
+      color: map.get($mood, ink);
+    }
+  }
+
+  &__input {
+    @include a.visually-hidden;
+  }
+
+  &__label {
+    font-size: a.$font-size-sm;
+    font-weight: 600;
+  }
+
+  &[aria-invalid='true'] .emotion-picker__option {
+    border-color: a.$color-danger;
+  }
+
+  .field__optional {
+    margin-left: a.$space-2;
+  }
+
+  .field__error {
+    margin-top: a.$space-3;
+  }
+}

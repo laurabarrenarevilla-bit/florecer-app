@@ -7,6 +7,9 @@ import { InlineAlert } from '@/shared/ui/InlineAlert.tsx'
 import { TextArea } from '@/shared/ui/TextArea.tsx'
 import { TextField } from '@/shared/ui/TextField.tsx'
 import { clearDraft, readDraft, saveDraft, type JournalDraft } from './draftStore.ts'
+import { EmotionPicker } from './EmotionPicker.tsx'
+import { keepEmotionsOfMood, type Emotion } from './emotions.ts'
+import { IntrospectionPrompt } from './IntrospectionPrompt.tsx'
 import { ACHIEVEMENT_MAX_LENGTH, REFLECTION_MAX_LENGTH, type Mood } from './mood.ts'
 import { MoodSelector } from './MoodSelector.tsx'
 import { entryContentSchema } from './schema.ts'
@@ -29,7 +32,13 @@ interface JournalFormProps {
 }
 
 function sameContent(a: JournalDraft, b: JournalDraft): boolean {
-  return a.mood === b.mood && a.reflection === b.reflection && a.achievement === b.achievement
+  return (
+    a.mood === b.mood &&
+    a.emotions.length === b.emotions.length &&
+    a.emotions.every((emotion, i) => emotion === b.emotions[i]) &&
+    a.reflection === b.reflection &&
+    a.achievement === b.achievement
+  )
 }
 
 function errorMessage(error: Error): string {
@@ -57,12 +66,14 @@ export function JournalForm({
 }: JournalFormProps) {
   const [baseline] = useState<JournalDraft>(() => ({
     mood: initial?.mood ?? null,
+    emotions: initial?.emotions ?? [],
     reflection: initial?.reflection ?? '',
     achievement: initial?.achievement ?? '',
   }))
   const [restoredDraft] = useState(() => readDraft(draftKey))
   const start = restoredDraft ?? baseline
   const [mood, setMood] = useState<Mood | null>(start.mood)
+  const [emotions, setEmotions] = useState<Emotion[]>(start.emotions)
   const [reflection, setReflection] = useState(start.reflection)
   const [achievement, setAchievement] = useState(start.achievement)
   const [errors, setErrors] = useState<FieldErrors>({})
@@ -72,6 +83,7 @@ export function JournalForm({
   // Evita dos envíos en el mismo instante, antes de que React vuelva a pintar.
   const submittingRef = useRef(false)
   const hintId = useId()
+  const promptId = useId()
 
   useFocusFirstInvalid(formRef, attempt)
 
@@ -81,16 +93,16 @@ export function JournalForm({
 
   // Copia en memoria de lo escrito y aún no guardado (nunca en el almacenamiento del navegador).
   useEffect(() => {
-    const draft = { mood, reflection, achievement }
+    const draft = { mood, emotions, reflection, achievement }
     if (sameContent(draft, baseline)) clearDraft(draftKey)
     else saveDraft(draftKey, draft)
-  }, [mood, reflection, achievement, baseline, draftKey])
+  }, [mood, emotions, reflection, achievement, baseline, draftKey])
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (submittingRef.current || isSaving) return
 
-    const result = entryContentSchema.safeParse({ mood, reflection, achievement })
+    const result = entryContentSchema.safeParse({ mood, emotions, reflection, achievement })
     if (!result.success) {
       setErrors(firstFieldErrors(result.error))
       setAttempt((n) => n + 1)
@@ -111,19 +123,31 @@ export function JournalForm({
     onCancel?.()
   }
 
+  // Al cambiar de ánimo se quitan las emociones del grupo anterior (no encajan).
+  const handleMoodChange = (next: Mood) => {
+    setMood(next)
+    setEmotions((current) => keepEmotionsOfMood(current, next))
+  }
+
   const canSubmit = mood !== null
 
   return (
     <form ref={formRef} className="form journal-form" onSubmit={handleSubmit} noValidate aria-busy={isSaving || undefined}>
       <div className="journal-form__mood card">
-        <MoodSelector legend={moodLegend} value={mood} onChange={setMood} disabled={isSaving} error={errors.mood} />
+        <MoodSelector legend={moodLegend} value={mood} onChange={handleMoodChange} disabled={isSaving} error={errors.mood} />
+        {mood && (
+          <EmotionPicker mood={mood} value={emotions} onChange={setEmotions} disabled={isSaving} error={errors.emotions} />
+        )}
       </div>
+
+      <IntrospectionPrompt seed={draftKey} id={promptId} />
 
       <TextArea
         label="¿Qué te gustaría recordar de este día?"
         name="reflection"
         optional
         rows={4}
+        aria-describedby={promptId}
         placeholder="Hoy ha pasado algo que me ha hecho pensar…"
         value={reflection}
         onChange={(e) => setReflection(e.target.value)}

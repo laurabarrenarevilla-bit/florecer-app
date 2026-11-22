@@ -1,5 +1,6 @@
 import { forwardRef, type ReactNode } from 'react'
 import { CheckIcon } from '@/shared/ui/icons.tsx'
+import { EMOTION_LABELS } from './emotions.ts'
 import { MoodIcon } from './MoodIcon.tsx'
 import { MOOD_LABELS } from './mood.ts'
 import type { JournalEntryContent } from './types.ts'
@@ -25,6 +26,16 @@ export const EntrySummary = forwardRef<HTMLElement, EntrySummaryProps>(function 
         </span>
         {actions && <div className="entry-summary__actions">{actions}</div>}
       </div>
+
+      {entry.emotions.length > 0 && (
+        <ul className={`entry-summary__emotions entry-summary__emotions--${entry.mood}`} aria-label="Emociones">
+          {entry.emotions.map((emotion) => (
+            <li key={emotion} className="entry-summary__emotion">
+              {EMOTION_LABELS[emotion]}
+            </li>
+          ))}
+        </ul>
+      )}
 
       {entry.reflection ? (
         <p className="entry-summary__reflection">{entry.reflection}</p>

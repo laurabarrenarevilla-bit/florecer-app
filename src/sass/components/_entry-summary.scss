@@ -1,3 +1,5 @@
+@use 'sass:color';
+@use 'sass:map';
 @use '@abstracts/abstracts' as a;
 
 // Lectura de una entrada guardada (Hoy y, en el bloque 5, el detalle del día).
@@ -19,6 +21,31 @@
     align-items: center;
     justify-content: space-between;
     gap: a.$space-3;
+  }
+
+  &__emotions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: a.$space-2;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  &__emotion {
+    padding: a.$space-1 a.$space-3;
+    border: 1.5px solid currentColor;
+    border-radius: a.$radius-pill;
+    font-size: a.$font-size-sm;
+    font-weight: 600;
+  }
+
+  @each $name, $mood in a.$moods {
+    &__emotions--#{$name} .entry-summary__emotion {
+      border-color: map.get($mood, bg);
+      background: color.mix(map.get($mood, bg), #FFFFFF, 25%);
+      color: map.get($mood, ink);
+    }
   }
 
   &__actions {

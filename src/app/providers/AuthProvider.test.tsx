@@ -93,7 +93,7 @@ describe('AuthProvider', () => {
     const { emit } = setup()
     act(() => emit('INITIAL_SESSION', fakeSession()))
     const key = draftKey(TEST_USER.id, '2026-11-10')
-    saveDraft(key, { mood: 'happy', reflection: 'borrador', achievement: '' })
+    saveDraft(key, { mood: 'happy', emotions: [], reflection: 'borrador', achievement: '' })
 
     await user.click(screen.getByRole('button', { name: 'salir' }))
     expect(hasDraft(key)).toBe(false)
@@ -103,7 +103,7 @@ describe('AuthProvider', () => {
     const { emit, repository, queryClient } = setup(createQueryClient())
     act(() => emit('INITIAL_SESSION', fakeSession()))
     const key = draftKey(TEST_USER.id, '2026-11-10')
-    saveDraft(key, { mood: 'sad', reflection: 'borrador', achievement: '' })
+    saveDraft(key, { mood: 'sad', emotions: [], reflection: 'borrador', achievement: '' })
 
     await act(() =>
       queryClient
@@ -120,7 +120,7 @@ describe('AuthProvider', () => {
   it('al entrar otra cuenta se descartan los borradores de la anterior', () => {
     const { emit } = setup()
     const otherKey = draftKey('00000000-0000-4000-8000-00000000ffff', '2026-11-10')
-    saveDraft(otherKey, { mood: 'happy', reflection: 'ajeno', achievement: '' })
+    saveDraft(otherKey, { mood: 'happy', emotions: [], reflection: 'ajeno', achievement: '' })
     act(() => emit('INITIAL_SESSION', fakeSession()))
     expect(hasDraft(otherKey)).toBe(false)
   })
@@ -142,7 +142,7 @@ describe('AuthProvider', () => {
     const { emit, repository, clearSpy } = setup()
     act(() => emit('INITIAL_SESSION', fakeSession()))
     const key = draftKey(TEST_USER.id, '2026-11-10')
-    saveDraft(key, { mood: 'happy', reflection: 'borrador', achievement: '' })
+    saveDraft(key, { mood: 'happy', emotions: [], reflection: 'borrador', achievement: '' })
     clearSpy.mockClear()
 
     await user.click(screen.getByRole('button', { name: 'eliminar' }))

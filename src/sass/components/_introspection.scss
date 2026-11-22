@@ -1,0 +1,32 @@
+@use '@abstracts/abstracts' as a;
+
+// Pregunta de introspección sobre el campo de reflexión (ADR-011).
+.introspection {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: a.$space-1 a.$space-3;
+  padding: a.$space-4 a.$space-5;
+  border-radius: a.$radius-xl;
+  background: a.$color-sage-soft;
+
+  &__eyebrow {
+    grid-column: 1 / -1;
+    font-size: a.$font-size-xs;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: a.$color-text-secondary;
+  }
+
+  &__question {
+    font-family: a.$secondary-font;
+    font-size: a.$font-size-lg;
+    line-height: 1.35;
+    color: a.$color-primary;
+  }
+
+  &__next {
+    white-space: nowrap;
+  }
+}

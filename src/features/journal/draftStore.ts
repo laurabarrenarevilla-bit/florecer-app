@@ -1,4 +1,5 @@
 import type { LocalDate } from '@/shared/lib/dates.ts'
+import type { Emotion } from './emotions.ts'
 import type { Mood } from './mood.ts'
 
 /**
@@ -11,6 +12,7 @@ import type { Mood } from './mood.ts'
  */
 export interface JournalDraft {
   mood: Mood | null
+  emotions: Emotion[]
   reflection: string
   achievement: string
 }
@@ -44,7 +46,7 @@ export function hasDraft(key: string): boolean {
 }
 
 export function saveDraft(key: string, draft: JournalDraft): void {
-  drafts.set(key, { ...draft })
+  drafts.set(key, { ...draft, emotions: [...draft.emotions] })
   notifyDrafts()
 }
 

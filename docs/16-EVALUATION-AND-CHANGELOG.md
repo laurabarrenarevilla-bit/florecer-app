@@ -45,10 +45,10 @@ No crear entradas artificiales para demostrar uso. Mostrar profesor calendario c
 | Feedback | Estado |
 |---|---|
 | Identificar patrones | Planificado (ADR-011 §4) |
-| Preguntas de introspección | Planificado (ADR-011 §3) |
+| Preguntas de introspección | Implementado el 22-11 (15 preguntas fijas, botón "Otra pregunta"); tests RTL en verde; falta probarlo con la sesión real |
 | Ver anual/semanalmente | Planificado (Evolución) |
 | Gráfico tipo "quesito" de emociones | Planificado (gráfico de anillo) |
-| Emociones concretas dentro de cada principal | En curso: migración aplicada en producción el 22-11; falta la interfaz |
+| Emociones concretas dentro de cada principal | Implementado el 22-11: migración en producción y RLS 14/14; interfaz en Hoy, calendario y resumen; tests RTL en verde; falta probarlo con la sesión real y desplegar |
 | Guardar sin conexión y subir después | Mejora futura, fuera del 26-11 (ADR-011 §5) |
 
 Actualizar el estado solo cuando esté implementado y verificado.

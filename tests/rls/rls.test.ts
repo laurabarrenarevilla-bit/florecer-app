@@ -85,7 +85,7 @@ afterAll(async () => {
 describe.skipIf(!REMOTE_ENABLED)('RLS journal_entries', () => {
   it('A crea su entrada y el servidor asigna su user_id', async () => {
     const repoA = createJournalRepository(() => clientA)
-    const entry = await repoA.create({ date: DATE_A, mood: 'happy', reflection: 'prueba sintética', achievement: '' })
+    const entry = await repoA.create({ date: DATE_A, mood: 'happy', emotions: [], reflection: 'prueba sintética', achievement: '' })
     expect(entry.userId).toBe(userA)
     expect(entry.date).toBe(DATE_A)
   })
@@ -139,6 +139,7 @@ describe.skipIf(!REMOTE_ENABLED)('RLS journal_entries', () => {
       repoA.update({
         date: DATE_A,
         mood: 'neutral',
+        emotions: [],
         reflection: '',
         achievement: '',
         expectedUpdatedAt: '1999-01-01T00:00:00+00:00',

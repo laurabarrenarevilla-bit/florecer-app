@@ -1,4 +1,5 @@
 import type { LocalDate } from '@/shared/lib/dates.ts'
+import type { Emotion } from './emotions.ts'
 import type { Mood } from './mood.ts'
 
 export interface JournalEntry {
@@ -6,6 +7,8 @@ export interface JournalEntry {
   userId: string
   date: LocalDate
   mood: Mood
+  /** Emociones secundarias del grupo de mood (0–3, ADR-011). */
+  emotions: Emotion[]
   reflection: string
   achievement: string
   createdAt: string
@@ -15,6 +18,7 @@ export interface JournalEntry {
 /** Contenido editable de una entrada (lo que escribe la persona). */
 export interface JournalEntryContent {
   mood: Mood
+  emotions: Emotion[]
   reflection: string
   achievement: string
 }

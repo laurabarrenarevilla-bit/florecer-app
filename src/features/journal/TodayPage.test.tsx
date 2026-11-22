@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { todayLocal } from '@/shared/lib/dates.ts'
 import { AppError } from '@/shared/lib/errors.ts'
+import { INTROSPECTION_PROMPTS } from './introspection.ts'
 import { createFakeAuth, renderWithProviders, TEST_USER } from '@/test/fakeAuth.tsx'
 import { buildEntry, createFakeJournalRepository } from '@/test/fakeJournalRepository.ts'
 import type { JournalEntry } from './types.ts'
@@ -57,7 +58,7 @@ describe('TodayPage', () => {
     await user.click(saveButton())
 
     expect(repository.create).toHaveBeenCalledTimes(1)
-    expect(repository.create).toHaveBeenCalledWith({ date: todayLocal(), mood: 'happy', reflection: '', achievement: '' })
+    expect(repository.create).toHaveBeenCalledWith({ date: todayLocal(), mood: 'happy', emotions: [], reflection: '', achievement: '' })
     const summary = await screen.findByRole('article', { name: 'Tu registro de hoy' })
     expect(within(summary).getByText('Feliz')).toBeInTheDocument()
     expect(within(summary).getByText('Sin reflexión escrita.')).toBeInTheDocument()
@@ -65,6 +66,56 @@ describe('TodayPage', () => {
     expect(rows.size).toBe(1)
     // Tras guardar se vuelve a leer del backend.
     expect(repository.getByDate.mock.calls.length).toBeGreaterThanOrEqual(2)
+  })
+
+  it('ADR-011: las emociones secundarias aparecen al elegir ánimo y se guardan', async () => {
+    const { repository, user } = setup()
+    await screen.findByRole('radio', { name: 'Feliz' })
+    expect(screen.queryByRole('group', { name: /algo más concreto/i })).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('radio', { name: 'Triste' }))
+    const group = screen.getByRole('group', { name: /algo más concreto/i })
+    expect(within(group).queryByRole('checkbox', { name: 'Optimismo' })).not.toBeInTheDocument()
+    await user.click(within(group).getByRole('checkbox', { name: 'Decepción' }))
+    await user.click(within(group).getByRole('checkbox', { name: 'Enfado' }))
+    await user.click(saveButton())
+
+    expect(repository.create).toHaveBeenCalledWith(
+      expect.objectContaining({ mood: 'sad', emotions: ['disappointment', 'anger'] }),
+    )
+    const summary = await screen.findByRole('article', { name: 'Tu registro de hoy' })
+    const list = within(summary).getByRole('list', { name: 'Emociones' })
+    expect(within(list).getAllByRole('listitem').map((li) => li.textContent)).toEqual(['Decepción', 'Enfado'])
+  })
+
+  it('ADR-011: como máximo 3 emociones; cambiar de ánimo quita las del grupo anterior', async () => {
+    const { repository, user } = setup()
+    await user.click(await screen.findByRole('radio', { name: 'Feliz' }))
+    const group = () => screen.getByRole('group', { name: /algo más concreto/i })
+    for (const name of ['Amor', 'Confianza', 'Interés']) {
+      await user.click(within(group()).getByRole('checkbox', { name }))
+    }
+    expect(within(group()).getByRole('checkbox', { name: 'Serenidad' })).toBeDisabled()
+    expect(within(group()).getByText(/el máximo/i)).toBeInTheDocument()
+
+    await user.click(screen.getByRole('radio', { name: 'Normal' }))
+    expect(within(group()).queryAllByRole('checkbox', { checked: true })).toHaveLength(0)
+    await user.click(saveButton())
+    expect(repository.create).toHaveBeenCalledWith(expect.objectContaining({ mood: 'neutral', emotions: [] }))
+  })
+
+  it('ADR-011: muestra una pregunta de introspección y permite pedir otra', async () => {
+    const { repository, user } = setup()
+    await screen.findByRole('radio', { name: 'Feliz' })
+    const prompts: readonly string[] = INTROSPECTION_PROMPTS
+    const question = () => prompts.find((p) => screen.queryByText(p))
+    const first = question()
+    expect(first).toBeDefined()
+    expect(screen.getByLabelText(/qué te gustaría recordar/i)).toHaveAccessibleDescription(first!)
+
+    await user.click(screen.getByRole('button', { name: 'Otra pregunta' }))
+    expect(question()).not.toBe(first)
+    expect(repository.create).not.toHaveBeenCalled()
   })
 
   it('recorta espacios en los extremos y conserva los saltos de línea', async () => {
@@ -77,6 +128,7 @@ describe('TodayPage', () => {
     expect(repository.create).toHaveBeenCalledWith({
       date: todayLocal(),
       mood: 'neutral',
+      emotions: [],
       reflection: 'línea uno\nlínea dos',
       achievement: 'logro sintético',
     })
@@ -142,6 +194,7 @@ describe('TodayPage', () => {
     expect(repository.update).toHaveBeenCalledWith({
       date: todayLocal(),
       mood: 'sad',
+      emotions: [],
       reflection: 'texto inicial',
       achievement: '',
       expectedUpdatedAt: existing.updatedAt,

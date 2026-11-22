@@ -27,7 +27,7 @@ describe('Actualizaciones PWA', () => {
   })
 
   it('bloquea borradores de cualquier pantalla y se desbloquea al guardarlos o descartarlos', () => {
-    saveDraft('test-user:2026-01-01', { mood: 'happy', reflection: '', achievement: '' })
+    saveDraft('test-user:2026-01-01', { mood: 'happy', emotions: [], reflection: '', achievement: '' })
     setup()
     expect(screen.getByRole('button', { name: 'Actualizar' })).toBeDisabled()
     act(clearAllDrafts)

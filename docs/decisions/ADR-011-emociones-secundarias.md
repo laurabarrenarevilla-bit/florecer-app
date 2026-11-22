@@ -44,7 +44,7 @@ Migración `supabase/migrations/20261122000000_journal_emotions.sql`:
 
 ## 3. Preguntas de introspección
 
-- En Hoy, una pregunta orientativa sobre la reflexión ("¿Qué te ha dado energía hoy?"), con botón "Otra pregunta".
+- En el formulario del diario (Hoy y edición desde el calendario), una pregunta orientativa sobre la reflexión ("¿Qué te ha dado energía hoy?"), con botón "Otra pregunta".
 - Lista fija en el código, en español, sin IA y sin datos del usuario. Ninguna pregunta presupone un estado emocional concreto ni es clínica.
 - La pregunta no se guarda: solo inspira. Lo que se guarda es la reflexión que escriba la persona, como hasta ahora.
 - Las preguntas de reflexión del resumen de IA (fase 2, ver `08`) son otra función distinta.

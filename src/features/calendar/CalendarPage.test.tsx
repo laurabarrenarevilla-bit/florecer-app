@@ -57,7 +57,7 @@ describe('CalendarPage', () => {
     await user.click(within(dialog).getByRole('radio', { name: 'Triste' }))
     await user.click(within(dialog).getByRole('button', { name: 'Guardar registro' }))
 
-    expect(repository.create).toHaveBeenCalledWith({ date: yesterday, mood: 'sad', reflection: '', achievement: '' })
+    expect(repository.create).toHaveBeenCalledWith({ date: yesterday, mood: 'sad', emotions: [], reflection: '', achievement: '' })
     expect(await screen.findByText('Registro guardado.')).toBeInTheDocument()
     expect(within(dialog).getByRole('article', { name: 'Registro del día' })).toHaveTextContent('Triste')
     await waitFor(() => expect(dayButton(yesterday)).toHaveAccessibleName(/Triste$/))
