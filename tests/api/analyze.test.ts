@@ -89,9 +89,11 @@ describe('POST /api/ai/analyze', () => {
     const [url, init] = nvidia.mock.calls[0] ?? []
     expect(url).toBe('https://integrate.api.nvidia.com/v1/chat/completions')
     expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer clave-ficticia-de-prueba')
-    const sent = JSON.parse(String(init?.body)) as { model: string; messages: { content: string }[] }
+    const sent = JSON.parse(String(init?.body)) as { model: string; messages: { content: string }[]; chat_template_kwargs: unknown }
     expect(sent.model).toBe('modelo/ficticio')
     expect(sent.messages[1]?.content).toContain('Texto sintético de prueba.')
+    // Sin razonamiento: si no, el modelo agota los tokens antes de responder.
+    expect(sent.chat_template_kwargs).toEqual({ thinking: false, enable_thinking: false })
   })
 
   it('sin token: 401 y no llama a nadie', async () => {

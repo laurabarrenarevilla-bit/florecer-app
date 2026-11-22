@@ -114,7 +114,7 @@ function errorResponse(code: ErrorCode, extra: Record<string, string> = {}): Res
 // --- Prompt --------------------------------------------------------------------
 
 export const SYSTEM_PROMPT = `Eres un asistente que ayuda a una persona a releer su diario emocional personal.
-Responde SIEMPRE en español de España, con tono cálido, cercano y sin paternalismo.
+Responde SIEMPRE en español de España, con tono cálido, cercano y sin paternalismo. Dirígete a la persona de tú.
 
 Reglas estrictas:
 - Basa cada observación solo en las entradas proporcionadas. No inventes hechos, personas, causas, nombres ni detalles.
@@ -221,6 +221,10 @@ async function callNvidia(deps: AnalyzeDeps, rows: readonly Row[]): Promise<Anal
     temperature: 0.3,
     max_tokens: 1500,
     stream: false,
+    // Los modelos de razonamiento gastaban todos los tokens pensando y no llegaban
+    // a responder (finish_reason "length", content null; comprobado el 22-11).
+    // Las plantillas que no usan estas opciones las ignoran.
+    chat_template_kwargs: { thinking: false, enable_thinking: false },
   })
 
   const deadline = Date.now() + NVIDIA_TIMEOUT_MS
