@@ -15,6 +15,7 @@
   }
 
   &__option {
+    @extend %reset-button;
     @include a.tap-target;
     flex: 1;
     display: inline-flex;

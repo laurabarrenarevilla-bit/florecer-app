@@ -1,0 +1,100 @@
+@use 'sass:map';
+@use '@abstracts/abstracts' as a;
+
+// Gráfico de anillo de ánimos ("quesito", ADR-011) con leyenda en texto.
+.mood-donut {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: a.$space-5;
+
+  @include a.breakpoint(tablet) {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    justify-items: start;
+    gap: a.$space-8;
+  }
+
+  &__chart {
+    width: 11rem;
+    height: 11rem;
+    overflow: visible;
+  }
+
+  &__track,
+  &__segment {
+    fill: none;
+    stroke-width: 6;
+  }
+
+  &__track {
+    stroke: a.$color-muted-bg;
+  }
+
+  @each $name, $mood in a.$moods {
+    &__segment--#{$name} {
+      stroke: map.get($mood, bg);
+    }
+  }
+
+  &__total {
+    font-family: a.$secondary-font;
+    font-size: 0.55rem;
+    font-weight: 600;
+    fill: a.$color-primary;
+    text-anchor: middle;
+  }
+
+  &__caption {
+    font-size: 0.22rem;
+    fill: a.$color-text-secondary;
+    text-anchor: middle;
+  }
+
+  &__legend {
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-3;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: a.$space-3;
+    font-size: a.$font-size-base;
+  }
+
+  &__swatch {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: a.$radius-sm;
+
+    @each $name, $mood in a.$moods {
+      &--#{$name} {
+        background: map.get($mood, bg);
+        color: map.get($mood, ink);
+      }
+    }
+  }
+
+  &__label {
+    font-weight: 600;
+  }
+
+  &__value {
+    font-variant-numeric: tabular-nums;
+    color: a.$color-text;
+  }
+
+  &__share {
+    color: a.$color-text-secondary;
+  }
+}

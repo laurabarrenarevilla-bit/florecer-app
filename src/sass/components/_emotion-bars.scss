@@ -1,0 +1,51 @@
+@use 'sass:map';
+@use '@abstracts/abstracts' as a;
+
+// Barras horizontales de emociones secundarias (Evolución).
+.emotion-bars {
+  display: flex;
+  flex-direction: column;
+  gap: a.$space-3;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: a.$space-3;
+    font-size: a.$font-size-sm;
+  }
+
+  &__label {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  &__track {
+    height: 0.75rem;
+    border-radius: a.$radius-pill;
+    background: a.$color-muted-bg;
+    overflow: hidden;
+  }
+
+  &__fill {
+    display: block;
+    width: var(--share);
+    height: 100%;
+    border-radius: inherit;
+
+    @each $name, $mood in a.$moods {
+      &--#{$name} {
+        background: map.get($mood, bg);
+      }
+    }
+  }
+
+  &__value {
+    font-variant-numeric: tabular-nums;
+    color: a.$color-text-secondary;
+    white-space: nowrap;
+  }
+}

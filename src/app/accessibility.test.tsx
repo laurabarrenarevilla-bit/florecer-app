@@ -49,6 +49,23 @@ describe('Accesibilidad (axe-core)', () => {
     expect(await axeViolations()).toEqual([])
   })
 
+  it('Evolución con registros (mes, semana y año) y sin registros', async () => {
+    const user = userEvent.setup()
+    await renderAt('/evolucion', { withEntries: true })
+    await screen.findByRole('heading', { name: 'Cómo te has sentido' })
+    expect(await axeViolations()).toEqual([])
+    await user.click(screen.getByRole('button', { name: 'Semana' }))
+    expect(await axeViolations()).toEqual([])
+    await user.click(screen.getByRole('button', { name: 'Año' }))
+    expect(await axeViolations()).toEqual([])
+  })
+
+  it('Evolución sin registros', async () => {
+    await renderAt('/evolucion')
+    await screen.findByText('Aún no hay registros en este período')
+    expect(await axeViolations()).toEqual([])
+  })
+
   it('Calendario, detalle del día y confirmación de borrado', async () => {
     const user = userEvent.setup()
     await renderAt(`/calendario?dia=${yesterday}`, { withEntries: true })

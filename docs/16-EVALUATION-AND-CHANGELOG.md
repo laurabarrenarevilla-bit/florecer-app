@@ -44,10 +44,10 @@ No crear entradas artificiales para demostrar uso. Mostrar profesor calendario c
 
 | Feedback | Estado |
 |---|---|
-| Identificar patrones | Planificado (ADR-011 §4) |
+| Identificar patrones | Implementado el 22-11 en Evolución: patrones descriptivos con mínimo de 5 días, empates explícitos y sin valoraciones; tests unitarios |
 | Preguntas de introspección | Implementado el 22-11 (15 preguntas fijas, botón "Otra pregunta"); tests RTL y E2E remota en verde |
-| Ver anual/semanalmente | Planificado (Evolución) |
-| Gráfico tipo "quesito" de emociones | Planificado (gráfico de anillo) |
+| Ver anual/semanalmente | Implementado el 22-11: Evolución con semana, mes y año, navegación anterior/siguiente y estado en la URL |
+| Gráfico tipo "quesito" de emociones | Implementado el 22-11: anillo por ánimo, franja diaria (semana/mes) y barras apiladas por mes (año), con los datos también en texto |
 | Emociones concretas dentro de cada principal | Implementado el 22-11: migración en producción y RLS 14/14; interfaz en Hoy, calendario y resumen; tests RTL, E2E remota (guardar, recargar, editar, axe) en verde; falta desplegar |
 | Guardar sin conexión y subir después | Mejora futura, fuera del 26-11 (ADR-011 §5) |
 

@@ -44,7 +44,7 @@ test('F1-16: si el backend rechaza el token, no anuncia éxito, pide entrar y re
 
 test('F1-17/18: pantallas privadas sin scroll horizontal ni infracciones axe', async ({ page }) => {
   await login(page, testAccounts().a)
-  for (const path of ['/hoy', '/calendario', '/ajustes']) {
+  for (const path of ['/hoy', '/calendario', '/evolucion', '/ajustes']) {
     await page.goto(path)
     await page.locator('h1').first().waitFor()
     await page.getByText(/Cargando/).waitFor({ state: 'detached' }).catch(() => undefined)

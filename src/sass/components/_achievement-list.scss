@@ -1,0 +1,42 @@
+@use '@abstracts/abstracts' as a;
+
+// Logros de un período, con enlace al día.
+.achievement-list {
+  display: flex;
+  flex-direction: column;
+  gap: a.$space-4;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: a.$space-3;
+  }
+
+  &__check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin-top: 0.125rem;
+    border-radius: 50%;
+    background: a.$color-primary;
+    color: a.$color-primary-ink;
+  }
+
+  &__text {
+    overflow-wrap: anywhere;
+  }
+
+  &__date {
+    font-size: a.$font-size-xs;
+    color: a.$color-text-secondary;
+
+    &:first-letter {
+      text-transform: uppercase;
+    }
+  }
+}

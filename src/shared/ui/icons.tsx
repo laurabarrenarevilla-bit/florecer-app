@@ -62,6 +62,15 @@ export function CalendarIcon(props: IconProps) {
   )
 }
 
+export function EvolutionIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3a9 9 0 1 0 9 9h-9z" />
+      <path d="M15 3.5A9 9 0 0 1 20.5 9H15z" />
+    </svg>
+  )
+}
+
 export function SettingsIcon(props: IconProps) {
   return (
     <svg {...base(props)} stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
