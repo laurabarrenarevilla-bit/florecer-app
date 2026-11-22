@@ -45,10 +45,10 @@ No crear entradas artificiales para demostrar uso. Mostrar profesor calendario c
 | Feedback | Estado |
 |---|---|
 | Identificar patrones | Planificado (ADR-011 §4) |
-| Preguntas de introspección | Implementado el 22-11 (15 preguntas fijas, botón "Otra pregunta"); tests RTL en verde; falta probarlo con la sesión real |
+| Preguntas de introspección | Implementado el 22-11 (15 preguntas fijas, botón "Otra pregunta"); tests RTL y E2E remota en verde |
 | Ver anual/semanalmente | Planificado (Evolución) |
 | Gráfico tipo "quesito" de emociones | Planificado (gráfico de anillo) |
-| Emociones concretas dentro de cada principal | Implementado el 22-11: migración en producción y RLS 14/14; interfaz en Hoy, calendario y resumen; tests RTL en verde; falta probarlo con la sesión real y desplegar |
+| Emociones concretas dentro de cada principal | Implementado el 22-11: migración en producción y RLS 14/14; interfaz en Hoy, calendario y resumen; tests RTL, E2E remota (guardar, recargar, editar, axe) en verde; falta desplegar |
 | Guardar sin conexión y subir después | Mejora futura, fuera del 26-11 (ADR-011 §5) |
 
 Actualizar el estado solo cuando esté implementado y verificado.
@@ -77,5 +77,6 @@ Actualizar el estado solo cuando esté implementado y verificado.
 | 10-11-2026 | producción | Prueba real de eliminación con la cuenta sintética C (creada y eliminada en la misma prueba) | `pnpm e2e:remote` | Cuenta C inexistente, 0 identidades y 0 entradas huérfanas; siguen 3 cuentas |
 | 10-11-2026 | producción | Auth: *Site URL* `https://florecer-diario.vercel.app`; redirecciones permitidas a producción y `localhost:5173`/`4173` | Management API | Lectura de la configuración tras el cambio |
 | 22-11-2026 | producción | Migración `20261122000000_journal_emotions` (sha256 `0c92ea7d…`) en una transacción, registrada en `schema_migrations` | Supabase CLI `db query`, con autorización expresa | Columna `emotions text[] not null default '{}'`; 3 restricciones nuevas; `authenticated` con insert/update en `emotions`, `anon` sin acceso; 4 políticas; las 13 entradas existentes intactas y sin emociones; `pnpm test:rls` 14/14 y 0 filas de prueba restantes |
+| 22-11-2026 | producción | E2E remotas en local con las cuentas sintéticas A/B (18, incluida la nueva de emociones) | `pnpm e2e:remote`, con autorización | 18/18; las entradas de prueba se borran al terminar |
 | 10-11-2026 | producción | Prueba de humo sobre `https://florecer-diario.vercel.app` (rutas 200, cabeceras de `vercel.json`, bundle sin secretos, apunta al proyecto correcto) y 17 E2E remotas | `curl`, `pnpm e2e:prod` | 17/17; sin datos sintéticos restantes |
 

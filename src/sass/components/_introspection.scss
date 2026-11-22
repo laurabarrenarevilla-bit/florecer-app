@@ -3,12 +3,17 @@
 // Pregunta de introspección sobre el campo de reflexión (ADR-011).
 .introspection {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: center;
   gap: a.$space-1 a.$space-3;
   padding: a.$space-4 a.$space-5;
   border-radius: a.$radius-xl;
   background: a.$color-sage-soft;
+
+  // En móvil el botón va debajo para que la pregunta use todo el ancho.
+  @include a.breakpoint(tablet) {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
 
   &__eyebrow {
     grid-column: 1 / -1;
@@ -27,6 +32,14 @@
   }
 
   &__next {
+    justify-self: start;
+    // El padding del botón fantasma ya separa; se alinea el texto con la pregunta.
+    margin-left: -(a.$space-3);
     white-space: nowrap;
+
+    @include a.breakpoint(tablet) {
+      justify-self: end;
+      margin-left: 0;
+    }
   }
 }

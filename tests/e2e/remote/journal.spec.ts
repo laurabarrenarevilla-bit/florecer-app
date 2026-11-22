@@ -1,5 +1,6 @@
+import { AxeBuilder } from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
-import { login } from '../support/app.ts'
+import { hasHorizontalOverflow, login } from '../support/app.ts'
 import { countOwnEntries, deleteOwnEntries } from '../support/cleanup.ts'
 import { madridDate } from '../support/dates.ts'
 import { REMOTE_ENABLED, REMOTE_SKIP_REASON, testAccounts } from '../support/env.ts'
@@ -85,5 +86,45 @@ test('F1-13: sin red avisa, conserva el borrador y guarda al reintentar', async 
   await context.setOffline(false)
   await page.getByRole('button', { name: 'Guardar mi día' }).click()
   await expect(page.getByText('Tu día se ha guardado.')).toBeVisible()
+  expect(await countOwnEntries(a, today)).toBe(1)
+})
+
+test('ADR-011: emociones secundarias y pregunta de introspección, guardadas y accesibles', async ({ page }) => {
+  const { a } = testAccounts()
+  await login(page, a)
+  const prompt = page.locator('.introspection__question')
+  const firstPrompt = await prompt.textContent()
+  await page.getByRole('button', { name: 'Otra pregunta' }).click()
+  await expect(prompt).not.toHaveText(firstPrompt ?? '')
+
+  await page.getByText('Triste', { exact: true }).click()
+  const emotions = page.getByRole('group', { name: /algo más concreto/i })
+  await emotions.getByText('Decepción', { exact: true }).click()
+  await emotions.getByText('Enfado', { exact: true }).click()
+  await page.locator('.introspection').scrollIntoViewIfNeeded()
+  await page.screenshot({ path: test.info().outputPath('emociones-formulario.png') })
+  const formAxe = await new AxeBuilder({ page }).analyze()
+  expect(formAxe.violations.map((v) => v.id)).toEqual([])
+  expect(await hasHorizontalOverflow(page)).toBe(false)
+
+  await page.getByRole('button', { name: 'Guardar mi día' }).click()
+  await expect(page.getByText('Tu día se ha guardado.')).toBeVisible()
+  await page.reload()
+  const summary = page.getByRole('article', { name: 'Tu registro de hoy' })
+  await expect(summary.getByRole('list', { name: 'Emociones' })).toHaveText(/Decepción\s*Enfado/)
+  await page.screenshot({ path: test.info().outputPath('emociones-resumen.png'), fullPage: true })
+  const summaryAxe = await new AxeBuilder({ page }).analyze()
+  expect(summaryAxe.violations.map((v) => v.id)).toEqual([])
+
+  // Editar: cambiar de ánimo quita las emociones del grupo anterior y se guarda sin ellas.
+  await page.getByRole('button', { name: 'Editar' }).click()
+  await page.getByText('Feliz', { exact: true }).click()
+  await page.getByRole('group', { name: /algo más concreto/i }).getByText('Serenidad', { exact: true }).click()
+  await page.getByRole('button', { name: 'Guardar cambios' }).click()
+  await expect(summary).toContainText('Feliz')
+  await expect(summary.getByRole('list', { name: 'Emociones' })).toHaveText('Serenidad')
+  await page.reload()
+  await expect(summary).toContainText('Feliz')
+  await expect(summary.getByRole('list', { name: 'Emociones' })).toHaveText('Serenidad')
   expect(await countOwnEntries(a, today)).toBe(1)
 })
