@@ -2,6 +2,7 @@ import { useCurrentUser } from '@/features/auth/authContext.ts'
 import { SignOutButton } from '@/features/auth/SignOutButton.tsx'
 import { PageHeading } from '@/shared/ui/PageHeading.tsx'
 import { InstallSection } from '@/features/pwa/InstallSection.tsx'
+import { BackupSection } from '@/features/backup/BackupSection.tsx'
 import { DeleteAccountSection } from './DeleteAccountSection.tsx'
 
 export function SettingsPage() {
@@ -36,9 +37,14 @@ export function SettingsPage() {
         <p>
           Guarda tu contraseña en un lugar seguro: la aplicación no ofrece recuperarla por correo.
         </p>
+        <p>
+          El resumen semanal con IA solo envía a NVIDIA, un servicio externo, las entradas que tú eliges y confirmas. Florecer
+          no guarda ese resumen.
+        </p>
         <p>Puedes eliminar tu cuenta y todos tus registros en cualquier momento desde esta página.</p>
       </section>
 
+      <BackupSection />
       <InstallSection />
       <DeleteAccountSection />
     </section>

@@ -66,6 +66,13 @@ describe('Accesibilidad (axe-core)', () => {
     expect(await axeViolations()).toEqual([])
   })
 
+  it('Buscar con resultados y filtros', async () => {
+    await renderAt('/buscar?q=texto', { withEntries: true })
+    await screen.findByRole('searchbox', { name: 'Palabras' })
+    await screen.findByText(/coincide/)
+    expect(await axeViolations()).toEqual([])
+  })
+
   it('Evolución sin registros', async () => {
     await renderAt('/evolucion')
     await screen.findByText('Aún no hay registros en este período')

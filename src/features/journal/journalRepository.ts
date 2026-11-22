@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { z } from 'zod'
 import { getSupabase } from '@/lib/supabase/client.ts'
-import type { LocalDate } from '@/shared/lib/dates.ts'
+import { todayLocal, type LocalDate } from '@/shared/lib/dates.ts'
 import { AppError, toAppError } from '@/shared/lib/errors.ts'
 import { entryContentSchema, journalEntryRowSchema, journalEntryRowsSchema, localDateSchema, notFutureDateSchema } from './schema.ts'
 import type { CreateJournalEntryInput, JournalEntry, UpdateJournalEntryInput } from './types.ts'
@@ -14,7 +15,18 @@ export interface JournalRepository {
   create(input: CreateJournalEntryInput): Promise<JournalEntry>
   update(input: UpdateJournalEntryInput): Promise<JournalEntry>
   deleteByDate(date: LocalDate): Promise<void>
+  /** Todas las entradas propias, paginando (PostgREST limita filas por respuesta). */
+  listAll(): Promise<JournalEntry[]>
+  /**
+   * Inserta entradas nuevas y OMITE las fechas que ya existen (nunca
+   * sobrescribe). Devuelve las fechas realmente insertadas. Lanza si falla;
+   * los lotes ya insertados quedan guardados (se informa del parcial).
+   */
+  insertMissing(inputs: readonly CreateJournalEntryInput[]): Promise<{ inserted: LocalDate[] }>
 }
+
+const PAGE_SIZE = 1000
+const IMPORT_BATCH = 200
 
 function parseRow(data: unknown): JournalEntry {
   const parsed = journalEntryRowSchema.safeParse(data)
@@ -126,6 +138,60 @@ export function createJournalRepository(getClient: () => SupabaseClient): Journa
       if (error) throw toAppError(error)
       if (!Array.isArray(data) || data.length === 0) throw new AppError('ENTRY_NOT_FOUND')
     },
+
+    async listAll() {
+      assertOnline()
+      const all: JournalEntry[] = []
+      for (let offset = 0; ; offset += PAGE_SIZE) {
+        const { data, error } = await getClient()
+          .from(TABLE)
+          .select(COLUMNS)
+          .order('entry_date', { ascending: true })
+          .range(offset, offset + PAGE_SIZE - 1)
+        if (error) throw toAppError(error)
+        const page = parseRows(data)
+        all.push(...page)
+        if (page.length < PAGE_SIZE) return all
+      }
+    },
+
+    async insertMissing(inputs) {
+      assertOnline()
+      const today = todayLocal()
+      const rows = inputs.map((input) => {
+        const dateResult = notFutureDateSchema(today).safeParse(input.date)
+        if (!dateResult.success) throw new AppError('VALIDATION_ERROR')
+        const content = validateContent(input)
+        return {
+          entry_date: dateResult.data,
+          mood: content.mood,
+          emotions: content.emotions,
+          reflection: content.reflection,
+          achievement: content.achievement,
+        }
+      })
+      const inserted: LocalDate[] = []
+      for (let i = 0; i < rows.length; i += IMPORT_BATCH) {
+        // ON CONFLICT DO NOTHING: las fechas existentes se omiten sin tocarlas.
+        const { data, error } = await getClient()
+          .from(TABLE)
+          .upsert(rows.slice(i, i + IMPORT_BATCH), { onConflict: 'user_id,entry_date', ignoreDuplicates: true })
+          .select('entry_date')
+        if (error) throw new PartialImportError(toAppError(error), inserted)
+        const parsed = z.array(z.object({ entry_date: localDateSchema })).safeParse(data)
+        if (!parsed.success) throw new PartialImportError(new AppError('UNKNOWN'), inserted)
+        inserted.push(...parsed.data.map((row) => row.entry_date))
+      }
+      return { inserted }
+    },
+  }
+}
+
+export class PartialImportError extends AppError {
+  readonly inserted: LocalDate[]
+  constructor(cause: AppError, inserted: LocalDate[]) {
+    super(cause.code, cause.message)
+    this.inserted = inserted
   }
 }
 

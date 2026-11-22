@@ -13,6 +13,26 @@ export const entryKeys = {
   all: (userId: string) => ['entries', userId] as const,
   day: (userId: string, date: LocalDate) => ['entries', userId, 'day', date] as const,
   range: (userId: string, from: LocalDate, to: LocalDate) => ['entries', userId, 'range', from, to] as const,
+  everything: (userId: string) => ['entries', userId, 'all'] as const,
+}
+
+/** Todas las entradas (búsqueda y copia de seguridad). Se invalida con el resto. */
+export function useAllEntries({ enabled = true }: { enabled?: boolean } = {}) {
+  const { id: userId } = useCurrentUser()
+  const repository = useJournalRepository()
+  return useQuery({ queryKey: entryKeys.everything(userId), queryFn: () => repository.listAll(), enabled })
+}
+
+/** Importa entradas omitiendo las fechas existentes y vuelve a leer todas las vistas. */
+export function useImportEntries() {
+  const { id: userId } = useCurrentUser()
+  const repository = useJournalRepository()
+  const queryClient = useQueryClient()
+  return useMutation<{ inserted: LocalDate[] }, Error, CreateJournalEntryInput[]>({
+    mutationFn: (inputs) => repository.insertMissing(inputs),
+    // También tras un fallo parcial: lo ya insertado debe verse.
+    onSettled: () => queryClient.invalidateQueries({ queryKey: entryKeys.all(userId) }),
+  })
 }
 
 export function useEntryByDate(date: LocalDate, { enabled = true }: { enabled?: boolean } = {}) {

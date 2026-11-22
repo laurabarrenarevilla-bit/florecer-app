@@ -7,6 +7,7 @@ import { addMonths, isValidLocalDate, monthBounds, monthKeyOf, type LocalDate, t
 import { ERROR_MESSAGES, isAppError } from '@/shared/lib/errors.ts'
 import { useToday } from '@/shared/lib/useToday.ts'
 import { Button } from '@/shared/ui/Button.tsx'
+import { SearchIcon } from '@/shared/ui/icons.tsx'
 import { EmptyState } from '@/shared/ui/EmptyState.tsx'
 import { InlineAlert } from '@/shared/ui/InlineAlert.tsx'
 import { LoadingState } from '@/shared/ui/LoadingState.tsx'
@@ -50,6 +51,11 @@ export function CalendarPage() {
       <PageHeading title="Calendario emocional" lead="Elige un día para ver, completar o corregir su registro." documentTitle="Calendario" />
 
       <WelcomeNotice />
+
+      <Link className="calendar-page__search" to="/buscar">
+        <SearchIcon size={18} />
+        Buscar en tu diario
+      </Link>
 
       <MonthCalendar
         month={month}

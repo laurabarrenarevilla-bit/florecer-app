@@ -28,7 +28,7 @@ Cambiar mes, revisar fecha, crear si fecha pasada vacía, mostrar detalle si exi
 
 ## Historial
 
-Lista ordenada desc, búsqueda y filtros por estado; lista vacía si no hay registros y mensaje diferente si la búsqueda no coincide. Para primera fase puede ser solo el detalle del calendario.
+Lista ordenada desc, búsqueda y filtros por estado; lista vacía si no hay registros y mensaje diferente si la búsqueda no coincide. Para primera fase puede ser solo el detalle del calendario. Fase 2: `/buscar` busca en reflexiones, logros y emociones sin distinguir tildes ni mayúsculas (la ñ se respeta), filtra por ánimo y fechas, guarda los filtros en la URL y enlaza cada resultado con su día.
 
 ## Evolución
 

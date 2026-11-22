@@ -45,3 +45,23 @@ Borrar una entrada o todas: confirmación con alcance preciso "datos de tu cuent
 ## Retención y copia
 
 Evitar guardar copia plaintext en `localStorage`, logs o almacenamiento de servidor sin necesidad. Informar de que la exportación es un archivo que el usuario guarda bajo su responsabilidad. No afirmar que importación sustituye un sistema corporativo de backups/point-in-time-recovery de Supabase.
+
+## Implementación (22-11-2026)
+
+- **Dónde:** Ajustes → "Copia de seguridad" (`src/features/backup/`).
+- **Formato v1:** el de arriba más `emotions` (ADR-011). Al importar, `emotions` es opcional para aceptar copias anteriores.
+- **Exportar:**
+  - lee todas las entradas en ese momento con `listAll()`, que pagina de 1000 en 1000, ordenadas por fecha;
+  - descarga `florecer-backup-YYYY-MM-DD.json` con un Blob local y avisa de que el archivo no está cifrado.
+- **Importar:**
+  - **Lectura y límites:** el archivo se lee en el navegador; máximo 5 MiB y 20.000 entradas.
+  - **Validación:** formato y versión, y cada entrada con las mismas reglas de Zod que el formulario y la base de datos (fecha real y no futura, ánimo, emociones del grupo, longitudes).
+  - **Vista previa:** muestra cuántas son nuevas, cuántas ya existen (se omiten), cuántas están repetidas en el archivo (se usa la primera) y cuántas no son válidas. De las no válidas da la posición, la fecha y el motivo, nunca el contenido.
+  - **Escritura:** `insertMissing()` hace `upsert` con `ignoreDuplicates` (`ON CONFLICT (user_id, entry_date) DO NOTHING`) por lotes de 200. Nunca sobrescribe, y `user_id` lo pone la sesión. Probado en PGlite y contra Supabase.
+  - **Fallo a mitad:** informa de cuántas se guardaron antes del error; reimportar el archivo las omite.
+  - **Después de importar:** se vuelven a leer todas las vistas.
+- **Sin "reemplazar":** no existe esa opción. Para cambiar un día ya registrado se edita desde el calendario.
+- **Pruebas:**
+  - `backupFormat.test.ts`: ida y vuelta, rechazos y reimportación sin duplicados;
+  - `BackupSection.test.tsx`;
+  - `tests/e2e/remote/backup-and-search.spec.ts`: importar → buscar → exportar → reimportar con la cuenta A, en fechas reservadas.

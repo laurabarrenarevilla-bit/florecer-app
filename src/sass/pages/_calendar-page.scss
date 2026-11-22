@@ -2,6 +2,16 @@
 
 // Página Calendario (/calendario) y contenido de su diálogo de día.
 .calendar-page {
+  &__search {
+    @include a.tap-target;
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: a.$space-2;
+    font-weight: 600;
+    color: a.$color-primary;
+  }
+
   &__back {
     align-self: center;
   }

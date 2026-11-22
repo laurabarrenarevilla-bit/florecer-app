@@ -1,0 +1,103 @@
+@use '@abstracts/abstracts' as a;
+
+// Página Buscar (/buscar).
+.search {
+  &__filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: a.$space-4;
+    padding: a.$space-5;
+
+    @include a.breakpoint(tablet) {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+      padding: a.$space-6;
+    }
+  }
+
+  &__text {
+    @include a.breakpoint(tablet) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__dates {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: a.$space-3;
+
+    @include a.breakpoint(tablet) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  &__clear {
+    justify-self: start;
+  }
+
+  &__count {
+    font-size: a.$font-size-sm;
+    color: a.$color-text-secondary;
+  }
+
+  &__results {
+    display: flex;
+    flex-direction: column;
+    gap: a.$space-3;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.search-result {
+  display: flex;
+  flex-direction: column;
+  gap: a.$space-2;
+  padding: a.$space-4 a.$space-5;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color a.$duration-fast a.$easing;
+
+  &:hover {
+    border-color: a.$color-sage;
+  }
+
+  @include a.reduced-motion {
+    transition: none;
+  }
+
+  &__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: a.$space-2;
+  }
+
+  &__date {
+    font-weight: 700;
+    color: a.$color-primary;
+
+    &:first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &__emotions {
+    font-size: a.$font-size-sm;
+    color: a.$color-text-secondary;
+  }
+
+  &__text {
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+  }
+
+  &__achievement {
+    font-size: a.$font-size-sm;
+    font-weight: 600;
+    color: a.$color-primary;
+    overflow-wrap: anywhere;
+  }
+}

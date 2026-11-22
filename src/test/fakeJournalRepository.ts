@@ -57,6 +57,27 @@ export function createFakeJournalRepository(initial: JournalEntry[] = []) {
     deleteByDate: vi.fn<JournalRepository['deleteByDate']>(async (date) => {
       if (!rows.delete(date)) throw new AppError('ENTRY_NOT_FOUND')
     }),
+    listAll: vi.fn<JournalRepository['listAll']>(async () => [...rows.values()].sort((a, b) => a.date.localeCompare(b.date))),
+    insertMissing: vi.fn<JournalRepository['insertMissing']>(async (inputs) => {
+      const inserted: string[] = []
+      for (const input of inputs) {
+        if (rows.has(input.date)) continue
+        const now = nextTimestamp()
+        rows.set(input.date, {
+          id: `00000000-0000-4000-8000-${String(rows.size + 1).padStart(12, '0')}`,
+          userId: TEST_USER.id,
+          date: input.date,
+          mood: input.mood,
+          emotions: [...input.emotions],
+          reflection: input.reflection,
+          achievement: input.achievement,
+          createdAt: now,
+          updatedAt: now,
+        })
+        inserted.push(input.date)
+      }
+      return { inserted }
+    }),
   } satisfies JournalRepository
 
   return { repository, rows }

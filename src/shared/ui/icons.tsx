@@ -71,6 +71,15 @@ export function EvolutionIcon(props: IconProps) {
   )
 }
 
+export function SearchIcon(props: IconProps) {
+  return (
+    <svg {...base(props)} stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="M16 16l4 4" />
+    </svg>
+  )
+}
+
 export function SettingsIcon(props: IconProps) {
   return (
     <svg {...base(props)} stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">

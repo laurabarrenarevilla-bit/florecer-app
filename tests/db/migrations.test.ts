@@ -177,3 +177,28 @@ describe('cuota de IA (consume_ai_quota)', () => {
     ).rejects.toThrow(/permission denied/)
   })
 })
+
+describe('importación: insertar omitiendo fechas existentes', () => {
+  it('ON CONFLICT DO NOTHING inserta lo nuevo, no toca lo existente y no afecta a otra cuenta', async () => {
+    await insert(USER_A, '2026-11-01', 'happy', ['love'])
+    await insert(USER_B, '2026-11-02', 'sad')
+    const { rows } = await as(USER_A, () =>
+      db.query<{ entry_date: string }>(
+        `insert into public.journal_entries (entry_date, mood, emotions, reflection, achievement)
+         values ('2026-11-01', 'sad', '{}', 'otro', ''), ('2026-11-02', 'neutral', '{}', '', '')
+         on conflict (user_id, entry_date) do nothing
+         returning to_char(entry_date, 'YYYY-MM-DD') as entry_date`,
+      ),
+    )
+    expect(rows.map((r) => r.entry_date)).toEqual(['2026-11-02'])
+    const mine = await as(USER_A, () =>
+      db.query<{ d: string; mood: string }>(`select to_char(entry_date, 'YYYY-MM-DD') d, mood from public.journal_entries order by 1`),
+    )
+    expect(mine.rows).toEqual([
+      { d: '2026-11-01', mood: 'happy' },
+      { d: '2026-11-02', mood: 'neutral' },
+    ])
+    const theirs = await as(USER_B, () => db.query<{ mood: string }>('select mood from public.journal_entries'))
+    expect(theirs.rows).toEqual([{ mood: 'sad' }])
+  })
+})
