@@ -19,7 +19,7 @@ export function IntrospectionPrompt({ seed, id }: IntrospectionPromptProps) {
       <p className="introspection__question" id={id} aria-live="polite">
         {INTROSPECTION_PROMPTS[index]}
       </p>
-      <Button variant="ghost" className="introspection__next" onClick={() => setIndex(nextPromptIndex)}>
+      <Button variant="secondary" className="introspection__next" onClick={() => setIndex(nextPromptIndex)}>
         Otra pregunta
       </Button>
     </div>

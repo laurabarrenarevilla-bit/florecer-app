@@ -32,13 +32,12 @@
 
   &__next {
     justify-self: start;
-    // El padding del botón fantasma ya separa; se alinea el texto con la pregunta.
-    margin-left: -(a.$space-3);
+    margin-top: a.$space-2;
     white-space: nowrap;
 
     @include a.breakpoint(tablet) {
       justify-self: end;
-      margin-left: 0;
+      margin-top: 0;
     }
   }
 }
